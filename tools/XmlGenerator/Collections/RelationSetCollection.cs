@@ -45,7 +45,7 @@ namespace EVEMon.XmlGenerator.Collections
             {
                 unchecked
                 {
-                    int hash = 17;
+                    var hash = 17;
                     hash = hash * 23 + Left.GetHashCode();
                     hash = hash * 23 + Center.GetHashCode();
                     hash = hash * 23 + Right.GetHashCode();
@@ -66,7 +66,7 @@ namespace EVEMon.XmlGenerator.Collections
             src.ThrowIfNull(nameof(src));
 
             m_dictionary = new Dictionary<Relation, T>();
-            foreach (T item in src)
+            foreach (var item in src)
             {
                 m_dictionary[GetKey(item)] = item;
             }

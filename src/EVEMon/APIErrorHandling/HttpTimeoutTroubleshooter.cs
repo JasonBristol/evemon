@@ -21,13 +21,13 @@ namespace EVEMon.ApiErrorHandling
         {
             InitializeComponent();
 
-            List<TimeoutOption> options = new List<TimeoutOption>();
-            UpdateSettings updateSettings = new UpdateSettings();
+            var options = new List<TimeoutOption>();
+            var updateSettings = new UpdateSettings();
 
             // Lets add 10 - 60 to the list
-            for (int i = 10; i <= 60; i += 10)
+            for (var i = 10; i <= 60; i += 10)
             {
-                string text = string.Empty;
+                var text = string.Empty;
 
                 if (i == updateSettings.HttpTimeout)
                     text = "Default";
@@ -97,11 +97,11 @@ namespace EVEMon.ApiErrorHandling
             {
                 get
                 {
-                    StringBuilder builder = new StringBuilder();
+                    var builder = new StringBuilder();
 
                     if (Seconds % 60 == 0)
                     {
-                        int minutes = Seconds / 60;
+                        var minutes = Seconds / 60;
                         builder.Append($"{minutes} Minute{(minutes.S())}");
                     }
                     else

@@ -95,13 +95,13 @@ namespace EVEMon.Common.Models
         {
             get
             {
-                float fraction = 0.0f;
+                var fraction = 0.0f;
                 if (Skill != null)
                 {
                     if (Skill == Skill.UnknownSkill)
                     {
                         // Based on estimated end time - start time
-                        double time = EndTime.Subtract(StartTime).TotalMilliseconds;
+                        var time = EndTime.Subtract(StartTime).TotalMilliseconds;
                         if (time > 0.0)
                             fraction = (float)(1.0 - EndTime.Subtract(DateTime.UtcNow).
                                 TotalMilliseconds / time);
@@ -120,7 +120,7 @@ namespace EVEMon.Common.Models
         {
             get
             {
-                int estimatedSP = (int)(EndSP - EndTime.Subtract(DateTime.UtcNow).TotalHours *
+                var estimatedSP = (int)(EndSP - EndTime.Subtract(DateTime.UtcNow).TotalHours *
                     SkillPointsPerHour);
                 return IsTraining ? Math.Max(estimatedSP, StartSP) : StartSP;
             }
@@ -170,7 +170,7 @@ namespace EVEMon.Common.Models
                 if (Skill == Skill.UnknownSkill)
                 {
                     // Based on estimated end time - start time
-                    double time = EndTime.Subtract(StartTime).TotalHours;
+                    var time = EndTime.Subtract(StartTime).TotalHours;
                     if (time <= 0.0)
                         // Do not divide by zero
                         rate = 0.0;
@@ -192,7 +192,7 @@ namespace EVEMon.Common.Models
         {
             get
             {
-                TimeSpan left = EndTime.Subtract(DateTime.UtcNow);
+                var left = EndTime.Subtract(DateTime.UtcNow);
                 return left < TimeSpan.Zero ? TimeSpan.Zero : left;
             }
         }
@@ -221,7 +221,7 @@ namespace EVEMon.Common.Models
         public override bool Equals(object obj)
         {
             var other = obj as QueuedSkill;
-            string otherName = other?.SkillName;
+            var otherName = other?.SkillName;
             return otherName != null && otherName.Equals(SkillName, StringComparison.
                 InvariantCulture) && StartSP == other.StartSP && EndSP == other.EndSP;
         }
@@ -237,7 +237,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         internal SerializableQueuedSkill Export()
         {
-            SerializableQueuedSkill skill = new SerializableQueuedSkill
+            var skill = new SerializableQueuedSkill
             {
                 ID = Skill?.ID ?? 0,
                 Level = Level,

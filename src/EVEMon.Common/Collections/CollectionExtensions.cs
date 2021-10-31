@@ -20,7 +20,7 @@ namespace EVEMon.Common.Collections
 
             values.ThrowIfNull(nameof(values));
 
-            foreach (T item in values)
+            foreach (var item in values)
             {
                 collection.Add(item);
             }
@@ -39,7 +39,7 @@ namespace EVEMon.Common.Collections
         {
             collection.ThrowIfNull(nameof(collection));
 
-            foreach (T item in collection.Where(item => predicate(item)))
+            foreach (var item in collection.Where(item => predicate(item)))
             {
                 return item;
             }

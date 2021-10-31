@@ -37,7 +37,7 @@ namespace EVEMon.Common.Net
                     ConfigureAwait(false);
                 using (response)
                 {
-                    Stream stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(
+                    var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(
                         false);
                     return GetString(request.BaseUrl, stream, response);
                 }
@@ -57,7 +57,7 @@ namespace EVEMon.Common.Net
         private static DownloadResult<string> GetString(Uri requestBaseUrl, Stream stream,
             HttpResponseMessage response)
         {
-            string text = string.Empty;
+            var text = string.Empty;
             HttpWebClientServiceException error = null;
             var param = new ResponseParams(response);
             if (stream == null)
@@ -68,7 +68,7 @@ namespace EVEMon.Common.Net
             }
             try
             {
-                using (StreamReader reader = new StreamReader(Util.ZlibUncompress(stream)))
+                using (var reader = new StreamReader(Util.ZlibUncompress(stream)))
                     text = reader.ReadToEnd();
             }
             catch (ArgumentException ex)

@@ -155,7 +155,7 @@ namespace EVEMon.SkillPlanner
                     break;
             }
 
-            IEnumerable<Label> labelDescriptions = tabControl.TabPages.Cast<TabPage>()
+            var labelDescriptions = tabControl.TabPages.Cast<TabPage>()
                 .Where(tabPage => tabPage != tabSummary)
                 .SelectMany(tabPage => tabPage.Controls.OfType<AttributesOptimizerControl>())
                 .Concat(Controls.OfType<AttributesOptimizerControl>())
@@ -164,7 +164,7 @@ namespace EVEMon.SkillPlanner
                 .Where(labelDescription => labelDescription != null);
 
             // Update the description in controls
-            foreach (Label labelDescription in labelDescriptions)
+            foreach (var labelDescription in labelDescriptions)
             {
                 labelDescription.Text = m_description;
             }
@@ -250,7 +250,7 @@ namespace EVEMon.SkillPlanner
         private void UpdateForRemapping(RemappingResult remapping)
         {          
             // Create control
-            AttributesOptimizerControl ctrl = CreateAttributesOptimizationControl(remapping);
+            var ctrl = CreateAttributesOptimizationControl(remapping);
             Controls.Add(ctrl);
 
             IList<AttributesOptimizerControl> optControls = Controls.OfType<AttributesOptimizerControl>().ToList();
@@ -283,8 +283,8 @@ namespace EVEMon.SkillPlanner
             UpdateSummaryInformation(remappingList);
 
             // Adds a tab page for every remapping
-            int index = 1;
-            foreach (RemappingResult remap in remappingList)
+            var index = 1;
+            foreach (var remap in remappingList)
             {
                 AddTabPage(remap, "#" + index++);
             }
@@ -299,14 +299,14 @@ namespace EVEMon.SkillPlanner
         /// <param name="remappingList">List of remappings</param>
         private void UpdateSummaryInformation(ICollection<RemappingResult> remappingList)
         {
-            TimeSpan baseDuration = m_plan.GetTotalTime(m_character.After(m_plan.ChosenImplantSet), false);
+            var baseDuration = m_plan.GetTotalTime(m_character.After(m_plan.ChosenImplantSet), false);
             lvPoints.Items.Clear();
 
             // Add global informations
-            ListViewGroup globalGroup = new ListViewGroup("Global informations");
+            var globalGroup = new ListViewGroup("Global informations");
             lvPoints.Groups.Add(globalGroup);
 
-            TimeSpan savedTime = remappingList.Aggregate(TimeSpan.Zero,
+            var savedTime = remappingList.Aggregate(TimeSpan.Zero,
                                                          (current, remap) =>
                                                          current.Add(remap.BaseDuration.Subtract(remap.BestDuration)));
 
@@ -322,7 +322,7 @@ namespace EVEMon.SkillPlanner
 
                 if (savedTime < TimeSpan.Zero)
                 {
-                    ListViewItem savedTimeItem = lvPoints.Items.Add(
+                    var savedTimeItem = lvPoints.Items.Add(
                         new ListViewItem(
                             $"{(-savedTime).ToDescriptiveText(DescriptiveTextOptions.IncludeCommas)} slower than current.",
                                          globalGroup));
@@ -330,7 +330,7 @@ namespace EVEMon.SkillPlanner
                 }
                 else
                 {
-                    ListViewItem savedTimeItem = lvPoints.Items.Add(
+                    var savedTimeItem = lvPoints.Items.Add(
                         new ListViewItem(
                             $"{savedTime.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas)} better than current.",
                                          globalGroup));
@@ -341,13 +341,13 @@ namespace EVEMon.SkillPlanner
                 lvPoints.Items.Add(new ListViewItem("Your attributes are already optimal.", globalGroup));
 
             // Notify plan updated
-            ListViewItem lvi = new ListViewItem("Your plan has been updated.", globalGroup)
+            var lvi = new ListViewItem("Your plan has been updated.", globalGroup)
                                    { Font = FontFactory.GetFont(lvPoints.Font, FontStyle.Bold) };
             lvPoints.Items.Add(lvi);
 
             // Add pages and summary informations
-            TimeSpan lastRemap = TimeSpan.Zero;
-            foreach (RemappingResult remap in remappingList)
+            var lastRemap = TimeSpan.Zero;
+            foreach (var remap in remappingList)
             {
                 AddSummaryForRemapping(remap, ref lastRemap);
             }
@@ -363,15 +363,15 @@ namespace EVEMon.SkillPlanner
         private void AddSummaryForRemapping(RemappingResult remap, ref TimeSpan lastRemap)
         {
             // Create the group
-            string text = $"{remap} at {remap.StartTime.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas)}";
-            ListViewGroup group = new ListViewGroup(text);
+            var text = $"{remap} at {remap.StartTime.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas)}";
+            var group = new ListViewGroup(text);
             lvPoints.Groups.Add(group);
 
             // Check there are at least one year between each remap
-            TimeSpan timeSinceLastRemap = remap.StartTime.Subtract(lastRemap);
+            var timeSinceLastRemap = remap.StartTime.Subtract(lastRemap);
             if (timeSinceLastRemap < TimeSpan.FromDays(365) && remap.StartTime != TimeSpan.Zero)
             {
-                ListViewItem item = lvPoints.Items.Add(
+                var item = lvPoints.Items.Add(
                     new ListViewItem(
                         $"The previous remap point was only {timeSinceLastRemap.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas)} ago.",
                         group));
@@ -398,7 +398,7 @@ namespace EVEMon.SkillPlanner
                                          EveAttribute attrib)
         {
             // Add the list view item for this attribute
-            string itemText = RemappingPoint.GetStringForAttribute(attrib, remap.BaseScratchpad, remap.BestScratchpad);
+            var itemText = RemappingPoint.GetStringForAttribute(attrib, remap.BaseScratchpad, remap.BestScratchpad);
             lvPoints.Items.Add(new ListViewItem(itemText, group));
         }
 
@@ -409,7 +409,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="tabName">Name of the tab.</param>
         private void AddTabPage(RemappingResult remapping, string tabName)
         {
-            AttributesOptimizerControl ctl = CreateAttributesOptimizationControl(remapping);
+            var ctl = CreateAttributesOptimizationControl(remapping);
 
             if (ctl == null)
                 return;
@@ -422,7 +422,7 @@ namespace EVEMon.SkillPlanner
                 tempPage = new TabPage(tabName);
                 tempPage.Controls.Add(ctl);
 
-                TabPage page = tempPage;
+                var page = tempPage;
                 tempPage = null;
 
                 tabControl.TabPages.Add(page);
@@ -475,7 +475,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="e">The <see cref="AttributeChangedEventArgs"/> instance containing the event data.</param>
         private void AttributesOptimizationControl_AttributeChanged(object sender, AttributeChangedEventArgs e)
         {
-            AttributesOptimizerControl control = (AttributesOptimizerControl)sender;
+            var control = (AttributesOptimizerControl)sender;
 
             if (m_strategy == AttributeOptimizationStrategy.RemappingPoints)
             {

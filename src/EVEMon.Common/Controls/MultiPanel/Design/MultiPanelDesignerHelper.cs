@@ -14,7 +14,7 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
         /// <returns></returns>
         public static DesignerVerbCollection GetDesignerVerbs(IDesignerHost host, MultiPanel panel)
         {
-            DesignerVerbCollection verbs = new DesignerVerbCollection
+            var verbs = new DesignerVerbCollection
                                                {
                                                    new DesignerVerb("Add Page", (sender, args) => AddPage(host, panel)),
                                                    new DesignerVerb("Remove Page", (sender, args) => RemovePage(host, panel))
@@ -22,7 +22,7 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
 
             foreach (MultiPanelPage page in panel.Controls)
             {
-                MultiPanelPage pageCopy = page;
+                var pageCopy = page;
                 verbs.Add(new DesignerVerb("Select \"" + page.Text + "\"", (sender, args) => SelectPage(host, panel, pageCopy)));
             }
 
@@ -36,18 +36,18 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
         /// <param name="panel"></param>
         private static void AddPage(IDesignerHost dh, MultiPanel panel)
         {
-            DesignerTransaction dt = dh.CreateTransaction("Added new page");
+            var dt = dh.CreateTransaction("Added new page");
 
             // Gets a free name
-            int i = 1;
+            var i = 1;
             while (panel.Controls.Cast<Control>().Any(x => x.Name == "Page" + i))
             {
                 i++;
             }
-            string name = "Page" + i;
+            var name = "Page" + i;
 
             // Creates the page
-            MultiPanelPage newPage = dh.CreateComponent(typeof(MultiPanelPage), name) as MultiPanelPage;
+            var newPage = dh.CreateComponent(typeof(MultiPanelPage), name) as MultiPanelPage;
             if (newPage != null)
             {
                 newPage.Text = name;
@@ -67,11 +67,11 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
         /// <param name="panel"></param>
         private static void RemovePage(IDesignerHost dh, MultiPanel panel)
         {
-            MultiPanelPage page = panel.SelectedPage;
+            var page = panel.SelectedPage;
             if (page == null)
                 return;
 
-            DesignerTransaction dt = dh.CreateTransaction("Removed page");
+            var dt = dh.CreateTransaction("Removed page");
 
             panel.Controls.Remove(page);
             dh.DestroyComponent(page);
@@ -90,7 +90,7 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
         /// <returns></returns>
         private static void SelectPage(IDesignerHost dh, MultiPanel panel, MultiPanelPage page)
         {
-            DesignerTransaction dt = dh.CreateTransaction("Selected page");
+            var dt = dh.CreateTransaction("Selected page");
 
             panel.SelectedPage = page;
             dt.Commit();

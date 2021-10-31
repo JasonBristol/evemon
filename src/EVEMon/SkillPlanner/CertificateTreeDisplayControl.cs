@@ -102,10 +102,10 @@ namespace EVEMon.SkillPlanner
         {
             get
             {
-                TreeNode node = treeView.SelectedNode;
+                var node = treeView.SelectedNode;
                 while (node != null)
                 {
-                    CertificateLevel certLevel = node.Tag as CertificateLevel;
+                    var certLevel = node.Tag as CertificateLevel;
                     if (certLevel != null && certLevel.Certificate.Class == m_class)
                         return certLevel;
 
@@ -210,7 +210,7 @@ namespace EVEMon.SkillPlanner
 
             // Perform the selection manually since the bound's width and x are incorrect in owndraw
             TreeNode selection = null;
-            for (TreeNode node = treeView.TopNode; node != null; node = node.NextVisibleNode)
+            for (var node = treeView.TopNode; node != null; node = node.NextVisibleNode)
             {
                 if (node.Bounds.Top > e.Y || node.Bounds.Bottom < e.Y)
                     continue;
@@ -270,7 +270,7 @@ namespace EVEMon.SkillPlanner
         /// </summary>
         private void UpdateTree()
         {
-            CertificateLevel oldSelection = SelectedCertificateLevel;
+            var oldSelection = SelectedCertificateLevel;
             TreeNode newSelection = null;
 
             treeView.ImageList = Settings.UI.SafeForWork ? m_emptyImageList : imageList;
@@ -288,9 +288,9 @@ namespace EVEMon.SkillPlanner
                 // Create the nodes when not done, yet
                 if (treeView.Nodes.Count == 0)
                 {
-                    foreach (CertificateLevel certLevel in m_class.Certificate.AllLevel)
+                    foreach (var certLevel in m_class.Certificate.AllLevel)
                     {
-                        TreeNode node = CreateNode(certLevel);
+                        var node = CreateNode(certLevel);
                         treeView.Nodes.Add(node);
 
                         // Does the old selection still exists ?
@@ -322,13 +322,13 @@ namespace EVEMon.SkillPlanner
         /// <returns></returns>
         private static TreeNode CreateNode(CertificateLevel certLevel)
         {
-            TreeNode node = new TreeNode
+            var node = new TreeNode
             {
                 Text = certLevel.ToString(),
                 Tag = certLevel
             };
 
-            foreach (SkillLevel prereqSkill in certLevel.PrerequisiteSkills)
+            foreach (var prereqSkill in certLevel.PrerequisiteSkills)
             {
                 node.Nodes.Add(CreateNode(prereqSkill));
             }
@@ -343,14 +343,14 @@ namespace EVEMon.SkillPlanner
         /// <returns></returns>
         private static TreeNode CreateNode(SkillLevel skillPrereq)
         {
-            TreeNode node = new TreeNode
+            var node = new TreeNode
             {
                 Text = skillPrereq.ToString(),
                 Tag = skillPrereq
             };
 
             // Add this skill's prerequisites
-            foreach (SkillLevel prereqSkill in skillPrereq.Skill.Prerequisites
+            foreach (var prereqSkill in skillPrereq.Skill.Prerequisites
                 .Where(prereqSkill => prereqSkill.Skill != skillPrereq.Skill))
             {
                 node.Nodes.Add(CreateNode(prereqSkill));
@@ -365,7 +365,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="node"></param>
         private void UpdateNode(TreeNode node)
         {
-            CertificateLevel certLevel = node.Tag as CertificateLevel;
+            var certLevel = node.Tag as CertificateLevel;
 
             // The node represents a certificate
             if (certLevel != null)
@@ -383,8 +383,8 @@ namespace EVEMon.SkillPlanner
             // The node represents a skill prerequisite
             else
             {
-                SkillLevel skillPrereq = (SkillLevel)node.Tag;
-                Skill skill = m_character?.Skills[skillPrereq.Skill.ID] ?? skillPrereq.Skill;
+                var skillPrereq = (SkillLevel)node.Tag;
+                var skill = m_character?.Skills[skillPrereq.Skill.ID] ?? skillPrereq.Skill;
 
                 if (m_character != null)
                 {
@@ -423,12 +423,12 @@ namespace EVEMon.SkillPlanner
                 return;
             }
 
-            string line2 = "-";
-            int supIcon = -1;
+            var line2 = "-";
+            var supIcon = -1;
             ImageList il;
 
             // Is it a certificate level ?
-            CertificateLevel certLevel = e.Node.Tag as CertificateLevel;
+            var certLevel = e.Node.Tag as CertificateLevel;
             if (certLevel != null)
             {
                 if (!Settings.UI.SafeForWork)
@@ -439,7 +439,7 @@ namespace EVEMon.SkillPlanner
                 // When not trained, let's display the training time
                 if (!certLevel.IsTrained)
                 {
-                    TimeSpan time = certLevel.GetTrainingTime;
+                    var time = certLevel.GetTrainingTime;
                     if (time != TimeSpan.Zero)
                         line2 = time.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas);
                 }
@@ -451,45 +451,45 @@ namespace EVEMon.SkillPlanner
                     supIcon = imageList.Images.IndexOfKey(SkillBookIcon);
 
                 il = imageList;
-                SkillLevel skillPrereq = (SkillLevel)e.Node.Tag;
+                var skillPrereq = (SkillLevel)e.Node.Tag;
 
                 // When not known to the require level, let's display the training time
                 if (!skillPrereq.IsTrained)
                 {
-                    TimeSpan time = skillPrereq.Skill.GetLeftTrainingTimeToLevel(skillPrereq.Level);
+                    var time = skillPrereq.Skill.GetLeftTrainingTimeToLevel(skillPrereq.Level);
                     if (time != TimeSpan.Zero)
                         line2 = time.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas);
                 }
             }
 
             // Choose colors according to selection
-            bool isSelected = (e.State & TreeNodeStates.Selected) == TreeNodeStates.Selected;
-            Color backColor = isSelected ? SystemColors.Highlight : treeView.BackColor;
-            Color foreColor = isSelected ? SystemColors.HighlightText : treeView.ForeColor;
-            Color lightForeColor = isSelected ? SystemColors.HighlightText : SystemColors.GrayText;
+            var isSelected = (e.State & TreeNodeStates.Selected) == TreeNodeStates.Selected;
+            var backColor = isSelected ? SystemColors.Highlight : treeView.BackColor;
+            var foreColor = isSelected ? SystemColors.HighlightText : treeView.ForeColor;
+            var lightForeColor = isSelected ? SystemColors.HighlightText : SystemColors.GrayText;
 
             // Draws the background
-            using (SolidBrush background = new SolidBrush(backColor))
+            using (var background = new SolidBrush(backColor))
             {
-                int width = treeView.ClientSize.Width - e.Bounds.Left;
+                var width = treeView.ClientSize.Width - e.Bounds.Left;
                 e.Graphics.FillRectangle(background, new Rectangle(e.Bounds.Left, e.Bounds.Top, width, e.Bounds.Height));
             }
 
             // Performs the drawing
-            using (SolidBrush foreground = new SolidBrush(foreColor))
+            using (var foreground = new SolidBrush(foreColor))
             {
                 float offset;
-                int left = e.Bounds.Left + il.ImageSize.Width + 2;
-                Size line1Size = TextRenderer.MeasureText(e.Node.Text, m_boldFont);
+                var left = e.Bounds.Left + il.ImageSize.Width + 2;
+                var line1Size = TextRenderer.MeasureText(e.Node.Text, m_boldFont);
 
                 if (!string.IsNullOrEmpty(line2))
                 {
-                    Size line2Size = TextRenderer.MeasureText(line2, Font);
+                    var line2Size = TextRenderer.MeasureText(line2, Font);
 
                     offset = (float)(e.Bounds.Height - line1Size.Height - line2Size.Height) / 2;
                     e.Graphics.DrawString(e.Node.Text, m_boldFont, foreground, new PointF(left, e.Bounds.Top + offset));
 
-                    using (SolidBrush lightForeground = new SolidBrush(lightForeColor))
+                    using (var lightForeground = new SolidBrush(lightForeColor))
                     {
                         e.Graphics.DrawString(line2, Font, lightForeground, new PointF(left, e.Bounds.Top + offset + line1Size.Height));
                     }
@@ -505,8 +505,8 @@ namespace EVEMon.SkillPlanner
             if (supIcon == -1)
                 return;
 
-            int imgOfssetX = e.Bounds.Left;
-            float imgOffsetY = Math.Max(0.0f, (e.Bounds.Height - il.ImageSize.Height) * 0.5f);
+            var imgOfssetX = e.Bounds.Left;
+            var imgOffsetY = Math.Max(0.0f, (e.Bounds.Height - il.ImageSize.Height) * 0.5f);
             e.Graphics.DrawImageUnscaled(il.Images[supIcon], imgOfssetX, (int)(e.Bounds.Top + imgOffsetY));
         }
 
@@ -522,8 +522,8 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void cmListSkills_Opening(object sender, CancelEventArgs e)
         {
-            TreeNode node = treeView.SelectedNode;
-            CertificateLevel certLevel = node?.Tag as CertificateLevel;
+            var node = treeView.SelectedNode;
+            var certLevel = node?.Tag as CertificateLevel;
 
             planToLevel.Visible = planToLevelSeparator.Visible = m_plan != null && node != null;
 
@@ -540,8 +540,8 @@ namespace EVEMon.SkillPlanner
                 else if (node != null)
                 {
                     // Update "add to" menu
-                    SkillLevel prereq = (SkillLevel)node.Tag;
-                    Skill skill = prereq.Skill;
+                    var prereq = (SkillLevel)node.Tag;
+                    var skill = prereq.Skill;
                     planToLevel.Enabled = skill.Level < prereq.Level && !m_plan.IsPlanned(skill, prereq.Level);
                     planToLevel.Text = $"Plan \"{skill} {Skill.GetRomanFromInt(prereq.Level)}\"";
                 }
@@ -577,21 +577,21 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void tsmAddToPlan_Click(object sender, EventArgs e)
         {
-            CertificateLevel cert = treeView.SelectedNode.Tag as CertificateLevel;
+            var cert = treeView.SelectedNode.Tag as CertificateLevel;
             IPlanOperation operation;
 
             if (cert != null)
                 operation = m_plan.TryPlanTo(cert);
             else
             {
-                SkillLevel prereq = (SkillLevel)treeView.SelectedNode.Tag;
+                var prereq = (SkillLevel)treeView.SelectedNode.Tag;
                 operation = m_plan.TryPlanTo(prereq.Skill, prereq.Level);
             }
 
             if (operation == null)
                 return;
 
-            PlanWindow planWindow = ParentForm as PlanWindow;
+            var planWindow = ParentForm as PlanWindow;
             if (planWindow == null)
                 return;
 

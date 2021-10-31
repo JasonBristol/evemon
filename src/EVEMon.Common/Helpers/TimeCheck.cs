@@ -46,14 +46,14 @@ namespace EVEMon.Common.Helpers
 
             EveMonClient.Trace();
 
-            string ntpServer = NetworkConstants.GlobalNTPPool;// "pool.ntp.org";
+            var ntpServer = NetworkConstants.GlobalNTPPool;// "pool.ntp.org";
             DateTime serverTimeToLocalTime;
             bool isSynchronised;
 
             await Dns.GetHostAddressesAsync(ntpServer)
                 .ContinueWith(task =>
                 {
-                    IPAddress[] ipAddresses = task.Result;
+                    var ipAddresses = task.Result;
 
                     if (!ipAddresses.Any())
                         return;
@@ -61,7 +61,7 @@ namespace EVEMon.Common.Helpers
                     try
                     {
                         DateTime dateTimeNowUtc;
-                        DateTime localTime = DateTime.Now;
+                        var localTime = DateTime.Now;
                         
                         var ntpData = new byte[48];
                         ntpData[0] = 0x1B; //LeapIndicator = 0 (no warning), VersionNum = 3 (IPv4 only), Mode = 3 (Client Mode)
@@ -77,8 +77,8 @@ namespace EVEMon.Common.Helpers
                             socket.Close();
                         }
 
-                        ulong intPart = (ulong)ntpData[40] << 24 | (ulong)ntpData[41] << 16 | (ulong)ntpData[42] << 8 | (ulong)ntpData[43];
-                        ulong fractPart = (ulong)ntpData[44] << 24 | (ulong)ntpData[45] << 16 | (ulong)ntpData[46] << 8 | (ulong)ntpData[47];
+                        var intPart = (ulong)ntpData[40] << 24 | (ulong)ntpData[41] << 16 | (ulong)ntpData[42] << 8 | (ulong)ntpData[43];
+                        var fractPart = (ulong)ntpData[44] << 24 | (ulong)ntpData[45] << 16 | (ulong)ntpData[46] << 8 | (ulong)ntpData[47];
 
                         var milliseconds = (intPart * 1000) + ((fractPart * 1000) / 0x100000000L);
                         var networkDateTime = (new DateTime(1900, 1, 1)).AddMilliseconds((long)milliseconds);
@@ -86,7 +86,7 @@ namespace EVEMon.Common.Helpers
                         dateTimeNowUtc = networkDateTime;
 
                         serverTimeToLocalTime = dateTimeNowUtc.ToLocalTime();
-                        TimeSpan timediff =
+                        var timediff =
                             TimeSpan.FromSeconds(Math.Abs(serverTimeToLocalTime.Subtract(localTime).TotalSeconds));
                         isSynchronised = timediff < TimeSpan.FromSeconds(60);
 

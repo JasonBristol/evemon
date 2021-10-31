@@ -26,7 +26,7 @@ namespace EVEMon.Common.Models.Collections
             Items.Clear();
 
             // Import the mail messages from the API
-            foreach (EsiMailingListsListItem srcEVEMailingList in src)
+            foreach (var srcEVEMailingList in src)
             {
                 Items.Add(new EveMailingList(srcEVEMailingList));
             }

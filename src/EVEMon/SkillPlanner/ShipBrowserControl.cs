@@ -63,7 +63,7 @@ namespace EVEMon.SkillPlanner
 
             if (Character != null)
             {
-                ToolStripItem[] toolStripItems = LoadoutsProvider.Providers
+                var toolStripItems = LoadoutsProvider.Providers
                     .Select(provider => new ToolStripMenuItem(provider.Name))
                     .ToArray<ToolStripItem>();
 
@@ -100,7 +100,7 @@ namespace EVEMon.SkillPlanner
             // Update the Mastery tab
             masteryTreeDisplayControl.MasteryShip = Character?.MasteryShips.GetMasteryShipByID(SelectedObject.ID);
 
-            ShipLoadoutSelectWindow loadoutSelect = WindowsFactory.GetByTag<ShipLoadoutSelectWindow, Character>(Character);
+            var loadoutSelect = WindowsFactory.GetByTag<ShipLoadoutSelectWindow, Character>(Character);
             if (loadoutSelect != null)
                 loadoutSelect.Ship = shipSelectControl.SelectedObject;
 
@@ -119,8 +119,8 @@ namespace EVEMon.SkillPlanner
             masteryTreeDisplayControl.Plan = Plan;
 
             // We recalculate the right panels minimum size
-            int reqSkillControlMinWidth = requiredSkillsControl.MinimumSize.Width;
-            int reqSkillPanelMinWidth = scDetails.Panel2MinSize;
+            var reqSkillControlMinWidth = requiredSkillsControl.MinimumSize.Width;
+            var reqSkillPanelMinWidth = scDetails.Panel2MinSize;
             scDetails.Panel2MinSize = reqSkillPanelMinWidth > reqSkillControlMinWidth
                 ? reqSkillPanelMinWidth
                 : reqSkillControlMinWidth;
@@ -158,11 +158,11 @@ namespace EVEMon.SkillPlanner
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void tsPlanToLevel_Click(object sender, EventArgs e)
         {
-            IPlanOperation operation = ((ToolStripMenuItem)sender).Tag as IPlanOperation;
+            var operation = ((ToolStripMenuItem)sender).Tag as IPlanOperation;
             if (operation == null)
                 return;
 
-            PlanWindow planWindow = ParentForm as PlanWindow;
+            var planWindow = ParentForm as PlanWindow;
             if (planWindow == null)
                 return;
 
@@ -176,7 +176,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void toolStripItem_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem control = sender as ToolStripMenuItem;
+            var control = sender as ToolStripMenuItem;
 
             if (control == null)
                 return;
@@ -251,7 +251,7 @@ namespace EVEMon.SkillPlanner
         private void propertiesList_DoubleClick(object sender, EventArgs e)
         {
             // Is it a skill?
-            Skill skill = PropertiesList.FocusedItem?.Tag as Skill;
+            var skill = PropertiesList.FocusedItem?.Tag as Skill;
 
             if (skill != null)
             {
@@ -260,7 +260,7 @@ namespace EVEMon.SkillPlanner
             }
 
             // Is it an item?
-            Item item = PropertiesList.FocusedItem?.Tag as Item;
+            var item = PropertiesList.FocusedItem?.Tag as Item;
 
             if (item != null)
                 PlanWindow.ShowPlanWindow(SelectControl.Character, Plan)?.ShowItemInBrowser(item);
@@ -274,11 +274,11 @@ namespace EVEMon.SkillPlanner
         private void ItemAttributeContextMenu_Opening(object sender, CancelEventArgs e)
         {
             // Is it a skill?
-            Skill skill = PropertiesList.FocusedItem?.Tag as Skill;
+            var skill = PropertiesList.FocusedItem?.Tag as Skill;
             showInSkillBrowser.Visible = skill != null;
 
             // Is it an item?
-            Item item = PropertiesList.FocusedItem?.Tag as Item;
+            var item = PropertiesList.FocusedItem?.Tag as Item;
             showInItemBrowser.Visible = item != null;
 
             showInMenuSeparator.Visible = skill != null || item != null;
@@ -329,7 +329,7 @@ namespace EVEMon.SkillPlanner
             if (SelectedObject == null || Plan == null)
                 return;
 
-            MasteryShip masteryShip = masteryTreeDisplayControl.MasteryShip;
+            var masteryShip = masteryTreeDisplayControl.MasteryShip;
 
             if (masteryShip == null)
                 return;
@@ -364,7 +364,7 @@ namespace EVEMon.SkillPlanner
             }
 
             // "Plan to N" menus
-            for (int i = 1; i <= 5; i++)
+            for (var i = 1; i <= 5; i++)
             {
                 UpdatePlanningMenuStatus(tsPlanToMenu.DropDownItems[i - 1], masteryShip.GetLevel(i), lastEligibleMasteryLevel);
             }

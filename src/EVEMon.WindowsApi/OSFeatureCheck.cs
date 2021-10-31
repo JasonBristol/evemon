@@ -30,7 +30,7 @@ namespace EVEMon.WindowsApi
                 if (!IsWindowsNT)
                     return false;
 
-                Version winVer = Environment.OSVersion.Version;
+                var winVer = Environment.OSVersion.Version;
 
                 if (winVer.Major < 6)
                     return false;

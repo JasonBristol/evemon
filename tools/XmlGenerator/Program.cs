@@ -18,7 +18,7 @@ namespace EVEMon.XmlGenerator
         [STAThread]
         private static void Main()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
 
             // Setting a standard format for the generated files
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");

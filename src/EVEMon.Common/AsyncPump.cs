@@ -14,13 +14,13 @@ namespace EVEMon.Common
         /// <param name="func">The function.</param>
         public static void Run(Func<Task> func)
         {
-            SynchronizationContext prevCtx = SynchronizationContext.Current;
+            var prevCtx = SynchronizationContext.Current;
             try
             {
                 var syncCtx = new SingleThreadSynchronizationContext();
                 SynchronizationContext.SetSynchronizationContext(syncCtx);
 
-                Task task = func();
+                var task = func();
                 task.ContinueWith(_ => syncCtx.Complete(), TaskScheduler.Default);
 
                 syncCtx.RunOnCurrentThread();

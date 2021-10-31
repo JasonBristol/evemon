@@ -112,7 +112,7 @@ namespace EVEMon
         {
             get
             {
-                InstanceManager im = InstanceManager.Instance;
+                var im = InstanceManager.Instance;
                 if (im.CreatedNew)
                     return true;
 
@@ -136,7 +136,7 @@ namespace EVEMon
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                string appId = "EVEMon";
+                var appId = "EVEMon";
 
                 if (EveMonClient.IsDebugBuild)
                     appId = $"{appId}-DEBUG";
@@ -222,7 +222,7 @@ namespace EVEMon
                     return;
                 }
 
-                using (UnhandledExceptionWindow form = new UnhandledExceptionWindow(ex))
+                using (var form = new UnhandledExceptionWindow(ex))
                 {
                     if (s_mainWindow != null && !s_mainWindow.IsDisposed)
                         form.ShowDialog(s_mainWindow);
@@ -235,7 +235,7 @@ namespace EVEMon
             }
             catch (Exception e)
             {
-                StringBuilder messageBuilder = new StringBuilder();
+                var messageBuilder = new StringBuilder();
                 messageBuilder.AppendLine(string.Format(Properties.Resources.ErrorUnhandled,
                     e.Message));
                 if (ex.GetBaseException().Message != e.Message)
@@ -266,8 +266,8 @@ namespace EVEMon
         {
             try
             {
-                AssemblyName requestedAssembly = new AssemblyName(e.Name);
-                AssemblyName assembly = AssemblyName.GetAssemblyName($"{requestedAssembly.Name}.dll");
+                var requestedAssembly = new AssemblyName(e.Name);
+                var assembly = AssemblyName.GetAssemblyName($"{requestedAssembly.Name}.dll");
                 if (requestedAssembly.Version < assembly.Version)
                     return Assembly.Load(assembly);
             }

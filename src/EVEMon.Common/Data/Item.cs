@@ -61,7 +61,7 @@ namespace EVEMon.Common.Data
             if (src.PrereqSkill == null)
                 return;
 
-            foreach (SerializablePrereqSkill prereq in src.PrereqSkill)
+            foreach (var prereq in src.PrereqSkill)
             {
                 m_prerequisites.Add(new StaticSkillLevel(prereq.ID, prereq.Level, prereq.Activity));
             }
@@ -97,7 +97,7 @@ namespace EVEMon.Common.Data
             if (src.PrerequisiteSkills == null)
                 return;
 
-            foreach (SerializablePrerequisiteSkill prereq in src.PrerequisiteSkills)
+            foreach (var prereq in src.PrerequisiteSkills)
             {
                 m_prerequisites.Add(new StaticSkillLevel(prereq.ID, prereq.Level));
             }
@@ -205,14 +205,14 @@ namespace EVEMon.Common.Data
         {
             get
             {
-                EvePropertyValue? property = Properties[DBConstants.ReprocessingSkillPropertyID];
+                var property = Properties[DBConstants.ReprocessingSkillPropertyID];
 
                 // Returns scrap metal processing by default
                 if (property == null)
                     return StaticSkills.GetSkillByID(DBConstants.ScrapMetalProcessingSkillID);
 
                 // Returns the reprocessing skill specified by the property
-                long id = property.Value.Int64Value;
+                var id = property.Value.Int64Value;
                 return StaticSkills.GetSkillByID(id);
             }
         }
@@ -225,8 +225,8 @@ namespace EVEMon.Common.Data
         {
             get
             {
-                StringBuilder sb = new StringBuilder();
-                MarketGroup cat = MarketGroup;
+                var sb = new StringBuilder();
+                var cat = MarketGroup;
 
                 while (cat != null)
                 {
@@ -274,17 +274,17 @@ namespace EVEMon.Common.Data
 
             // If we have a slot index, we're a fittable item
             // Now see if we can find our usage numbers
-            string cpuUsage = FindProperty(EveProperty.CPU, null);
-            string gridUsage = FindProperty(EveProperty.Powergrid, null);
+            var cpuUsage = FindProperty(EveProperty.CPU, null);
+            var gridUsage = FindProperty(EveProperty.Powergrid, null);
 
-            double? cpuRequired = TryParseNullable(TryStripTail(cpuUsage, " tf"));
-            double? gridRequired = TryParseNullable(TryStripTail(gridUsage, " MW"));
+            var cpuRequired = TryParseNullable(TryStripTail(cpuUsage, " tf"));
+            var gridRequired = TryParseNullable(TryStripTail(gridUsage, " MW"));
 
             if (cpuRequired == null && gridRequired == null)
                 return false;
 
             //We have information about this item, see if it fits
-            bool fits = true;
+            var fits = true;
             if (cpuAvailable != null)
                 fits &= cpuRequired <= cpuAvailable;
 
@@ -347,8 +347,8 @@ namespace EVEMon.Common.Data
         /// <returns>Either the value of the named property, or the given default value.</returns>
         private string FindProperty(EveProperty property, string defaultValue)
         {
-            string result = defaultValue;
-            foreach (EvePropertyValue prop in Properties)
+            var result = defaultValue;
+            foreach (var prop in Properties)
             {
                 if (prop.Property != property)
                     continue;

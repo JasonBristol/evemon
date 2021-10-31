@@ -27,7 +27,7 @@ namespace EVEMon.Common.Data
             Name = src.Name;
             Region = region;
 
-            foreach (SerializableSolarSystem srcSystem in src.Systems)
+            foreach (var srcSystem in src.Systems)
             {
                 Items.Add(new SolarSystem(this, srcSystem));
             }

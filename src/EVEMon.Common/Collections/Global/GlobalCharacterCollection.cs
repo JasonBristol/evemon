@@ -86,19 +86,19 @@ namespace EVEMon.Common.Collections.Global
             }
 
             // We have a file, let's just deserialize it synchronously
-            string xmlRootElement = Util.GetXmlRootElement(uri);
+            var xmlRootElement = Util.GetXmlRootElement(uri);
 
             switch (xmlRootElement.ToLower(CultureConstants.DefaultCulture))
             {
                 case "eveapi":
-                    CCPAPIResult<SerializableAPICharacterSheet> apiResult =
+                    var apiResult =
                         Util.DeserializeAPIResultFromFile<SerializableAPICharacterSheet>(uri.LocalPath,
                             APIProvider.RowsetsTransform);
                     return new UriCharacterEventArgs(uri, apiResult);
                 case "serializableccpcharacter":
                     try
                     {
-                        SerializableCCPCharacter ccpResult =
+                        var ccpResult =
                             Util.DeserializeXmlFromFile<SerializableCCPCharacter>(uri.LocalPath);
                         return new UriCharacterEventArgs(uri, ccpResult);
                     }
@@ -110,7 +110,7 @@ namespace EVEMon.Common.Collections.Global
                 case "serializableuricharacter":
                     try
                     {
-                        SerializableUriCharacter uriCharacterResult =
+                        var uriCharacterResult =
                             Util.DeserializeXmlFromFile<SerializableUriCharacter>(uri.LocalPath);
                         return new UriCharacterEventArgs(uri, uriCharacterResult);
                     }
@@ -131,32 +131,32 @@ namespace EVEMon.Common.Collections.Global
         internal void Import(IEnumerable<SerializableSettingsCharacter> serial)
         {
             // Clear the API key on every identity
-            foreach (CharacterIdentity id in EveMonClient.CharacterIdentities)
+            foreach (var id in EveMonClient.CharacterIdentities)
             {
                 id.ESIKeys.Clear();
             }
 
             // Unsubscribe any event handlers in character
-            foreach (Character character in Items)
+            foreach (var character in Items)
             {
                 character.Dispose();
             }
 
             // Import the characters, their identies, etc
             Items.Clear();
-            foreach (SerializableSettingsCharacter serialCharacter in serial)
+            foreach (var serialCharacter in serial)
             {
                 // Gets the identity or create it
-                CharacterIdentity id = EveMonClient.CharacterIdentities[serialCharacter.ID] ??
-                    EveMonClient.CharacterIdentities.Add(serialCharacter.ID, serialCharacter.Name);
+                var id = EveMonClient.CharacterIdentities[serialCharacter.ID] ??
+                         EveMonClient.CharacterIdentities.Add(serialCharacter.ID, serialCharacter.Name);
 
                 // Imports the character
-                SerializableCCPCharacter ccpCharacter = serialCharacter as SerializableCCPCharacter;
+                var ccpCharacter = serialCharacter as SerializableCCPCharacter;
                 if (ccpCharacter != null)
                     this.Add(new CCPCharacter(id, ccpCharacter), false, false);
                 else
                 {
-                    SerializableUriCharacter uriCharacter = serialCharacter as SerializableUriCharacter;
+                    var uriCharacter = serialCharacter as SerializableUriCharacter;
                     this.Add(new UriCharacter(id, uriCharacter), false, false);
                 }
             }
@@ -180,9 +180,9 @@ namespace EVEMon.Common.Collections.Global
         public IEnumerable<string> GetKnownLabels()
         {
             var labels = new SortedSet<string>();
-            foreach (Character character in Items)
+            foreach (var character in Items)
             {
-                string label = character.Label;
+                var label = character.Label;
                 if (!label.IsEmptyOrUnknown())
                     labels.Add(label);
             }
@@ -195,7 +195,7 @@ namespace EVEMon.Common.Collections.Global
         /// <param name="serial"></param>
         internal void ImportPlans(ICollection<SerializablePlan> serial)
         {
-            foreach (Character character in Items)
+            foreach (var character in Items)
             {
                 character.ImportPlans(serial);
             }
@@ -207,8 +207,8 @@ namespace EVEMon.Common.Collections.Global
         /// <returns></returns>
         internal IEnumerable<SerializablePlan> ExportPlans()
         {
-            List<SerializablePlan> serial = new List<SerializablePlan>();
-            foreach (Character character in Items)
+            var serial = new List<SerializablePlan>();
+            foreach (var character in Items)
             {
                 character.ExportPlans(serial);
             }
@@ -221,7 +221,7 @@ namespace EVEMon.Common.Collections.Global
         /// </summary>
         internal void UpdateAccountStatuses()
         {
-            foreach (Character character in Items)
+            foreach (var character in Items)
             {
                 character.UpdateAccountStatus();
             }

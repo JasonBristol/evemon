@@ -56,7 +56,7 @@ namespace EVEMon.PieChart
         /// </param>
         public Quadrilateral(PointF point1, PointF point2, PointF point3, PointF point4, bool toClose)
         {
-            byte[] pointTypes = (byte[])s_quadrilateralPointTypes.Clone();
+            var pointTypes = (byte[])s_quadrilateralPointTypes.Clone();
             if (toClose)
                 pointTypes[3] |= (byte)PathPointType.CloseSubpath;
             m_path = new GraphicsPath(new[] { point1, point2, point3, point4 }, pointTypes);
@@ -141,8 +141,8 @@ namespace EVEMon.PieChart
 
             cornerPoints.ThrowIfNull(nameof(cornerPoints));
 
-            int intersections = 0;
-            for (int i = 1; i < cornerPoints.Length; ++i)
+            var intersections = 0;
+            for (var i = 1; i < cornerPoints.Length; ++i)
             {
                 if (DoesIntersect(point, cornerPoints[i], cornerPoints[i - 1]))
                     ++intersections;
@@ -170,14 +170,14 @@ namespace EVEMon.PieChart
         /// </returns>
         private static bool DoesIntersect(PointF point, PointF point1, PointF point2)
         {
-            float x2 = point2.X;
-            float y2 = point2.Y;
-            float x1 = point1.X;
-            float y1 = point1.Y;
+            var x2 = point2.X;
+            var y2 = point2.Y;
+            var x1 = point1.X;
+            var y1 = point1.Y;
             if ((!(x2 < point.X) || !(x1 >= point.X)) && (!(x2 >= point.X) || !(x1 < point.X)))
                 return false;
 
-            float y = (y2 - y1) / (x2 - x1) * (point.X - x1) + y1;
+            var y = (y2 - y1) / (x2 - x1) * (point.X - x1) + y1;
             return y > point.Y;
         }
     }

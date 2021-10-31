@@ -149,7 +149,7 @@ namespace EVEMon.CharacterMonitoring
                 return;
             }
 
-            int scrollBarPosition = lbSkillsQueue.TopIndex;
+            var scrollBarPosition = lbSkillsQueue.TopIndex;
 
             // Update the skills queue list
             lbSkillsQueue.BeginUpdate();
@@ -157,7 +157,7 @@ namespace EVEMon.CharacterMonitoring
             {
                 // Add items in the list
                 lbSkillsQueue.Items.Clear();
-                foreach (QueuedSkill skill in Character.SkillQueue)
+                foreach (var skill in Character.SkillQueue)
                 {
                     lbSkillsQueue.Items.Add(skill);
                 }
@@ -191,7 +191,7 @@ namespace EVEMon.CharacterMonitoring
             if (e.Index < 0 || e.Index >= lbSkillsQueue.Items.Count)
                 return;
 
-            QueuedSkill item = lbSkillsQueue.Items[e.Index] as QueuedSkill;
+            var item = lbSkillsQueue.Items[e.Index] as QueuedSkill;
 
             if (item == null)
                 return;
@@ -219,50 +219,50 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void DrawItem(QueuedSkill skill, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // Draw background
             g.FillRectangle(e.Index % 2 == 0 ? Brushes.LightGray : Brushes.White, e.Bounds);
             
             // Measure texts
             const TextFormatFlags Format = TextFormatFlags.NoPadding | TextFormatFlags.NoClipping;
-            bool hasSkill = (skill.Skill != null) && (skill.Skill != Skill.UnknownSkill);
+            var hasSkill = (skill.Skill != null) && (skill.Skill != Skill.UnknownSkill);
 
-            long skillPoints = (skill.Skill != null) && (skill.Level > skill.Skill.Level + 1) ?
+            var skillPoints = (skill.Skill != null) && (skill.Level > skill.Skill.Level + 1) ?
                 skill.CurrentSP : (!hasSkill ? skill.StartSP : skill.Skill.SkillPoints);
-            long skillPointsToNextLevel = !hasSkill ? skill.EndSP :
+            var skillPointsToNextLevel = !hasSkill ? skill.EndSP :
                 skill.Skill.StaticData.GetPointsRequiredForLevel(Math.Min(skill.Level, 5));
-            long pointsLeft = skillPointsToNextLevel - skillPoints;
-            TimeSpan timeSpanFromPoints = !hasSkill ? skill.EndTime.Subtract(DateTime.UtcNow) :
+            var pointsLeft = skillPointsToNextLevel - skillPoints;
+            var timeSpanFromPoints = !hasSkill ? skill.EndTime.Subtract(DateTime.UtcNow) :
                 skill.Skill.GetTimeSpanForPoints(pointsLeft);
-            string remainingTimeText = timeSpanFromPoints.ToDescriptiveText(
+            var remainingTimeText = timeSpanFromPoints.ToDescriptiveText(
                 DescriptiveTextOptions.SpaceBetween);
 
-            double fractionCompleted = e.Index == 0 ? skill.FractionCompleted : 0.0;
+            var fractionCompleted = e.Index == 0 ? skill.FractionCompleted : 0.0;
 
-            string indexText = $"{e.Index + 1}. ";
-            string rankText = $" (Rank {(skill.Skill == null ? 0 : skill.Rank)})";
-            string spPerHourText = $" SP/Hour: {skill.SkillPointsPerHour}";
-            string spText = $"SP: {skillPoints:N0}/{skillPointsToNextLevel:N0}";
-            string trainingTimeText = $" Training Time: {remainingTimeText}";
-            string levelText = $"Level {skill.Level}";
-            string percentText = $"{Math.Floor(fractionCompleted * 100) / 100:P0} Done";
+            var indexText = $"{e.Index + 1}. ";
+            var rankText = $" (Rank {(skill.Skill == null ? 0 : skill.Rank)})";
+            var spPerHourText = $" SP/Hour: {skill.SkillPointsPerHour}";
+            var spText = $"SP: {skillPoints:N0}/{skillPointsToNextLevel:N0}";
+            var trainingTimeText = $" Training Time: {remainingTimeText}";
+            var levelText = $"Level {skill.Level}";
+            var percentText = $"{Math.Floor(fractionCompleted * 100) / 100:P0} Done";
 
-            Size indexTextSize = TextRenderer.MeasureText(g, indexText, m_boldSkillsQueueFont, Size.Empty, Format);
-            Size skillNameSize = TextRenderer.MeasureText(g, skill.SkillName, m_boldSkillsQueueFont, Size.Empty, Format);
-            Size rankTextSize = TextRenderer.MeasureText(g, rankText, m_skillsQueueFont, Size.Empty, Format);
-            Size levelTextSize = TextRenderer.MeasureText(g, levelText, m_skillsQueueFont, Size.Empty, Format);
-            Size spPerHourTextSize = TextRenderer.MeasureText(g, spPerHourText, m_skillsQueueFont, Size.Empty, Format);
-            Size spTextSize = TextRenderer.MeasureText(g, spText, m_skillsQueueFont, Size.Empty, Format);
-            Size ttTextSize = TextRenderer.MeasureText(g, trainingTimeText, m_skillsQueueFont, Size.Empty, Format);
-            Size pctTextSize = TextRenderer.MeasureText(g, percentText, m_skillsQueueFont, Size.Empty, Format);
+            var indexTextSize = TextRenderer.MeasureText(g, indexText, m_boldSkillsQueueFont, Size.Empty, Format);
+            var skillNameSize = TextRenderer.MeasureText(g, skill.SkillName, m_boldSkillsQueueFont, Size.Empty, Format);
+            var rankTextSize = TextRenderer.MeasureText(g, rankText, m_skillsQueueFont, Size.Empty, Format);
+            var levelTextSize = TextRenderer.MeasureText(g, levelText, m_skillsQueueFont, Size.Empty, Format);
+            var spPerHourTextSize = TextRenderer.MeasureText(g, spPerHourText, m_skillsQueueFont, Size.Empty, Format);
+            var spTextSize = TextRenderer.MeasureText(g, spText, m_skillsQueueFont, Size.Empty, Format);
+            var ttTextSize = TextRenderer.MeasureText(g, trainingTimeText, m_skillsQueueFont, Size.Empty, Format);
+            var pctTextSize = TextRenderer.MeasureText(g, percentText, m_skillsQueueFont, Size.Empty, Format);
 
             // Draw texts
-            Color highlightColor = Color.Black;
+            var highlightColor = Color.Black;
 
             // First line
-            int left = e.Bounds.Left + PadLeft;
-            int top = e.Bounds.Top + PadTop;
+            var left = e.Bounds.Left + PadLeft;
+            var top = e.Bounds.Top + PadTop;
             TextRenderer.DrawText(g, indexText, m_boldSkillsQueueFont,
                 new Rectangle(left, top, indexTextSize.Width + PadLeft, indexTextSize.Height), highlightColor);
             left += indexTextSize.Width;
@@ -309,22 +309,22 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.Windows.Forms.DrawItemEventArgs"/> instance containing the event data.</param>
         private static void DrawProgressionBar(double fractionCompleted, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             g.DrawRectangle(Pens.Black,
                 new Rectangle(e.Bounds.Right - BoxWidth - PadRight,
                     e.Bounds.Top + PadTop + BoxHeight + BoxVPad, BoxWidth, LowerBoxHeight));
 
-            Rectangle pctBarRect = new Rectangle(e.Bounds.Right - BoxWidth - PadRight + 2,
+            var pctBarRect = new Rectangle(e.Bounds.Right - BoxWidth - PadRight + 2,
                 e.Bounds.Top + PadTop + BoxHeight + BoxVPad + 2,
                 BoxWidth - 3, LowerBoxHeight - 3);
 
             g.FillRectangle(Brushes.DarkGray, pctBarRect);
-            int fillWidth = (int)(pctBarRect.Width * fractionCompleted);
+            var fillWidth = (int)(pctBarRect.Width * fractionCompleted);
             if (fillWidth <= 0)
                 return;
 
-            Rectangle fillRect = new Rectangle(pctBarRect.X, pctBarRect.Y, fillWidth, pctBarRect.Height);
+            var fillRect = new Rectangle(pctBarRect.X, pctBarRect.Y, fillWidth, pctBarRect.Height);
             g.FillRectangle(Brushes.Black, fillRect);
         }
 
@@ -336,16 +336,16 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.Windows.Forms.DrawItemEventArgs"/> instance containing the event data.</param>
         private void DrawBoxes(double fractionCompleted, QueuedSkill skill, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             g.DrawRectangle(Pens.Black,
                 new Rectangle(e.Bounds.Right - BoxWidth - PadRight, e.Bounds.Top + PadTop, BoxWidth,
                     BoxHeight));
 
             const int LevelBoxWidth = (BoxWidth - 4 - 3) / 5;
-            for (int level = 1; level <= 5; level++)
+            for (var level = 1; level <= 5; level++)
             {
-                Rectangle brect =
+                var brect =
                     new Rectangle(e.Bounds.Right - BoxWidth - PadRight + 2 + LevelBoxWidth * (level - 1) + (level - 1),
                         e.Bounds.Top + PadTop + 2, LevelBoxWidth, BoxHeight - 3);
 
@@ -355,7 +355,7 @@ namespace EVEMon.CharacterMonitoring
                 if (skill.Skill == null)
                     continue;
 
-                foreach (QueuedSkill qskill in Character.SkillQueue)
+                foreach (var qskill in Character.SkillQueue)
                 {
                     if ((!qskill.IsTraining && skill == qskill && level == qskill.Level)
                         || (skill == qskill && level <= qskill.Level && level > skill.Skill.Level
@@ -388,25 +388,25 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.Windows.Forms.DrawItemEventArgs"/> instance containing the event data.</param>
         private void DrawQueueColorBar(QueuedSkill skill, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // Draw the background
-            Rectangle qBarRect = new Rectangle(e.Bounds.Left, GetItemHeight - LowerBoxHeight, e.Bounds.Width, LowerBoxHeight);
+            var qBarRect = new Rectangle(e.Bounds.Left, GetItemHeight - LowerBoxHeight, e.Bounds.Width, LowerBoxHeight);
             g.FillRectangle(Brushes.DimGray, qBarRect);
 
-            double oneDaySkillQueueWidth = Character.SkillQueue.GetOneDaySkillQueueWidth(qBarRect.Width);
+            var oneDaySkillQueueWidth = Character.SkillQueue.GetOneDaySkillQueueWidth(qBarRect.Width);
             IList<RectangleF> skillRects = Character.SkillQueue.GetSkillRects(skill, qBarRect.Width, LowerBoxHeight - 1).ToList();
-            Brush lessThanDayBrush = Settings.UI.SafeForWork ? Brushes.LightGray : Brushes.Khaki;
-            Brush moreThanDayBrush = Settings.UI.SafeForWork ? Brushes.DarkGray : Brushes.CornflowerBlue;
-            RectangleF skillRectFirst = skillRects.First();
+            var lessThanDayBrush = Settings.UI.SafeForWork ? Brushes.LightGray : Brushes.Khaki;
+            var moreThanDayBrush = Settings.UI.SafeForWork ? Brushes.DarkGray : Brushes.CornflowerBlue;
+            var skillRectFirst = skillRects.First();
 
             // Skill starts before the 24h marker
             if (skillRectFirst.X < oneDaySkillQueueWidth)
             {
                 // Iterate only through rectangles with width
-                foreach (RectangleF skillRect in skillRects.Skip(1).Where(rect => rect.Width > 0))
+                foreach (var skillRect in skillRects.Skip(1).Where(rect => rect.Width > 0))
                 {
-                    Brush brush = oneDaySkillQueueWidth - skillRect.X <= 0 ? moreThanDayBrush : lessThanDayBrush;
+                    var brush = oneDaySkillQueueWidth - skillRect.X <= 0 ? moreThanDayBrush : lessThanDayBrush;
 
                     g.FillRectangle(brush,
                         new RectangleF(skillRect.X, GetItemHeight - LowerBoxHeight, skillRect.Width, skillRect.Height));
@@ -436,9 +436,9 @@ namespace EVEMon.CharacterMonitoring
                 return;
 
             // Update the drawing based upon the mouse wheel scrolling.
-            int numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines /
-                Math.Abs(e.Delta);
-            int lines = numberOfItemLinesToMove;
+            var numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines /
+                                          Math.Abs(e.Delta);
+            var lines = numberOfItemLinesToMove;
             if (lines == 0)
                 return;
 
@@ -447,9 +447,9 @@ namespace EVEMon.CharacterMonitoring
                 return;
 
             // Compute the number of lines to move
-            int direction = lines / Math.Abs(lines);
-            int[] numberOfPixelsToMove = new int[lines * direction];
-            for (int i = 1; i <= Math.Abs(lines); i++)
+            var direction = lines / Math.Abs(lines);
+            var numberOfPixelsToMove = new int[lines * direction];
+            for (var i = 1; i <= Math.Abs(lines); i++)
             {
                 object item = null;
                 var queue = lbSkillsQueue.Items;
@@ -465,8 +465,8 @@ namespace EVEMon.CharacterMonitoring
                 else
                 {
                     // Compute the height of the items from current the topindex (included)
-                    int height = 0;
-                    for (int j = lbSkillsQueue.TopIndex + i - 1; j < queue.Count; j++)
+                    var height = 0;
+                    for (var j = lbSkillsQueue.TopIndex + i - 1; j < queue.Count; j++)
                         height += GetItemHeight;
 
                     // Retrieve the next bottom item
@@ -494,17 +494,17 @@ namespace EVEMon.CharacterMonitoring
         private void lbSkillsQueue_MouseDown(object sender, MouseEventArgs e)
         {
             // Retrieve the item at the given point and quit if none
-            int index = lbSkillsQueue.IndexFromPoint(e.Location);
+            var index = lbSkillsQueue.IndexFromPoint(e.Location);
             if (index < 0 || index >= lbSkillsQueue.Items.Count)
                 return;
 
-            QueuedSkill item = lbSkillsQueue.Items[index] as QueuedSkill;
+            var item = lbSkillsQueue.Items[index] as QueuedSkill;
 
             // Beware, this last index may actually means a click in the whitespace at the bottom
             // Let's deal with this special case
             if (index == lbSkillsQueue.Items.Count - 1)
             {
-                Rectangle itemRect = lbSkillsQueue.GetItemRectangle(index);
+                var itemRect = lbSkillsQueue.GetItemRectangle(index);
                 if (!itemRect.Contains(e.Location))
                     item = null;
             }
@@ -531,14 +531,14 @@ namespace EVEMon.CharacterMonitoring
         {
             lbSkillsQueue.Cursor = CustomCursors.ContextMenu;
 
-            for (int i = 0; i < lbSkillsQueue.Items.Count; i++)
+            for (var i = 0; i < lbSkillsQueue.Items.Count; i++)
             {
                 // Skip until we found the mouse location
-                Rectangle rect = lbSkillsQueue.GetItemRectangle(i);
+                var rect = lbSkillsQueue.GetItemRectangle(i);
                 if (!rect.Contains(e.Location))
                     continue;
 
-                QueuedSkill item = lbSkillsQueue.Items[i] as QueuedSkill;
+                var item = lbSkillsQueue.Items[i] as QueuedSkill;
 
                 // Updates the tooltip
                 DisplayTooltip(item);
@@ -597,7 +597,7 @@ namespace EVEMon.CharacterMonitoring
                                 new SkillLevel(queuedSkill.Skill, level));
                         });
 
-                    ToolStripMenuItem menuLevel = tempMenuLevel;
+                    var menuLevel = tempMenuLevel;
                     tempMenuLevel = null;
 
                     tsmiAddSkill.DropDownItems.Add(menuLevel);
@@ -637,17 +637,17 @@ namespace EVEMon.CharacterMonitoring
             if (skill.Skill == null)
                 return string.Empty;
 
-            long sp = skill.Level > skill.Skill.Level + 1 ? skill.CurrentSP : skill.Skill.SkillPoints;
-            int nextLevel = Math.Min(5, skill.Level);
+            var sp = skill.Level > skill.Skill.Level + 1 ? skill.CurrentSP : skill.Skill.SkillPoints;
+            var nextLevel = Math.Min(5, skill.Level);
             double fractionCompleted = skill.FractionCompleted;
-            long nextLevelSP = skill.Skill == Skill.UnknownSkill
+            var nextLevelSP = skill.Skill == Skill.UnknownSkill
                 ? skill.EndSP
                 : skill.Skill.StaticData.GetPointsRequiredForLevel(nextLevel);
-            long pointsLeft = nextLevelSP - sp;
-            TimeSpan timeSpanFromPoints = skill.Skill == Skill.UnknownSkill
+            var pointsLeft = nextLevelSP - sp;
+            var timeSpanFromPoints = skill.Skill == Skill.UnknownSkill
                 ? skill.EndTime.Subtract(DateTime.UtcNow)
                 : skill.Skill.GetTimeSpanForPoints(pointsLeft);
-            string remainingTimeText = timeSpanFromPoints.ToDescriptiveText(
+            var remainingTimeText = timeSpanFromPoints.ToDescriptiveText(
                 DescriptiveTextOptions.IncludeCommas | DescriptiveTextOptions.UppercaseText);
 
             if (sp < skill.Skill.StaticData.GetPointsRequiredForLevel(1))
@@ -708,7 +708,7 @@ namespace EVEMon.CharacterMonitoring
             // Partially trained skill and not in training?
             if (skill.Skill.IsPartiallyTrained && !skill.IsTraining)
             {
-                StringBuilder partiallyTrainedToolTip = new StringBuilder();
+                var partiallyTrainedToolTip = new StringBuilder();
                 partiallyTrainedToolTip.Append("Partially Completed (");
                 partiallyTrainedToolTip.AppendFormat("{0:P0}", Math.Floor(fractionCompleted *
                     100.0) * 0.01).AppendLine(")");
@@ -784,13 +784,13 @@ namespace EVEMon.CharacterMonitoring
                 return;
 
             // Create new plan
-            Plan newPlan = PlanWindow.CreateNewPlan(Character, EveMonConstants.CurrentSkillQueueText);
+            var newPlan = PlanWindow.CreateNewPlan(Character, EveMonConstants.CurrentSkillQueueText);
 
             if (newPlan == null)
                 return;
 
             // Add skill queue to new plan and insert it on top of the plans
-            bool planCreated = PlanIOHelper.CreatePlanFromCharacterSkillQueue(newPlan, Character);
+            var planCreated = PlanIOHelper.CreatePlanFromCharacterSkillQueue(newPlan, Character);
 
             // Show the editor for this plan
             if (planCreated)
@@ -805,15 +805,15 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private static void menuPlanItem_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem planItem = (ToolStripMenuItem)sender;
-            KeyValuePair<Plan, SkillLevel> tag = (KeyValuePair<Plan, SkillLevel>)planItem.Tag;
+            var planItem = (ToolStripMenuItem)sender;
+            var tag = (KeyValuePair<Plan, SkillLevel>)planItem.Tag;
 
-            IPlanOperation operation = tag.Key.TryPlanTo(tag.Value.Skill, tag.Value.Level);
+            var operation = tag.Key.TryPlanTo(tag.Value.Skill, tag.Value.Level);
             // If this operation does not change the plan, do nothing
             if (operation == null || operation.Type == PlanOperations.None)
                 return;
 
-            PlanWindow planWindow = PlanWindow.ShowPlanWindow(plan: operation.Plan);
+            var planWindow = PlanWindow.ShowPlanWindow(plan: operation.Plan);
             if (planWindow == null)
                 return;
 

@@ -91,7 +91,7 @@ namespace EVEMon.Common.Controls
             if (!Visible)
                 return;
 
-            CCPCharacter ccpCharacter = e.Character as CCPCharacter;
+            var ccpCharacter = e.Character as CCPCharacter;
 
             // Current character isn't a CCP character, so can't have a Queue.
             if (ccpCharacter == null)
@@ -241,9 +241,9 @@ namespace EVEMon.Common.Controls
         {
             base.OnPaint(e);
 
-            Graphics g = e.Graphics;
-            int width = Width;
-            int height = Height;
+            var g = e.Graphics;
+            var width = Width;
+            var height = Height;
 
             // If we are in DesignMode we just paint a dummy queue
             if (DesignMode || this.IsDesignModeHosted())
@@ -342,25 +342,25 @@ namespace EVEMon.Common.Controls
                 if (m_skillQueue == null)
                     return;
 
-                int brushNumber = 0;
-                float lastX = 0f;
-                double oneDaySkillQueueWidth = m_skillQueue.GetOneDaySkillQueueWidth(width);
+                var brushNumber = 0;
+                var lastX = 0f;
+                var oneDaySkillQueueWidth = m_skillQueue.GetOneDaySkillQueueWidth(width);
 
-                foreach (QueuedSkill skill in m_skillQueue)
+                foreach (var skill in m_skillQueue)
                 {
                     IList<RectangleF> skillRects = m_skillQueue.GetSkillRects(skill, width, height).ToList();
-                    RectangleF skillRectFirst = skillRects.First();
+                    var skillRectFirst = skillRects.First();
 
                     // Skill starts before the 24h marker
                     if (skillRectFirst.X < oneDaySkillQueueWidth)
                     {
                         // Copy the brush for internal use
-                        int internalBrushNumber = brushNumber;
+                        var internalBrushNumber = brushNumber;
 
                         // Iterate only through rectangles with width as they tamper with the lastX value
-                        foreach (RectangleF skillRect in skillRects.Skip(1).Where(rect => rect.Width > 0))
+                        foreach (var skillRect in skillRects.Skip(1).Where(rect => rect.Width > 0))
                         {
-                            Brush[] brushes = lessThanDayBrushes;
+                            var brushes = lessThanDayBrushes;
                             if (oneDaySkillQueueWidth - skillRect.X <= 0)
                             {
                                 brushes = moreThanDayBrushes;
@@ -388,21 +388,21 @@ namespace EVEMon.Common.Controls
                     return;
 
                 // Empty region
-                RectangleF emptyRect = new RectangleF(lastX, 0, width - lastX, Height);
-                using (SolidBrush brush = new SolidBrush(GetEmptyColor()))
+                var emptyRect = new RectangleF(lastX, 0, width - lastX, Height);
+                using (var brush = new SolidBrush(GetEmptyColor()))
                 {
                     g.FillRectangle(brush, emptyRect);
                 }
 
                 // Then the border
-                using (Pen pen = new Pen(GetBorderColor(), 1.0f))
+                using (var pen = new Pen(GetBorderColor(), 1.0f))
                 {
                     g.DrawRectangle(pen, 0, 0, width - 1, height - 1);
                 }
             }
             finally
             {
-                foreach (Brush brush in lessThanDayBrushes.Concat(moreThanDayBrushes))
+                foreach (var brush in lessThanDayBrushes.Concat(moreThanDayBrushes))
                 {
                     brush.Dispose();
                 }
@@ -435,20 +435,20 @@ namespace EVEMon.Common.Controls
         private void DisplaySkillToolTip(RectangleF skillRect, QueuedSkill skill)
         {
             const string Format = "{0} {1}\n  Start{2}\t{3}\n  Ends\t{4}";
-            string skillName = skill.SkillName;
-            string skillLevel = Skill.GetRomanFromInt(skill.Level);
-            string skillStart = skill.Owner.IsTraining
+            var skillName = skill.SkillName;
+            var skillLevel = Skill.GetRomanFromInt(skill.Level);
+            var skillStart = skill.Owner.IsTraining
                 ? skill.StartTime.ToLocalTime().ToAbsoluteDateTimeDescription(DateTimeKind.Local)
                 : "Paused";
-            string skillEnd = skill.Owner.IsTraining
+            var skillEnd = skill.Owner.IsTraining
                 ? skill.EndTime.ToLocalTime().ToAbsoluteDateTimeDescription(DateTimeKind.Local)
                 : "Paused";
-            string startText = skill.StartTime < DateTime.UtcNow ? "ed" : "s";
-            string text = string.Format(CultureConstants.DefaultCulture, Format, skillName, skillLevel, startText, skillStart,
+            var startText = skill.StartTime < DateTime.UtcNow ? "ed" : "s";
+            var text = string.Format(CultureConstants.DefaultCulture, Format, skillName, skillLevel, startText, skillStart,
                 skillEnd);
-            Size textSize = TextRenderer.MeasureText(text, Font);
-            Size toolTipSize = new Size(textSize.Width + 13, textSize.Height + 11);
-            Point tipPoint = new Point((int)(Math.Min(skillRect.Right, Width) + skillRect.Left) / 2 - toolTipSize.Width / 2,
+            var textSize = TextRenderer.MeasureText(text, Font);
+            var toolTipSize = new Size(textSize.Width + 13, textSize.Height + 11);
+            var tipPoint = new Point((int)(Math.Min(skillRect.Right, Width) + skillRect.Left) / 2 - toolTipSize.Width / 2,
                 -toolTipSize.Height);
             tipPoint.Offset(0, -21);
             m_toolTip.Show(text, tipPoint);
@@ -460,11 +460,11 @@ namespace EVEMon.Common.Controls
         /// <param name="emptyRect">The empty rect.</param>
         private void DisplayFreeRoomToolTip(RectangleF emptyRect)
         {
-            int remaining = EveConstants.MaxSkillsInQueue - m_skillQueue.Count;
-            string text = $"Room for {remaining} more skill{(remaining == 1 ? string.Empty : "s")}";
-            Size textSize = TextRenderer.MeasureText(text, Font);
-            Size toolTipSize = new Size(textSize.Width + 13, textSize.Height + 11);
-            Point tipPoint = new Point((int)(emptyRect.Right + emptyRect.Left) / 2 - toolTipSize.Width / 2, -toolTipSize.Height);
+            var remaining = EveConstants.MaxSkillsInQueue - m_skillQueue.Count;
+            var text = $"Room for {remaining} more skill{(remaining == 1 ? string.Empty : "s")}";
+            var textSize = TextRenderer.MeasureText(text, Font);
+            var toolTipSize = new Size(textSize.Width + 13, textSize.Height + 11);
+            var tipPoint = new Point((int)(emptyRect.Right + emptyRect.Left) / 2 - toolTipSize.Width / 2, -toolTipSize.Height);
             tipPoint.Offset(0, -21);
             m_toolTip.Show(text, tipPoint);
         }
@@ -486,11 +486,11 @@ namespace EVEMon.Common.Controls
 
             m_lastLocation = e.Location;
 
-            float lastX = 0f;
-            foreach (QueuedSkill skill in m_skillQueue)
+            var lastX = 0f;
+            foreach (var skill in m_skillQueue)
             {
                 // Find the rectangle for the skill
-                RectangleF skillRect = m_skillQueue.GetSkillRects(skill, Width, Height).First();
+                var skillRect = m_skillQueue.GetSkillRects(skill, Width, Height).First();
                 lastX = skillRect.Right;
 
                 if (!skillRect.Contains(e.Location))
@@ -501,7 +501,7 @@ namespace EVEMon.Common.Controls
             }
 
             // Are we in the empty space ?
-            RectangleF emptyRect = new RectangleF(lastX, 0, Width - lastX, Height);
+            var emptyRect = new RectangleF(lastX, 0, Width - lastX, Height);
             if (emptyRect.Contains(e.Location))
             {
                 DisplayFreeRoomToolTip(emptyRect);

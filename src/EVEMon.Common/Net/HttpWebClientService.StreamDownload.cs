@@ -59,7 +59,7 @@ namespace EVEMon.Common.Net
         private static DownloadResult<T> GetResult<T>(Uri requestBaseUrl, Stream stream,
             ParseDataDelegate<T> parser, HttpResponseMessage response)
         {
-            T result = default(T);
+            var result = default(T);
             HttpWebClientServiceException error = null;
             var param = new ResponseParams(response);
             if (stream == null)

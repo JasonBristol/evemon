@@ -38,13 +38,13 @@ namespace EVEMon.Common.Net
         {
             get
             {
-                string token = Authentication;
+                var token = Authentication;
                 AuthenticationHeaderValue header = null;
                 if (token != null)
                 {
                     // If the token has a space, use that type of auth header
-                    string type = "Bearer";
-                    int index = token.IndexOf(' ');
+                    var type = "Bearer";
+                    var index = token.IndexOf(' ');
                     if (index > 0)
                     {
                         type = token.Substring(0, index);
@@ -153,7 +153,7 @@ namespace EVEMon.Common.Net
             if (Content != null)
             {
                 // Only if there is content to encode
-                byte[] encoded = Encoding.UTF8.GetBytes(Content);
+                var encoded = Encoding.UTF8.GetBytes(Content);
                 switch (Compression)
                 {
                 case DataCompression.Gzip:

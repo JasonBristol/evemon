@@ -134,13 +134,13 @@ namespace EVEMon.SkillPlanner
         /// <returns>Created path</returns>
         private GraphicsPath CreateBorderPath()
         {
-            using (GraphicsPath borderPath = new GraphicsPath())
+            using (var borderPath = new GraphicsPath())
             {
                 const int Radius = 3;
                 const int HorizontalPad = 1;
                 const int VerticalPad = 1;
-                int width = Width - VerticalPad * 2;
-                int height = Height - HorizontalPad * 2;
+                var width = Width - VerticalPad * 2;
+                var height = Height - HorizontalPad * 2;
                 borderPath.AddLine(HorizontalPad + Radius, VerticalPad, HorizontalPad + width - Radius * 2, VerticalPad);
                 borderPath.AddArc(HorizontalPad + width - Radius * 2, VerticalPad, Radius * 2, Radius * 2, 270, 90);
                 borderPath.AddLine(HorizontalPad + width, VerticalPad + Radius, HorizontalPad + width,
@@ -167,11 +167,11 @@ namespace EVEMon.SkillPlanner
         {
             base.OnPaint(e);
 
-            using (Graphics g = e.Graphics)
+            using (var g = e.Graphics)
             {
                 g.SmoothingMode = SmoothingMode.HighQuality;
 
-                Pen pen = Enabled ? m_borderPen : m_borderPenInactive;
+                var pen = Enabled ? m_borderPen : m_borderPenInactive;
                 Brush brush;
                 if (m_pressed)
                     brush = m_backgroundBrushPressed;

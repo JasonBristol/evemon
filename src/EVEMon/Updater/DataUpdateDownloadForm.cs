@@ -64,9 +64,9 @@ namespace EVEMon.Updater
 
             m_tableLayoutPanel.ColumnStyles.Add(new ColumnStyle());
 
-            foreach (SerializableDatafile datafile in m_datafiles)
+            foreach (var datafile in m_datafiles)
             {
-                DataUpdateDownloadControl control = new DataUpdateDownloadControl(datafile)
+                var control = new DataUpdateDownloadControl(datafile)
                 {
                     Dock = DockStyle.Fill,
                     Margin = new Padding(10)
@@ -77,7 +77,7 @@ namespace EVEMon.Updater
                 m_tableLayoutPanel.Controls.Add(control, 0, m_datafiles.IndexOf(datafile));
             }
 
-            int height = m_tableLayoutPanel.PreferredSize.Height + ClientSize.Height;
+            var height = m_tableLayoutPanel.PreferredSize.Height + ClientSize.Height;
 
             btCancel.Location = new Point(325, height - btCancel.Height - 14);
             Controls.Add(m_tableLayoutPanel);
@@ -229,7 +229,7 @@ namespace EVEMon.Updater
             /// </summary>
             private void BeginDownload()
             {
-                Uri url = new Uri($"{m_datafile.Address}/{m_datafile.Name}");
+                var url = new Uri($"{m_datafile.Address}/{m_datafile.Name}");
                 string urlValidationError;
                 if (!HttpWebClientService.IsValidURL(url, out urlValidationError))
                     return;

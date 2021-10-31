@@ -16,7 +16,7 @@ namespace EVEMon.Common.Data
             if (controlTowerFuelInfo == null)
                 return;
 
-            foreach (SerializableControlTowerFuel reaction in controlTowerFuelInfo)
+            foreach (var reaction in controlTowerFuelInfo)
             {
                 Items.Add(reaction);
             }

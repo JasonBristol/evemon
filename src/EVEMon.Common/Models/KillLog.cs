@@ -160,8 +160,8 @@ namespace EVEMon.Common.Models
         /// </summary>
         private async Task GetVictimShipImageAsync()
         {
-            Uri uri = ImageHelper.GetTypeImageURL(Victim.ShipTypeID);
-            Image img = await ImageService.GetImageAsync(uri).ConfigureAwait(false);
+            var uri = ImageHelper.GetTypeImageURL(Victim.ShipTypeID);
+            var img = await ImageService.GetImageAsync(uri).ConfigureAwait(false);
             if (img != null) {
                 m_image = img;
                 // Notify the subscriber that we got the image

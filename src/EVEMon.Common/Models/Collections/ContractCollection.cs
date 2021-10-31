@@ -31,7 +31,7 @@ namespace EVEMon.Common.Models.Collections
         internal void Import(IEnumerable<SerializableContract> src)
         {
             Items.Clear();
-            foreach (SerializableContract srcContract in src)
+            foreach (var srcContract in src)
             {
                 Items.Add(new Contract(m_character, srcContract));
             }
@@ -48,11 +48,11 @@ namespace EVEMon.Common.Models.Collections
             // Mark all contracts for deletion
             // If they are found again on the API feed, they won't be deleted
             // and those set as ignored will be left as ignored
-            foreach (Contract contract in Items)
+            foreach (var contract in Items)
                 contract.MarkedForDeletion = true;
             // Import the contracts from the API, excluding the expired assigned ones
             var newContracts = new LinkedList<Contract>();
-            DateTime now = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
             foreach (var contract in src)
             {
                 var status = contract.Status;

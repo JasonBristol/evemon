@@ -69,7 +69,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         private string ToShortString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.Append("i").Append(m_attributes[(int)EveAttribute.Intelligence].ToString(CultureConstants.DefaultCulture)).
                 Append(" p").Append(m_attributes[(int)EveAttribute.Perception].ToString(CultureConstants.DefaultCulture)).
                 Append(" c").Append(m_attributes[(int)EveAttribute.Charisma].ToString(CultureConstants.DefaultCulture)).
@@ -132,13 +132,13 @@ namespace EVEMon.Common.Models
             Status = RemappingPointStatus.UpToDate;
 
             // Initialize the string
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
 
             // Scroll through attributes
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
                 // Compute the new base attribute
-                EveAttribute attrib = (EveAttribute)i;
+                var attrib = (EveAttribute)i;
                 m_attributes[i] = newScratchpad[attrib].Base;
 
                 // Update description
@@ -168,7 +168,7 @@ namespace EVEMon.Common.Models
 
             newScratchpad.ThrowIfNull(nameof(newScratchpad));
 
-            long bonusDifference = newScratchpad[attrib].Base - oldScratchpad[attrib].Base;
+            var bonusDifference = newScratchpad[attrib].Base - oldScratchpad[attrib].Base;
 
             if (bonusDifference == 0)
                 return newScratchpad[attrib].ToString("%N (0) = %e = (%B + %r + %i)");
@@ -190,7 +190,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         public RemappingPoint Clone()
         {
-            RemappingPoint clone = new RemappingPoint();
+            var clone = new RemappingPoint();
             Array.Copy(m_attributes, clone.m_attributes, 5);
             clone.Status = Status;
             clone.Guid = Guid;

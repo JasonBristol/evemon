@@ -60,7 +60,7 @@ namespace EVEMon.Common.Factories
                 try
                 {
                     // Does it already exist ?
-                    foreach (TForm existingUniqueWindow in s_uniqueWindows.OfType<TForm>()
+                    foreach (var existingUniqueWindow in s_uniqueWindows.OfType<TForm>()
                         .Where(existingUniqueWindow => existingUniqueWindow != null && !existingUniqueWindow.IsDisposed))
                     {
                         // Bring to front or show
@@ -81,7 +81,7 @@ namespace EVEMon.Common.Factories
                 }
 
                 // Create the window and subscribe to its closing for cleanup
-                TForm uniqueWindow = creation.Invoke();
+                var uniqueWindow = creation.Invoke();
                 uniqueWindow.Disposed += (sender, args) =>
                 {
                     lock (s_syncLock)
@@ -113,7 +113,7 @@ namespace EVEMon.Common.Factories
         {
             lock (s_syncLock)
             {
-                TForm taggedWindow = GetByTag<TForm, TTag1>(oldTag);
+                var taggedWindow = GetByTag<TForm, TTag1>(oldTag);
                 taggedWindow.Tag = newTag;
             }
         }
@@ -201,7 +201,7 @@ namespace EVEMon.Common.Factories
             lock (s_syncLock)
             {
                 // Does it already exist ?
-                foreach (TForm existingWindow in s_taggedWindows.OfType<TForm>()
+                foreach (var existingWindow in s_taggedWindows.OfType<TForm>()
                     .Where(existingWindow => existingWindow.Tag == otag && !existingWindow.IsDisposed))
                 {
                     try
@@ -230,10 +230,10 @@ namespace EVEMon.Common.Factories
 
                 // Combine the tag parameter with the rest
                 // Always put the tag parameter first
-                object[] parameters = new[] { tag }.Concat(pars).ToArray();
+                var parameters = new[] { tag }.Concat(pars).ToArray();
 
                 // Create the window and attach the tag
-                TForm window = creation.Invoke(parameters);
+                var window = creation.Invoke(parameters);
                 window.Tag = otag;
 
                 // Store it and subscribe to closing for clean up
@@ -266,7 +266,7 @@ namespace EVEMon.Common.Factories
         {
             // Search for a public instance constructor with the specified arguments
             // If no constructor found, use the default constructor
-            ConstructorInfo ctor = typeof(TForm).GetConstructor(args.Select(arg => arg.GetType()).ToArray());
+            var ctor = typeof(TForm).GetConstructor(args.Select(arg => arg.GetType()).ToArray());
             return (TForm)ctor?.Invoke(args) ?? Activator.CreateInstance<TForm>();
         }
 
@@ -289,9 +289,9 @@ namespace EVEMon.Common.Factories
                 while (true)
                 {
                     // Search all the disposed windows or windows with the same tag
-                    bool isDisposed = false;
+                    var isDisposed = false;
                     TForm formToRemove = null;
-                    foreach (TForm existingWindow in s_taggedWindows
+                    foreach (var existingWindow in s_taggedWindows
                         .Where(taggedWindow => taggedWindow == form).Cast<TForm>())
                     {
                         try
@@ -333,7 +333,7 @@ namespace EVEMon.Common.Factories
             where TForm : Form
             where TTag : class
         {
-            TForm window = GetByTag<TForm, TTag>(tag);
+            var window = GetByTag<TForm, TTag>(tag);
 
             if (window != null)
                 CloseByTag(window, tag);
@@ -346,8 +346,8 @@ namespace EVEMon.Common.Factories
         {
             lock (s_syncLock)
             {
-                List<Form> formsToClose = s_taggedWindows.ToList();
-                foreach (Form existingWindow in formsToClose.Where(form => !form.IsDisposed))
+                var formsToClose = s_taggedWindows.ToList();
+                foreach (var existingWindow in formsToClose.Where(form => !form.IsDisposed))
                 {
                     existingWindow.Close();
                 }

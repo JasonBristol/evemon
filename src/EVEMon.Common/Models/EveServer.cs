@@ -77,8 +77,8 @@ namespace EVEMon.Common.Models
         /// <param name="result"></param>
         private void OnServerStatusMonitorUpdated(EsiResult<EsiAPIServerStatus> result)
         {
-            ServerStatus lastStatus = m_status;
-            DateTime? serverTime = result.CurrentTime;
+            var lastStatus = m_status;
+            var serverTime = result.CurrentTime;
             // Update the server date and time (in case of ESI server failure, use local UTC
             // time)
             m_serverDateTime = (serverTime != null && serverTime != DateTime.MinValue) ?

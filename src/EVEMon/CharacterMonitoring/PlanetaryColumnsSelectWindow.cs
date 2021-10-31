@@ -40,7 +40,7 @@ namespace EVEMon.CharacterMonitoring
         {
             get
             {
-                PlanetarySettings settings = new PlanetarySettings();
+                var settings = new PlanetarySettings();
                 return settings.DefaultColumns;
             }
         }

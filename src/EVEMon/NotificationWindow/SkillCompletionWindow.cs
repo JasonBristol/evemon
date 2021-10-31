@@ -29,13 +29,13 @@ namespace EVEMon.NotificationWindow
             set
             {
                 m_notification = value;
-                StringBuilder text = new StringBuilder();
-                foreach (QueuedSkill skill in m_notification.Skills)
+                var text = new StringBuilder();
+                foreach (var skill in m_notification.Skills)
                 {
                     text.AppendLine(skill.ToString());
                 }
 
-                Size textSize = TextRenderer.MeasureText(text.ToString(), Font);
+                var textSize = TextRenderer.MeasureText(text.ToString(), Font);
                 MinimumSize = new Size(280, textSize.Height + 30);
 
                 detailsTextBox.Text = text.ToString();

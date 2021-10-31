@@ -61,7 +61,7 @@ namespace EVEMon.Common.Threading
         /// <param name="action">The action to execute.</param>
         public static void Schedule(TimeSpan time, Action action)
         {
-            DispatcherTimer timer = new DispatcherTimer { Interval = time };
+            var timer = new DispatcherTimer { Interval = time };
             timer.Tick += (sender, args) =>
             {
                 timer.Stop();

@@ -55,7 +55,7 @@ namespace EVEMon.Common.Controls
 
         public override Size GetPreferredSize(Size proposedSize)
         {
-            Size preferredSize = base.GetPreferredSize(proposedSize);
+            var preferredSize = base.GetPreferredSize(proposedSize);
             if (m_showSplit && !string.IsNullOrEmpty(Text) &&
                 TextRenderer.MeasureText(Text, Font).Width + PushButtonWidth > preferredSize.Width)
                 return preferredSize + new Size(PushButtonWidth + s_borderSize * 2, 0);
@@ -175,13 +175,13 @@ namespace EVEMon.Common.Controls
             if (!m_showSplit)
                 return;
 
-            Graphics g = e.Graphics;
-            Rectangle bounds = ClientRectangle;
+            var g = e.Graphics;
+            var bounds = ClientRectangle;
 
             // draw the button background as according to the current state.
             if (State != PushButtonState.Pressed && IsDefault && !Application.RenderWithVisualStyles)
             {
-                Rectangle backgroundBounds = bounds;
+                var backgroundBounds = bounds;
                 backgroundBounds.Inflate(-1, -1);
                 ButtonRenderer.DrawButton(g, backgroundBounds, State);
 
@@ -195,15 +195,15 @@ namespace EVEMon.Common.Controls
             // calculate the current dropdown rectangle.
             m_dropDownRectangle = new Rectangle(bounds.Right - PushButtonWidth - 1, s_borderSize, PushButtonWidth,
                                                 bounds.Height - s_borderSize * 2);
-            int internalBorder = s_borderSize;
-            Rectangle focusRect =
+            var internalBorder = s_borderSize;
+            var focusRect =
                 new Rectangle(internalBorder,
                               internalBorder,
                               bounds.Width - m_dropDownRectangle.Width - internalBorder,
                               bounds.Height - internalBorder * 2);
 
-            bool drawSplitLine = State == PushButtonState.Hot || State == PushButtonState.Pressed ||
-                                 !Application.RenderWithVisualStyles;
+            var drawSplitLine = State == PushButtonState.Hot || State == PushButtonState.Pressed ||
+                                !Application.RenderWithVisualStyles;
 
             if (RightToLeft == RightToLeft.Yes)
             {
@@ -234,7 +234,7 @@ namespace EVEMon.Common.Controls
             PaintArrow(g, m_dropDownRectangle);
 
             // Figure out how to draw the text
-            TextFormatFlags formatFlags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+            var formatFlags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
 
             // If we dont' use mnemonic, set formatFlag to NoPrefix as this will show ampersand.
             if (!UseMnemonic)
@@ -253,12 +253,12 @@ namespace EVEMon.Common.Controls
 
         private static void PaintArrow(Graphics g, Rectangle dropDownRect)
         {
-            Point middle = new Point(Convert.ToInt32(dropDownRect.Left + dropDownRect.Width / 2),
+            var middle = new Point(Convert.ToInt32(dropDownRect.Left + dropDownRect.Width / 2),
                                      Convert.ToInt32(dropDownRect.Top + dropDownRect.Height / 2));
 
             //if the width is odd - favor pushing it over one pixel right.
             middle.X += dropDownRect.Width % 2;
-            Point[] arrow = new[]
+            var arrow = new[]
                                 {
                                     new Point(middle.X - 2, middle.Y - 1), new Point(middle.X + 3, middle.Y - 1),
                                     new Point(middle.X, middle.Y + 2)
@@ -289,7 +289,7 @@ namespace EVEMon.Common.Controls
 
         private void ContextMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
         {
-            ContextMenuStrip cms = sender as ContextMenuStrip;
+            var cms = sender as ContextMenuStrip;
             if (cms != null)
                 cms.Closing -= ContextMenuStrip_Closing;
 

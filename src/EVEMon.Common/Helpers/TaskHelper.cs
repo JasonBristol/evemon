@@ -91,7 +91,7 @@ namespace EVEMon.Common.Helpers
                     return Task.Factory.FromAsync(function.BeginInvoke,
                         asyncResult =>
                         {
-                            TResult tResult = function.EndInvoke(asyncResult);
+                            var tResult = function.EndInvoke(asyncResult);
                             tcs.TrySetResult(tResult);
                             return tResult;
                         }, null);

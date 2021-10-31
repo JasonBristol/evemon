@@ -23,11 +23,11 @@ namespace EVEMon.Common.Extensions
                 return;
 
             // Get each subscriber in turn
-            foreach (EventHandler handler in eventHandler.GetInvocationList().Cast<EventHandler>())
+            foreach (var handler in eventHandler.GetInvocationList().Cast<EventHandler>())
             {
                 // Get the object containing the subscribing method
                 // If the target doesn't implement ISyncronizeInvoke, this will be null
-                ISynchronizeInvoke sync = handler.Target as ISynchronizeInvoke;
+                var sync = handler.Target as ISynchronizeInvoke;
 
                 // Check if our target requires an Invoke
                 if (sync != null && sync.InvokeRequired)
@@ -35,7 +35,7 @@ namespace EVEMon.Common.Extensions
                     // Yes it does, so invoke the handler using the target's BeginInvoke method, but wait for it to finish
                     // This is preferable to using Invoke so that if an exception is thrown its presented
                     // in the context of the handler, not the current thread
-                    IAsyncResult result = sync.BeginInvoke(handler, new[] { sender, e });
+                    var result = sync.BeginInvoke(handler, new[] { sender, e });
                     sync.EndInvoke(result);
                     continue;
                 }
@@ -63,11 +63,11 @@ namespace EVEMon.Common.Extensions
                 return;
 
             // Get each subscriber in turn
-            foreach (EventHandler<T> handler in eventHandler.GetInvocationList().Cast<EventHandler<T>>())
+            foreach (var handler in eventHandler.GetInvocationList().Cast<EventHandler<T>>())
             {
                 // Get the object containing the subscribing method
                 // If the target doesn't implement ISyncronizeInvoke, this will be null
-                ISynchronizeInvoke sync = handler.Target as ISynchronizeInvoke;
+                var sync = handler.Target as ISynchronizeInvoke;
 
                 // Check if our target requires an Invoke
                 if (sync != null && sync.InvokeRequired)
@@ -75,7 +75,7 @@ namespace EVEMon.Common.Extensions
                     // Yes it does, so invoke the handler using the target's BeginInvoke method, but wait for it to finish
                     // This is preferable to using Invoke so that if an exception is thrown its presented
                     // in the context of the handler, not the current thread
-                    IAsyncResult result = sync.BeginInvoke(handler, new[] { sender, e });
+                    var result = sync.BeginInvoke(handler, new[] { sender, e });
                     sync.EndInvoke(result);
                     continue;
                 }

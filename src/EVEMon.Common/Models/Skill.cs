@@ -131,7 +131,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         internal SerializableCharacterSkill Export()
         {
-            SerializableCharacterSkill dest = new SerializableCharacterSkill
+            var dest = new SerializableCharacterSkill
             {
                 ID = StaticData.ID,
                 Name = StaticData.Name,
@@ -168,7 +168,7 @@ namespace EVEMon.Common.Models
         {
             get
             {
-                CCPCharacter ccpCharacter = Character as CCPCharacter;
+                var ccpCharacter = Character as CCPCharacter;
                 return (ccpCharacter != null) && ccpCharacter.Assets.Any(asset => asset.Item != null && asset.Item.ID == ID);
             }
         }
@@ -256,7 +256,7 @@ namespace EVEMon.Common.Models
             get
             {
                 m_skillLevel = LastConfirmedLvl;
-                long skillPointsToNextLevel = StaticData.GetPointsRequiredForLevel(Math.Min(LastConfirmedLvl + 1, 5));
+                var skillPointsToNextLevel = StaticData.GetPointsRequiredForLevel(Math.Min(LastConfirmedLvl + 1, 5));
 
                 while (skillPointsToNextLevel > 0 && m_currentSkillPoints >= skillPointsToNextLevel && m_skillLevel < 5)
                 {
@@ -320,13 +320,13 @@ namespace EVEMon.Common.Models
         {
             get
             {
-                CCPCharacter ccpCharacter = Character as CCPCharacter;
+                var ccpCharacter = Character as CCPCharacter;
 
                 // Current character isn't a CCP character, so can't have a Queue.
                 if (ccpCharacter == null)
                     return false;
 
-                SkillQueue skillQueue = ccpCharacter.SkillQueue;
+                var skillQueue = ccpCharacter.SkillQueue;
                 return skillQueue.Where(x => x.Skill != null).Any(skill => StaticData.ID == skill.Skill.ID);
             }
         }
@@ -338,7 +338,7 @@ namespace EVEMon.Common.Models
         {
             get
             {
-                CCPCharacter ccpCharacter = Character as CCPCharacter;
+                var ccpCharacter = Character as CCPCharacter;
                 return ccpCharacter != null && ccpCharacter.IsTraining && ccpCharacter.CurrentlyTrainingSkill != null &&
                        ccpCharacter.CurrentlyTrainingSkill.Skill == this;
             }
@@ -355,7 +355,7 @@ namespace EVEMon.Common.Models
                 if (!IsTraining)
                     return m_currentSkillPoints;
 
-                CCPCharacter ccpCharacter = Character as CCPCharacter;
+                var ccpCharacter = Character as CCPCharacter;
                 return ccpCharacter?.CurrentlyTrainingSkill.CurrentSP ?? m_currentSkillPoints;
             }
             internal set { m_currentSkillPoints = value; }
@@ -373,13 +373,13 @@ namespace EVEMon.Common.Models
                     return 1.0f;
 
                 // Not partially trained ? Then it's 1.0
-                long levelSp = StaticData.GetPointsRequiredForLevel(m_level);
+                var levelSp = StaticData.GetPointsRequiredForLevel(m_level);
                 if (SkillPoints <= levelSp)
                     return 0.0f;
 
                 // Partially trained, let's compute the difference with the previous level
                 float nextLevelSp = StaticData.GetPointsRequiredForLevel(m_level + 1);
-                float fraction = (SkillPoints - levelSp) / (nextLevelSp - levelSp);
+                var fraction = (SkillPoints - levelSp) / (nextLevelSp - levelSp);
 
                 return fraction <= 1 ? fraction : fraction % 1;
             }
@@ -507,7 +507,7 @@ namespace EVEMon.Common.Models
         /// <returns>The required nr. of points.</returns>
         public long GetLeftPointsRequiredToLevel(long level)
         {
-            long result = StaticData.GetPointsRequiredForLevel(level) - SkillPoints;
+            var result = StaticData.GetPointsRequiredForLevel(level) - SkillPoints;
 
             return result < 0 ? 0 : result;
         }
@@ -523,8 +523,8 @@ namespace EVEMon.Common.Models
             if (level == 0)
                 return 0;
 
-            long startSP = Math.Max(SkillPoints, StaticData.GetPointsRequiredForLevel(level - 1));
-            long result = StaticData.GetPointsRequiredForLevel(level) - startSP;
+            var startSP = Math.Max(SkillPoints, StaticData.GetPointsRequiredForLevel(level - 1));
+            var result = StaticData.GetPointsRequiredForLevel(level) - startSP;
 
             return result < 0 ? 0 : result;
         }

@@ -96,7 +96,7 @@ namespace EVEMon.Common.ExternalCalendar
         /// <param name="lastSkillInQueue">if set to <c>true</c> skill is the last in queue.</param>
         internal override async Task AddOrUpdateEventAsync(bool eventExists, int queuePosition, bool lastSkillInQueue)
         {
-            Event eventItem = eventExists
+            var eventItem = eventExists
                 ? (Event)Events[0]
                 : new Event();
 
@@ -123,8 +123,8 @@ namespace EVEMon.Common.ExternalCalendar
                     LateReminder.Second);
 
                 // Subtract the reminder time from the event time
-                DateTime dateTimeAlternateReminder = WorkOutAlternateReminders();
-                TimeSpan timeSpan = eventItem.Start.DateTime.GetValueOrDefault().Subtract(dateTimeAlternateReminder);
+                var dateTimeAlternateReminder = WorkOutAlternateReminders();
+                var timeSpan = eventItem.Start.DateTime.GetValueOrDefault().Subtract(dateTimeAlternateReminder);
                 Minutes = Math.Abs(timeSpan.Hours * 60 + timeSpan.Minutes);
 
                 SetGoogleReminder(eventItem);
@@ -134,7 +134,7 @@ namespace EVEMon.Common.ExternalCalendar
             else
                 eventItem.Reminders.UseDefault = false;
 
-            using (CalendarService client = await GetClient())
+            using (var client = await GetClient())
             {
                 if (eventExists)
                 {
@@ -160,7 +160,7 @@ namespace EVEMon.Common.ExternalCalendar
             if (Events.Count < 1)
                 return false;
 
-            Event eventItem = (Event)Events[0];
+            var eventItem = (Event)Events[0];
             if (!eventItem.Start.DateTime.HasValue || !eventItem.End.DateTime.HasValue)
                 return false;
 
@@ -198,9 +198,9 @@ namespace EVEMon.Common.ExternalCalendar
         {
             Events.Clear();
 
-            using (CalendarService client = await GetClient())
+            using (var client = await GetClient())
             {
-                EventsResource.ListRequest request = client.Events.List(await GetCalendarId());
+                var request = client.Events.List(await GetCalendarId());
                 request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
                 request.SingleEvents = true;
                 request.ShowDeleted = false;
@@ -208,9 +208,9 @@ namespace EVEMon.Common.ExternalCalendar
                 request.TimeMax = EndDate;
                 request.Q = Subject;
 
-                Events events = await request.ExecuteAsync();
+                var events = await request.ExecuteAsync();
 
-                foreach (Event @event in events.Items
+                foreach (var @event in events.Items
                     .Where(entry => entry.Summary == Subject))
                 {
                     Events.Add(@event);
@@ -224,9 +224,9 @@ namespace EVEMon.Common.ExternalCalendar
         /// <param name="eventIndex">The event index.</param>
         internal override async Task DeleteEventAsync(int eventIndex)
         {
-            Event eventItem = (Event)Events[eventIndex];
+            var eventItem = (Event)Events[eventIndex];
 
-            using (CalendarService client = await GetClient())
+            using (var client = await GetClient())
             {
                 await client.Events.Delete(await GetCalendarId(), eventItem.Id).ExecuteAsync();
             }
@@ -265,23 +265,23 @@ namespace EVEMon.Common.ExternalCalendar
         /// <exception cref="EVEMon.Common.Exceptions.APIException"></exception>
         private static string GetCredentialsPath(bool checkAuth = false)
         {
-            Configuration configuration =
+            var configuration =
                 ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
 
-            string certPath = Directory.GetParent(configuration.FilePath).Parent?.Parent?.FullName;
+            var certPath = Directory.GetParent(configuration.FilePath).Parent?.Parent?.FullName;
 
-            bool fileExists = false;
+            var fileExists = false;
             if (!string.IsNullOrWhiteSpace(certPath))
             {
                 certPath = Path.Combine(certPath, CredentialsDirectory);
-                string filePath = Path.Combine(certPath, $"{typeof(TokenResponse).FullName}-{UserId}");
+                var filePath = Path.Combine(certPath, $"{typeof(TokenResponse).FullName}-{UserId}");
                 fileExists = File.Exists(filePath);
             }
 
             if (!checkAuth || fileExists)
                 return certPath;
 
-            SerializableAPIError error = new SerializableAPIError
+            var error = new SerializableAPIError
             {
                 ErrorCode = @"Authentication required",
                 ErrorMessage = "Authentication required.\n\n" +
@@ -312,9 +312,9 @@ namespace EVEMon.Common.ExternalCalendar
                                ? "primary"
                                : Settings.Calendar.GoogleCalendarName;
 
-            using (CalendarService client = await GetClient())
+            using (var client = await GetClient())
             {
-                Calendar response = await client.Calendars.Get(s_calendarId).ExecuteAsync();
+                var response = await client.Calendars.Get(s_calendarId).ExecuteAsync();
                 s_calendarId = response.Id;
             }
 
@@ -346,7 +346,7 @@ namespace EVEMon.Common.ExternalCalendar
         /// <returns></returns>
         private static async Task<SerializableAPIResult<SerializableAPICredentials>> LogOn(bool checkAuth = false)
         {
-            SerializableAPIResult<SerializableAPICredentials> result =
+            var result =
                 new SerializableAPIResult<SerializableAPICredentials>();
 
             if (checkAuth && !HasCredentialsStored())
@@ -368,7 +368,7 @@ namespace EVEMon.Common.ExternalCalendar
 
                 if (checkAuth)
                 {
-                    using (CalendarService client = await GetClient())
+                    using (var client = await GetClient())
                         await client.Settings.List().ExecuteAsync();
                 }
             }
@@ -397,13 +397,13 @@ namespace EVEMon.Common.ExternalCalendar
         /// </summary>
         private static async Task<SerializableAPIResult<SerializableAPICredentials>> LogOut()
         {
-            SerializableAPIResult<SerializableAPICredentials> result =
+            var result =
                 new SerializableAPIResult<SerializableAPICredentials>();
 
             try
             {
-                Task<bool> revokeTokenAsync = s_credential?.RevokeTokenAsync(CancellationToken.None);
-                bool success = revokeTokenAsync != null && await revokeTokenAsync;
+                var revokeTokenAsync = s_credential?.RevokeTokenAsync(CancellationToken.None);
+                var success = revokeTokenAsync != null && await revokeTokenAsync;
 
                 if (!success)
                 {
@@ -456,7 +456,7 @@ namespace EVEMon.Common.ExternalCalendar
             eventItem.Reminders.UseDefault = false;
             eventItem.Reminders.Overrides = eventItem.Reminders.Overrides ?? new List<EventReminder>();
 
-            EventReminder reminder = eventItem.Reminders.Overrides.FirstOrDefault() ?? new EventReminder();
+            var reminder = eventItem.Reminders.Overrides.FirstOrDefault() ?? new EventReminder();
             reminder.Minutes = Math.Min(Minutes, MaxGoogleMinutes);
             reminder.Method = ReminderMethod.ToString().ToLowerInvariant();
 

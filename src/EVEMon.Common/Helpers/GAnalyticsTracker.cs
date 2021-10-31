@@ -23,8 +23,8 @@ namespace EVEMon.Common.Helpers
         /// </summary>
         static GAnalyticsTracker()
         {
-            string userAgentId = Util.Decrypt("+PzrIVxVhL3PBJcRYN2tXg==", CultureConstants.InvariantCulture.NativeName);
-            string clientId = EveMonClient.IsDebugBuild ? "2" : "1";
+            var userAgentId = Util.Decrypt("+PzrIVxVhL3PBJcRYN2tXg==", CultureConstants.InvariantCulture.NativeName);
+            var clientId = EveMonClient.IsDebugBuild ? "2" : "1";
 
             s_parameters = new GampParameters
             {
@@ -164,10 +164,10 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         private static string BuildQueryString()
         {
-            StringBuilder sb = new StringBuilder();
-            IDictionary<string, string> parameters = GetParametersAsDict();
+            var sb = new StringBuilder();
+            var parameters = GetParametersAsDict();
 
-            foreach (KeyValuePair<string, string> parameter in parameters)
+            foreach (var parameter in parameters)
             {
                 sb.Append($"{parameter.Key}={Uri.EscapeDataString(parameter.Value)}");
 
@@ -187,16 +187,16 @@ namespace EVEMon.Common.Helpers
         {
             IDictionary<string, string> parametersDict = new Dictionary<string, string>();
 
-            foreach (PropertyInfo prop in s_parameters
+            foreach (var prop in s_parameters
                 .GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
-                GampParameterAttribute attribute =
+                var attribute =
                     Attribute.GetCustomAttribute(prop, typeof(GampParameterAttribute), true) as GampParameterAttribute;
 
                 if (attribute == null)
                     continue;
 
-                object value = prop.GetValue(s_parameters, null);
+                var value = prop.GetValue(s_parameters, null);
 
                 if (value == null)
                 {

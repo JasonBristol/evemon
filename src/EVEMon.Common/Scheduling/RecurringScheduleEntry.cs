@@ -85,7 +85,7 @@ namespace EVEMon.Common.Scheduling
         /// <returns></returns>
         public override bool Contains(DateTime checkDateTime)
         {
-            IEnumerable<ScheduleDateTimeRange> ranges = GetRangesInPeriod(checkDateTime, checkDateTime);
+            var ranges = GetRangesInPeriod(checkDateTime, checkDateTime);
             return ranges.Any(sdtr => checkDateTime >= sdtr.From && checkDateTime < sdtr.To);
         }
 
@@ -97,16 +97,16 @@ namespace EVEMon.Common.Scheduling
         /// <returns></returns>
         public override IEnumerable<ScheduleDateTimeRange> GetRangesInPeriod(DateTime fromDt, DateTime toDt)
         {
-            DateTime startDt = fromDt.Date;
-            DateTime endDt = toDt.Date + TimeSpan.FromDays(1);
+            var startDt = fromDt.Date;
+            var endDt = toDt.Date + TimeSpan.FromDays(1);
 
             if (EndTimeInSeconds > SecondsPerDay)
                 startDt -= TimeSpan.FromDays(1);
 
-            DateTime wrkDt = startDt;
+            var wrkDt = startDt;
             for (; wrkDt < endDt; wrkDt += TimeSpan.FromDays(1))
             {
-                ScheduleDateTimeRange range = GetRangeForDay(wrkDt);
+                var range = GetRangeForDay(wrkDt);
                 if (range != null)
                     yield return range;
             }
@@ -138,7 +138,7 @@ namespace EVEMon.Common.Scheduling
                     break;
 
                 case RecurringFrequency.Weekly:
-                    DateTime firstInstance = StartDate.AddDays((DayOfWeek - StartDate.DayOfWeek + 7) % 7);
+                    var firstInstance = StartDate.AddDays((DayOfWeek - StartDate.DayOfWeek + 7) % 7);
                     if (day.DayOfWeek != DayOfWeek || day.Subtract(firstInstance).Days % (7 * WeeksPeriod) != 0)
                         return null;
                     break;
@@ -182,13 +182,13 @@ namespace EVEMon.Common.Scheduling
                     return false;
 
                 case MonthlyOverflowResolution.OverlapForward:
-                    DateTime lastDayOfPreviousMonthDt = day - TimeSpan.FromDays(day.Day);
-                    int lastDayOfPreviousMonth = lastDayOfPreviousMonthDt.Day;
-                    int dayOfThisMonth = day.Day;
+                    var lastDayOfPreviousMonthDt = day - TimeSpan.FromDays(day.Day);
+                    var lastDayOfPreviousMonth = lastDayOfPreviousMonthDt.Day;
+                    var dayOfThisMonth = day.Day;
                     return DayOfMonth - lastDayOfPreviousMonth == dayOfThisMonth;
 
                 case MonthlyOverflowResolution.ClipBack:
-                    DateTime searchForward = day + TimeSpan.FromDays(1);
+                    var searchForward = day + TimeSpan.FromDays(1);
                     if (day.Month == searchForward.Month)
                         return false;
                     return DayOfMonth > day.Day;
@@ -202,16 +202,16 @@ namespace EVEMon.Common.Scheduling
         /// <returns></returns>
         protected override bool Clash(DateTime timeToTest)
         {
-            DateTime testTime = (Options & ScheduleEntryOptions.EVETime) != 0 ? timeToTest.ToUniversalTime() : timeToTest;
+            var testTime = (Options & ScheduleEntryOptions.EVETime) != 0 ? timeToTest.ToUniversalTime() : timeToTest;
 
-            ScheduleDateTimeRange range = GetRangeForDay(testTime.Date);
+            var range = GetRangeForDay(testTime.Date);
             if (range == null)
                 return false;
 
-            DateTime startDate = StartDate.Add(range.From.TimeOfDay);
+            var startDate = StartDate.Add(range.From.TimeOfDay);
 
             // in the event m_endDate is set to Forever (DateTime.MaxValue) we can't add anything to it
-            DateTime endDate = EndDate == DateTime.MaxValue ? EndDate : EndDate.Add(range.From.TimeOfDay);
+            var endDate = EndDate == DateTime.MaxValue ? EndDate : EndDate.Add(range.From.TimeOfDay);
 
             if (startDate < testTime && testTime < endDate)
                 return range.From < testTime && testTime < range.To;

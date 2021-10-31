@@ -31,7 +31,7 @@ namespace EVEMon.Common.Data
             : base(group, src)
         {
             // Gets the slot
-            EvePropertyValue? slotProperty = Properties[DBConstants.ImplantSlotPropertyID];
+            var slotProperty = Properties[DBConstants.ImplantSlotPropertyID];
 
             if (slotProperty == null)
                 return;

@@ -115,7 +115,7 @@ namespace EVEMon.Controls
             if (!Settings.UI.MainWindow.ShowOverview || EveMonClient.MonitoredCharacters == null)
                 return;
 
-            List<OverviewItem> overviewItems = Controls.OfType<OverviewItem>().ToList();
+            var overviewItems = Controls.OfType<OverviewItem>().ToList();
             // Updates the visibility of the label for when no characters are loaded
             if (!EveMonClient.MonitoredCharacters.Any())
             {
@@ -131,7 +131,7 @@ namespace EVEMon.Controls
             var items = overviewItems.ToDictionary(page => (Character)page.Tag);
 
             // Create the order we will layout the controls
-            List<Character> characters = new List<Character>();
+            var characters = new List<Character>();
 
             if (m_grouping)
             {
@@ -141,12 +141,12 @@ namespace EVEMon.Controls
             else
                 characters.AddRange(EveMonClient.MonitoredCharacters);
 
-            int index = 0;
+            var index = 0;
             
-            foreach (Character character in characters)
+            foreach (var character in characters)
             {
                 // Retrieve the current overview item, or null if we're past the limits
-                OverviewItem currentOverviewItem = index < overviewItems.Count ? overviewItems[index] : null;
+                var currentOverviewItem = index < overviewItems.Count ? overviewItems[index] : null;
 
                 // Does the overview item match with the character ?
                 if ((Character)currentOverviewItem?.Tag != character)
@@ -172,7 +172,7 @@ namespace EVEMon.Controls
 
             // Remove the remaining items
             CleanUp(items.Values);
-            foreach (OverviewItem item in items.Values)
+            foreach (var item in items.Values)
             {
                 overviewItems.Remove(item);
             }
@@ -204,7 +204,7 @@ namespace EVEMon.Controls
         private void CleanUp(IEnumerable<OverviewItem> items)
         {
             // Dispose every one of the control to prevent event triggering
-            foreach (OverviewItem item in items)
+            foreach (var item in items)
             {
                 item.Click -= item_Click;
                 item.Dispose();
@@ -264,14 +264,14 @@ namespace EVEMon.Controls
             IList<OverviewItem> overviewItems = Controls.OfType<OverviewItem>().ToList();
 
             // Check there is at least one control
-            int numControls = overviewItems.Count;
+            var numControls = overviewItems.Count;
             if (numControls == 0)
                 return;
 
             const int Pad = 20;
 
             // Store and reset the scroll bar position
-            int scrollBarPosition = VerticalScroll.Value;
+            var scrollBarPosition = VerticalScroll.Value;
             VerticalScroll.Value = 0;
 
             this.SuspendDrawing();
@@ -281,20 +281,20 @@ namespace EVEMon.Controls
             try
             {
                 // Retrieve the item width (should be the same for all controls) and compute the item and row width
-                int itemWidth = overviewItems.Max(item => item.PreferredSize.Width);
+                var itemWidth = overviewItems.Max(item => item.PreferredSize.Width);
 
                 // Computes the number of columns and rows we need
-                int numColumns = Math.Max(1, Math.Min(numControls, clientWidth / itemWidth));
+                var numColumns = Math.Max(1, Math.Min(numControls, clientWidth / itemWidth));
 
                 // Computes the horizontal margin
-                int neededWidth = numColumns * (itemWidth + Pad) - Pad;
-                int marginH = Math.Max(0, (clientWidth - neededWidth) / 2);
+                var neededWidth = numColumns * (itemWidth + Pad) - Pad;
+                var marginH = Math.Max(0, (clientWidth - neededWidth) / 2);
 
                 // Measure the total height
-                int rowIndex = 0;
-                int rowHeight = 0;
-                int height = 0;
-                foreach (OverviewItem overviewItem in overviewItems)
+                var rowIndex = 0;
+                var rowHeight = 0;
+                var height = 0;
+                foreach (var overviewItem in overviewItems)
                 {
                     // Add the item to the row
                     rowHeight = Math.Max(rowHeight, overviewItem.PreferredSize.Height);
@@ -313,13 +313,13 @@ namespace EVEMon.Controls
                 height -= Pad;
                 
                 // We put 1/3 at the top, 2/3 at the bottom
-                int marginV = Math.Max(0, (clientHeight - height) / 3); 
+                var marginV = Math.Max(0, (clientHeight - height) / 3); 
 
                 // Adjust the controls bounds
                 rowIndex = 0;
                 rowHeight = 0;
                 height = marginV;
-                foreach (OverviewItem overviewItem in overviewItems)
+                foreach (var overviewItem in overviewItems)
                 {
                     var size = overviewItem.PreferredSize;
                     // Set the control bound
@@ -420,7 +420,7 @@ namespace EVEMon.Controls
         /// <param name="e"></param>
         private void item_Click(object sender, EventArgs e)
         {
-            OverviewItem item = sender as OverviewItem;
+            var item = sender as OverviewItem;
 
             if (item != null)
                 CharacterClicked?.ThreadSafeInvoke(this, new CharacterChangedEventArgs(item.Character));

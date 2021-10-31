@@ -128,7 +128,7 @@ namespace EVEMon.SettingsUI
             overviewPortraitSizeComboBox.Items.AddRange(Enum.GetValues(typeof(PortraitSizes)).
                 Cast<PortraitSizes>().Select(portraitSize =>
                 {
-                    string size = FormattableString.Invariant($"{portraitSize.GetDefaultValue()}");
+                    var size = FormattableString.Invariant($"{portraitSize.GetDefaultValue()}");
                     return $"{size} by {size}";
                 }).ToArray<object>());
 
@@ -137,7 +137,7 @@ namespace EVEMon.SettingsUI
             var node = m_preSelect ?? treeView.Nodes.Cast<TreeNode>().First();
             if (node != null)
             {
-                string tag = node.Tag?.ToString() ?? string.Empty;
+                var tag = node.Tag?.ToString() ?? string.Empty;
                 treeView.SelectedNode = node;
                 multiPanel.SelectedPage = multiPanel.Controls.Cast<MultiPanelPage>().
                     FirstOrDefault(page => page.Name == tag);
@@ -149,9 +149,9 @@ namespace EVEMon.SettingsUI
 
             // Skills icon sets
             cbSkillIconSet.Items.Clear();
-            for (int i = 1; i < IconSettings.Default.Properties.Count; i++)
+            for (var i = 1; i < IconSettings.Default.Properties.Count; i++)
             {
-                SettingsProperty iconSettingsProperty = IconSettings.Default.Properties["Group" + i];
+                var iconSettingsProperty = IconSettings.Default.Properties["Group" + i];
                 if (iconSettingsProperty != null)
                     cbSkillIconSet.Items.Add(iconSettingsProperty.DefaultValue.ToString().Replace("_", " "));
             }
@@ -351,7 +351,7 @@ namespace EVEMon.SettingsUI
         private void SetOverviewSettings()
         {
             var mws = m_settings.UI.MainWindow;
-            int extraIndex = 0;
+            var extraIndex = 0;
             cbShowOverViewTab.Checked = mws.ShowOverview;
             cbUseIncreasedContrastOnOverview.Checked = mws.UseIncreasedContrastOnOverview;
             overviewShowWalletCheckBox.Checked = mws.ShowOverviewWallet;
@@ -445,7 +445,7 @@ namespace EVEMon.SettingsUI
         {
             var mws = m_settings.UI.MainWindow;
             var pws = m_settings.UI.PlanWindow;
-            int extraIndex = extraInfoComboBox.SelectedIndex;
+            var extraIndex = extraInfoComboBox.SelectedIndex;
 
             // General - Compatibility
             m_settings.Compatibility = (CompatibilityMode)Math.Max(0, compatibilityCombo.SelectedIndex);
@@ -576,7 +576,7 @@ namespace EVEMon.SettingsUI
             if (!runAtStartupComboBox.Enabled)
                 return;
 
-            RegistryKey rk = Registry.CurrentUser.OpenSubKey(StartupRegistryKey, true);
+            var rk = Registry.CurrentUser.OpenSubKey(StartupRegistryKey, true);
             if (rk == null)
                 return;
 
@@ -657,7 +657,7 @@ namespace EVEMon.SettingsUI
         /// <param name="e"></param>
         private void proxyPortTextBox_Validating(object sender, CancelEventArgs e)
         {
-            string text = ((TextBox)sender).Text;
+            var text = ((TextBox)sender).Text;
             int ignore;
             e.Cancel = !IsValidPort(text, "Proxy port", out ignore);
         }
@@ -772,10 +772,10 @@ namespace EVEMon.SettingsUI
         /// <param name="e"></param>
         private void proxyAuthenticationButton_Click(object sender, EventArgs e)
         {
-            ProxySettings proxySettings = m_settings.Proxy;
-            using (ProxyAuthenticationWindow window = new ProxyAuthenticationWindow(proxySettings))
+            var proxySettings = m_settings.Proxy;
+            using (var window = new ProxyAuthenticationWindow(proxySettings))
             {
-                DialogResult result = window.ShowDialog();
+                var result = window.ShowDialog();
                 if (result == DialogResult.OK)
                     m_settings.Proxy = proxySettings;
             }
@@ -788,8 +788,8 @@ namespace EVEMon.SettingsUI
         /// <param name="e"></param>
         private void trayTooltipButton_Click(object sender, EventArgs e)
         {
-            TrayTooltipSettings tooltipSettings = m_settings.UI.SystemTrayTooltip;
-            using (TrayTooltipConfigForm f = new TrayTooltipConfigForm(tooltipSettings))
+            var tooltipSettings = m_settings.UI.SystemTrayTooltip;
+            using (var f = new TrayTooltipConfigForm(tooltipSettings))
             {
                 // Set current tooltip string
                 f.ShowDialog();
@@ -809,8 +809,8 @@ namespace EVEMon.SettingsUI
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void trayPopupButton_Click(object sender, EventArgs e)
         {
-            TrayPopupSettings popupSettings = m_settings.UI.SystemTrayPopup;
-            using (TrayPopupConfigForm f = new TrayPopupConfigForm(popupSettings))
+            var popupSettings = m_settings.UI.SystemTrayPopup;
+            using (var f = new TrayPopupConfigForm(popupSettings))
             {
                 // Edit a copy of the current settings
                 f.ShowDialog();
@@ -855,19 +855,19 @@ namespace EVEMon.SettingsUI
         /// <returns></returns>
         private static ImageList GetCustomIconSet(int index)
         {
-            string groupname = string.Empty;
+            var groupname = string.Empty;
 
             if (index > 0 && index < IconSettings.Default.Properties.Count)
             {
-                SettingsProperty iconSettingsProperty =
+                var iconSettingsProperty =
                     IconSettings.Default.Properties["Group" + index];
                 if (iconSettingsProperty != null)
                     groupname = iconSettingsProperty.DefaultValue.ToString();
             }
 
-            string groupDirectory = $"{AppDomain.CurrentDomain.BaseDirectory}Resources\\Skill_Select\\Group";
-            string defaultResourcesPath = $"{groupDirectory}0\\Default.resources";
-            string groupResourcesPath = $"{groupDirectory}{index}\\{groupname}.resources";
+            var groupDirectory = $"{AppDomain.CurrentDomain.BaseDirectory}Resources\\Skill_Select\\Group";
+            var defaultResourcesPath = $"{groupDirectory}0\\Default.resources";
+            var groupResourcesPath = $"{groupDirectory}{index}\\{groupname}.resources";
 
             if (!File.Exists(defaultResourcesPath) ||
                 (!string.IsNullOrEmpty(groupname) && !File.Exists(groupResourcesPath)))
@@ -955,13 +955,13 @@ namespace EVEMon.SettingsUI
             if (tvlist.ImageList == null)
                 return;
 
-            TreeNode gtn = new TreeNode("Book", tvlist.ImageList.Images.IndexOfKey("book"),
+            var gtn = new TreeNode("Book", tvlist.ImageList.Images.IndexOfKey("book"),
                 tvlist.ImageList.Images.IndexOfKey("book"));
             gtn.Nodes.Add(new TreeNode("Pre-Reqs NOT met (Rank)", tvlist.ImageList.Images.IndexOfKey("PrereqsNOTMet"),
                 tvlist.ImageList.Images.IndexOfKey("PrereqsNOTMet")));
             gtn.Nodes.Add(new TreeNode("Pre-Reqs met (Rank)", tvlist.ImageList.Images.IndexOfKey("PrereqsMet"),
                 tvlist.ImageList.Images.IndexOfKey("PrereqsMet")));
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 gtn.Nodes.Add(new TreeNode("Level " + i + " (Rank)", tvlist.ImageList.Images.IndexOfKey("lvl" + i),
                     tvlist.ImageList.Images.IndexOfKey("lvl" + i)));
@@ -978,7 +978,7 @@ namespace EVEMon.SettingsUI
         /// <param name="e"></param>
         private void colorPanel_Click(object sender, EventArgs e)
         {
-            Panel color = (Panel)sender;
+            var color = (Panel)sender;
             colorDialog.Color = color.BackColor;
             if (colorDialog.ShowDialog() == DialogResult.OK)
                 color.BackColor = colorDialog.Color;

@@ -27,8 +27,8 @@ namespace EVEMon.Common.Data
         /// <param name="character">The character.</param>
         internal CertificateClassCollection(Character character)
         {
-            foreach (CertificateClass certClass in character?.CertificateCategories.SelectMany(category => category) ??
-                                                   StaticCertificates.AllGroups.SelectMany(group => new CertificateGroup(group)))
+            foreach (var certClass in character?.CertificateCategories.SelectMany(category => category) ??
+                                      StaticCertificates.AllGroups.SelectMany(group => new CertificateGroup(group)))
 
             {
                 Items[certClass.ID] = certClass;

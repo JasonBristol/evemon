@@ -34,7 +34,7 @@ namespace EVEMon.Common.Data
             StaticData = src;
             Class = certClass;
 
-            foreach (KeyValuePair<CertificateGrade, List<StaticSkillLevel>> skill in src.PrerequisiteSkills)
+            foreach (var skill in src.PrerequisiteSkills)
             {
                 m_levels[(int)skill.Key] = new CertificateLevel(skill, this, character);
             }

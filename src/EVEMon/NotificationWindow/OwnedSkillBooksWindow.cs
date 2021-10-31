@@ -89,10 +89,10 @@ namespace EVEMon.NotificationWindow
         /// </summary>
         internal void UpdateList()
         {
-            int scrollBarPosition = lvOwnedSkillBooks.GetVerticalScrollBarPosition();
+            var scrollBarPosition = lvOwnedSkillBooks.GetVerticalScrollBarPosition();
 
             // Store the selected item (if any) to restore it after the update
-            int selectedItem = lvOwnedSkillBooks.SelectedItems.Count > 0
+            var selectedItem = lvOwnedSkillBooks.SelectedItems.Count > 0
                 ? lvOwnedSkillBooks.SelectedItems[0].Tag.GetHashCode()
                 : 0;
 
@@ -105,9 +105,9 @@ namespace EVEMon.NotificationWindow
 
                 lvOwnedSkillBooks.Items.Clear();
 
-                foreach (IGrouping<bool, Skill> group in skills.GroupBy(x => !x.IsKnown))
+                foreach (var group in skills.GroupBy(x => !x.IsKnown))
                 {
-                    ListViewGroup listGroup = group.Key
+                    var listGroup = group.Key
                                                   ? lvOwnedSkillBooks.Groups[0]
                                                   : lvOwnedSkillBooks.Groups[1];
 
@@ -127,7 +127,7 @@ namespace EVEMon.NotificationWindow
                 // Restore the selected item (if any)
                 if (selectedItem > 0)
                 {
-                    foreach (ListViewItem lvItem in lvOwnedSkillBooks.Items.Cast<ListViewItem>().Where(
+                    foreach (var lvItem in lvOwnedSkillBooks.Items.Cast<ListViewItem>().Where(
                         lvItem => lvItem.Tag.GetHashCode() == selectedItem))
                     {
                         lvItem.Selected = true;
@@ -164,7 +164,7 @@ namespace EVEMon.NotificationWindow
             }
 
             // Creates the subitems
-            for (int i = 0; i < lvOwnedSkillBooks.Columns.Count; i++)
+            for (var i = 0; i < lvOwnedSkillBooks.Columns.Count; i++)
             {
                 SetColumn(skill, item.SubItems[i], lvOwnedSkillBooks.Columns[i]);
             }
@@ -190,14 +190,14 @@ namespace EVEMon.NotificationWindow
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (lvOwnedSkillBooks.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += lvOwnedSkillBooks.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 

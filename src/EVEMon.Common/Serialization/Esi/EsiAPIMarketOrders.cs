@@ -16,7 +16,7 @@ namespace EVEMon.Common.Serialization.Esi
         /// <param name="id">The issuing character ID.</param>
         public void SetAllIssuedBy(long id)
         {
-            foreach (EsiOrderListItem item in this)
+            foreach (var item in this)
                 item.IssuedBy = id;
         }
     }

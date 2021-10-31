@@ -33,7 +33,7 @@ namespace EVEMon.Common.Data
                 MasteryShip = masteryShip;
                 Level = src.Grade;
                 Status = MasteryStatus.Untrained;
-                foreach (SerializableMasteryCertificate certificate in src.Certificates)
+                foreach (var certificate in src.Certificates)
                     Items.Add(new MasteryCertificate(this, certificate));
             }
         }
@@ -50,7 +50,7 @@ namespace EVEMon.Common.Data
             MasteryShip = mastery.MasteryShip;
             Level = mastery.Level;
             Status = MasteryStatus.Untrained;
-            foreach (MasteryCertificate masteryCertificate in mastery)
+            foreach (var masteryCertificate in mastery)
                 Items.Add(new MasteryCertificate(character, masteryCertificate));
         }
 
@@ -121,11 +121,11 @@ namespace EVEMon.Common.Data
             if (m_updated)
                 return false;
 
-            bool noPrereq = true;
-            bool trained = true;
+            var noPrereq = true;
+            var trained = true;
 
             // Scan prerequisite skills
-            foreach (SkillLevel prereqSkill in GetPrerequisiteSkills())
+            foreach (var prereqSkill in GetPrerequisiteSkills())
             {
                 // Trained only if the skill's level is greater or equal to the minimum level
                 trained = trained && prereqSkill.Skill.Level >= prereqSkill.Level;

@@ -133,19 +133,19 @@ namespace EVEMon.CharacterMonitoring
                 return;
             }
 
-            int scrollBarPosition = lbStandings.TopIndex;
+            var scrollBarPosition = lbStandings.TopIndex;
 
             // Update the standings list
             lbStandings.BeginUpdate();
             try
             {
                 IEnumerable<Standing> standings = Character.Standings;
-                IEnumerable<IGrouping<StandingGroup, Standing>> groups = standings.GroupBy(
+                var groups = standings.GroupBy(
                     x => x.Group).Reverse();
 
                 // Scroll through groups
                 lbStandings.Items.Clear();
-                foreach (IGrouping<StandingGroup, Standing> group in groups)
+                foreach (var group in groups)
                 {
                     lbStandings.Items.Add(group.Key.GetDescription());
 
@@ -153,7 +153,7 @@ namespace EVEMon.CharacterMonitoring
                     if (m_collapsedGroups.Contains(group.Key.GetDescription()))
                         continue;
 
-                    foreach (Standing standing in group.OrderByDescending(x => x.EffectiveStanding))
+                    foreach (var standing in group.OrderByDescending(x => x.EffectiveStanding))
                     {
                         standing.StandingImageUpdated += standing_StandingImageUpdated;
                         lbStandings.Items.Add(standing);
@@ -189,8 +189,8 @@ namespace EVEMon.CharacterMonitoring
             if (e.Index < 0 || e.Index >= lbStandings.Items.Count)
                 return;
 
-            object item = lbStandings.Items[e.Index];
-            Standing standing = item as Standing;
+            var item = lbStandings.Items[e.Index];
+            var standing = item as Standing;
             if (standing != null)
                 DrawItem(standing, e);
             else
@@ -228,30 +228,30 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void DrawItem(Standing standing, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // Draw background
             g.FillRectangle(e.Index % 2 == 0 ? Brushes.White : Brushes.LightGray, e.Bounds);
 
-            Skill diplomacySkill = Character.Skills[DBConstants.DiplomacySkillID];
-            Skill connectionsSkill = Character.Skills[DBConstants.ConnectionsSkillID];
+            var diplomacySkill = Character.Skills[DBConstants.DiplomacySkillID];
+            var connectionsSkill = Character.Skills[DBConstants.ConnectionsSkillID];
             var diplomacySkillLevel = new SkillLevel(diplomacySkill, diplomacySkill.
                 LastConfirmedLvl);
             var connectionsSkillLevel = new SkillLevel(connectionsSkill, connectionsSkill.
                 LastConfirmedLvl);
 
             // Texts
-            string standingText = $"{standing.EntityName}  {standing.EffectiveStanding:N2}";
-            string standingStatusText = $"({Standing.Status(standing.EffectiveStanding)})";
-            string standingsDetailsText = $"{(standing.StandingValue < 0 ? diplomacySkillLevel : connectionsSkillLevel)} " +
-                                          $"raises your effective standing from {standing.StandingValue:N2}";
+            var standingText = $"{standing.EntityName}  {standing.EffectiveStanding:N2}";
+            var standingStatusText = $"({Standing.Status(standing.EffectiveStanding)})";
+            var standingsDetailsText = $"{(standing.StandingValue < 0 ? diplomacySkillLevel : connectionsSkillLevel)} " +
+                                       $"raises your effective standing from {standing.StandingValue:N2}";
 
             // Measure texts
-            Size standingTextSize = TextRenderer.MeasureText(g, standingText, m_standingsBoldFont, Size.Empty, Format);
-            Size standingStatusTextSize = TextRenderer.MeasureText(g, standingStatusText, m_standingsBoldFont, Size.Empty, Format);
-            Size standingsDetailsTextSize = TextRenderer.MeasureText(g, standingsDetailsText, m_standingsFont, Size.Empty, Format);
+            var standingTextSize = TextRenderer.MeasureText(g, standingText, m_standingsBoldFont, Size.Empty, Format);
+            var standingStatusTextSize = TextRenderer.MeasureText(g, standingStatusText, m_standingsBoldFont, Size.Empty, Format);
+            var standingsDetailsTextSize = TextRenderer.MeasureText(g, standingsDetailsText, m_standingsFont, Size.Empty, Format);
 
-            bool standingsDiffer = Math.Abs(standing.EffectiveStanding - standing.StandingValue) > double.Epsilon;
+            var standingsDiffer = Math.Abs(standing.EffectiveStanding - standing.StandingValue) > double.Epsilon;
 
             // Draw texts
             TextRenderer.DrawText(g, standingText, m_standingsBoldFont,
@@ -299,16 +299,16 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void DrawItem(string group, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // Draws the background
-            using (LinearGradientBrush lgb = new LinearGradientBrush(new PointF(0F, 0F), new PointF(0F, 21F),
+            using (var lgb = new LinearGradientBrush(new PointF(0F, 0F), new PointF(0F, 21F),
                                                                      Color.FromArgb(75, 75, 75), Color.FromArgb(25, 25, 25)))
             {
                 g.FillRectangle(lgb, e.Bounds);
             }
 
-            using (Pen p = new Pen(Color.FromArgb(100, 100, 100)))
+            using (var p = new Pen(Color.FromArgb(100, 100, 100)))
             {
                 g.DrawLine(p, e.Bounds.Left, e.Bounds.Top, e.Bounds.Right + 1, e.Bounds.Top);
             }
@@ -317,9 +317,9 @@ namespace EVEMon.CharacterMonitoring
             NativeMethods.SetTextCharacterSpacing(g, 4);
 
             // Measure texts
-            Size standingGroupTextSize = TextRenderer.MeasureText(g, group.ToUpper(CultureConstants.DefaultCulture),
+            var standingGroupTextSize = TextRenderer.MeasureText(g, group.ToUpper(CultureConstants.DefaultCulture),
                                                                   m_standingsBoldFont, Size.Empty, Format);
-            Rectangle standingGroupTextRect = new Rectangle(e.Bounds.Left + PadLeft,
+            var standingGroupTextRect = new Rectangle(e.Bounds.Left + PadLeft,
                                                             e.Bounds.Top +
                                                             (e.Bounds.Height / 2 - standingGroupTextSize.Height / 2),
                                                             standingGroupTextSize.Width + PadRight,
@@ -330,7 +330,7 @@ namespace EVEMon.CharacterMonitoring
                                   Color.White, Color.Transparent, Format);
 
             // Draws the collapsing arrows
-            bool isCollapsed = m_collapsedGroups.Contains(group);
+            var isCollapsed = m_collapsedGroups.Contains(group);
             Image img = isCollapsed ? Resources.Expand : Resources.Collapse;
 
             g.DrawImageUnscaled(img, new Rectangle(e.Bounds.Right - img.Width - CollapserPadRight,
@@ -372,15 +372,15 @@ namespace EVEMon.CharacterMonitoring
                 return;
 
             // Update the drawing based upon the mouse wheel scrolling
-            int numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
-            int lines = numberOfItemLinesToMove;
+            var numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
+            var lines = numberOfItemLinesToMove;
             if (lines == 0)
                 return;
 
             // Compute the number of lines to move
-            int direction = lines / Math.Abs(lines);
-            int[] numberOfPixelsToMove = new int[lines * direction];
-            for (int i = 1; i <= Math.Abs(lines); i++)
+            var direction = lines / Math.Abs(lines);
+            var numberOfPixelsToMove = new int[lines * direction];
+            for (var i = 1; i <= Math.Abs(lines); i++)
             {
                 object item = null;
 
@@ -395,8 +395,8 @@ namespace EVEMon.CharacterMonitoring
                 else
                 {
                     // Compute the height of the items from current the topindex (included)
-                    int height = 0;
-                    for (int j = lbStandings.TopIndex + i - 1; j < lbStandings.Items.Count; j++)
+                    var height = 0;
+                    for (var j = lbStandings.TopIndex + i - 1; j < lbStandings.Items.Count; j++)
                     {
                         height += GetItemHeight(lbStandings.Items[j]);
                     }
@@ -425,7 +425,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.Windows.Forms.MouseEventArgs"/> instance containing the event data.</param>
         private void lbStandings_MouseDown(object sender, MouseEventArgs e)
         {
-            int index = lbStandings.IndexFromPoint(e.Location);
+            var index = lbStandings.IndexFromPoint(e.Location);
             if (index < 0 || index >= lbStandings.Items.Count)
                 return;
 
@@ -441,8 +441,8 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // For a standings group, we have to handle the collapse/expand mechanism
-            object item = lbStandings.Items[index];
-            string standingsGroup = item as string;
+            var item = lbStandings.Items[index];
+            var standingsGroup = item as string;
             if (standingsGroup == null)
                 return;
 
@@ -455,7 +455,7 @@ namespace EVEMon.CharacterMonitoring
 
             // If right click on the button, still expand/collapse
             itemRect = lbStandings.GetItemRectangle(lbStandings.Items.IndexOf(item));
-            Rectangle buttonRect = GetButtonRectangle(standingsGroup, itemRect);
+            var buttonRect = GetButtonRectangle(standingsGroup, itemRect);
             if (buttonRect.Contains(e.Location))
                 ToggleGroupExpandCollapse(standingsGroup);
         }
@@ -520,13 +520,13 @@ namespace EVEMon.CharacterMonitoring
         private Rectangle GetButtonRectangle(string group, Rectangle itemRect)
         {
             // Checks whether this group is collapsed
-            bool isCollapsed = m_collapsedGroups.Contains(group);
+            var isCollapsed = m_collapsedGroups.Contains(group);
 
             // Get the image for this state
             Image btnImage = isCollapsed ? Resources.Expand : Resources.Collapse;
 
             // Compute the top left point
-            Point btnPoint = new Point(itemRect.Right - btnImage.Width - CollapserPadRight,
+            var btnPoint = new Point(itemRect.Right - btnImage.Width - CollapserPadRight,
                                        StandingGroupHeaderHeight / 2 - btnImage.Height / 2 + itemRect.Top);
 
             return new Rectangle(btnPoint, btnImage.Size);

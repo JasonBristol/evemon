@@ -55,7 +55,7 @@ namespace EVEMon.Common.Helpers
             if (culture == null)
                 culture = CultureConstants.DefaultCulture;
 
-            decimal abs = Math.Abs(value);
+            var abs = Math.Abs(value);
             if (format == AbbreviationFormat.AbbreviationWords)
             {
                 if (abs >= 1E9M)
@@ -92,7 +92,7 @@ namespace EVEMon.Common.Helpers
             // Explanations : 999.99 was displayed as 1000 because only three digits were required
             // So we do the truncation at hand for the number of digits we exactly request
 
-            decimal abs = Math.Abs(value);
+            var abs = Math.Abs(value);
             if (abs < 1.0M)
                 return ((int)value * 100 / 100M).ToString("0.##", culture) + suffix;
             if (abs < 10.0M)

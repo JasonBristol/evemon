@@ -16,7 +16,7 @@ namespace EVEMon.Common.SettingsObjects
         {
             try
             {
-                foreach (ItemPricer pricer in ItemPricer.Providers)
+                foreach (var pricer in ItemPricer.Providers)
                 {
                     s_pricer[pricer.Name] = pricer;
                 }

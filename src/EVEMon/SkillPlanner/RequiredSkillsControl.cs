@@ -126,10 +126,10 @@ namespace EVEMon.SkillPlanner
                 return;
 
             // Default all known flag to true. Will be set to false in getSkillNode() if a requirement is not met
-            bool allSkillsKnown = true;
+            var allSkillsKnown = true;
 
             // Default unplanned skills flag to false. Will be set to true in getSkillNode() if a requirement is neither met nor planned
-            bool skillsUnplanned = false;
+            var skillsUnplanned = false;
 
             // Treeview update
             tvSkillList.BeginUpdate();
@@ -146,7 +146,7 @@ namespace EVEMon.SkillPlanner
                 tvSkillList.Nodes.Clear();
 
                 // Recursively create nodes
-                foreach (StaticSkillLevel prereq in prerequisites)
+                foreach (var prereq in prerequisites)
                 {
                     tvSkillList.Nodes.Add(GetSkillNode(prereq, ref allSkillsKnown, ref skillsUnplanned));
                 }
@@ -161,13 +161,13 @@ namespace EVEMon.SkillPlanner
                 lblTimeRequired.Text = @"No training required";
             else
             {
-                TimeSpan trainTime = m_plan.Character.GetTrainingTimeToMultipleSkills(prerequisites);
+                var trainTime = m_plan.Character.GetTrainingTimeToMultipleSkills(prerequisites);
                 lblTimeRequired.Text = trainTime.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas);
             }
 
             // Set minimun control size
-            Size timeRequiredTextSize = TextRenderer.MeasureText(lblTimeRequired.Text, Font);
-            Size newMinimumSize = new Size(timeRequiredTextSize.Width + btnAddSkills.Width, 0);
+            var timeRequiredTextSize = TextRenderer.MeasureText(lblTimeRequired.Text, Font);
+            var newMinimumSize = new Size(timeRequiredTextSize.Width + btnAddSkills.Width, 0);
             if (MinimumSize.Width < newMinimumSize.Width)
                 MinimumSize = newMinimumSize;
 
@@ -187,9 +187,9 @@ namespace EVEMon.SkillPlanner
             if (prereq.Skill == null)
                 return new TreeNode();
 
-            Character character = (Character)m_plan.Character;
-            Skill skill = character.Skills[prereq.Skill.ID];
-            TreeNode node = new TreeNode(prereq.ToString()) { Tag = new SkillLevel(skill, prereq.Level) };
+            var character = (Character)m_plan.Character;
+            var skill = character.Skills[prereq.Skill.ID];
+            var node = new TreeNode(prereq.ToString()) { Tag = new SkillLevel(skill, prereq.Level) };
 
             // Skill requirement met
             if (skill.Level >= prereq.Level)
@@ -222,7 +222,7 @@ namespace EVEMon.SkillPlanner
             }
 
             // Generate child nodes if required
-            foreach (StaticSkillLevel childPrereq in skill.StaticData.Prerequisites.Where(childPrereq => childPrereq != prereq))
+            foreach (var childPrereq in skill.StaticData.Prerequisites.Where(childPrereq => childPrereq != prereq))
             {
                 node.Nodes.Add(GetSkillNode(childPrereq, ref allSkillsKnown, ref skillsUnplanned));
             }
@@ -247,7 +247,7 @@ namespace EVEMon.SkillPlanner
 
             // Perform the selection manually since the bound's width and x are incorrect
             TreeNode selection = null;
-            for (TreeNode node = tvSkillList.TopNode; node != null; node = node.NextVisibleNode)
+            for (var node = tvSkillList.TopNode; node != null; node = node.NextVisibleNode)
             {
                 if (node.Bounds.Top > e.Y || node.Bounds.Bottom < e.Y)
                     continue;
@@ -284,12 +284,12 @@ namespace EVEMon.SkillPlanner
         private void btnAddSkills_Click(object sender, EventArgs e)
         {
             // Add skills to plan
-            IPlanOperation operation = m_plan.TryAddSet(m_object.Prerequisites.Where(x => x.Activity.Equals(Activity)),
+            var operation = m_plan.TryAddSet(m_object.Prerequisites.Where(x => x.Activity.Equals(Activity)),
                                                         m_object.Name);
             if (operation == null)
                 return;
 
-            PlanWindow planWindow = ParentForm as PlanWindow;
+            var planWindow = ParentForm as PlanWindow;
             if (planWindow == null)
                 return;
 
@@ -306,7 +306,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void tvSkillList_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            Skill skill = ((SkillLevel)e.Node.Tag)?.Skill;
+            var skill = ((SkillLevel)e.Node.Tag)?.Skill;
 
             // Open skill browser tab for this skill
             PlanWindow.ShowPlanWindow(null, m_plan).ShowSkillInBrowser(skill);
@@ -338,14 +338,14 @@ namespace EVEMon.SkillPlanner
                 return;
 
             // "Plan to N" menus
-            SkillLevel skillLevel = (SkillLevel)tvSkillList.SelectedNode.Tag;
-            Skill skill = skillLevel?.Skill;
+            var skillLevel = (SkillLevel)tvSkillList.SelectedNode.Tag;
+            var skill = skillLevel?.Skill;
 
             if (skill == null)
                 return;
 
             planToMenu.Enabled = false;
-            for (int i = 0; i <= 5; i++)
+            for (var i = 0; i <= 5; i++)
             {
                 planToMenu.Enabled |= m_plan.UpdatesRegularPlanToMenu(planToMenu.DropDownItems[i], skill, i);
             }
@@ -358,7 +358,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void showInSkillBrowserMenu_Click(object sender, EventArgs e)
         {
-            Skill skill = ((SkillLevel)tvSkillList.SelectedNode?.Tag)?.Skill;
+            var skill = ((SkillLevel)tvSkillList.SelectedNode?.Tag)?.Skill;
 
             // Open the skill browser
             PlanWindow.ShowPlanWindow(null, m_plan).ShowSkillInBrowser(skill);
@@ -371,7 +371,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void showInSkillExplorerMenu_Click(object sender, EventArgs e)
         {
-            Skill skill = ((SkillLevel)tvSkillList.SelectedNode?.Tag)?.Skill;
+            var skill = ((SkillLevel)tvSkillList.SelectedNode?.Tag)?.Skill;
             
             // Open the skill explorer
             SkillExplorerWindow.ShowSkillExplorerWindow(skill?.Character, m_plan).ShowSkillInExplorer(skill);
@@ -406,12 +406,12 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void planToMenuItem_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem menu = (ToolStripMenuItem)sender;
-            IPlanOperation operation = (IPlanOperation)menu.Tag;
+            var menu = (ToolStripMenuItem)sender;
+            var operation = (IPlanOperation)menu.Tag;
             if (operation == null)
                 return;
 
-            PlanWindow planWindow = ParentForm as PlanWindow;
+            var planWindow = ParentForm as PlanWindow;
             if (planWindow == null)
                 return;
 

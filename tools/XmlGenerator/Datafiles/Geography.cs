@@ -22,7 +22,7 @@ namespace EVEMon.XmlGenerator.Datafiles
         /// </summary>
         internal static void GenerateDatafile()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             Util.ResetCounters();
 
             Console.WriteLine();
@@ -37,11 +37,11 @@ namespace EVEMon.XmlGenerator.Datafiles
             .ToDictionary(x => x.Key, x => x);
 
             // Regions
-            IEnumerable<SerializableRegion> regions = Database.MapRegionsTable.Select(
+            var regions = Database.MapRegionsTable.Select(
                 srcRegion =>
                 {
                     Util.UpdatePercentDone(Database.GeographyTotalCount);
-                    SerializableRegion region = new SerializableRegion
+                    var region = new SerializableRegion
                     {
                         ID = srcRegion.ID,
                         Name = srcRegion.Name
@@ -53,7 +53,7 @@ namespace EVEMon.XmlGenerator.Datafiles
                 });
 
             // Jumps
-            IEnumerable<SerializableJump> jumps = Database.MapSolarSystemJumpsTable.Where(srcJump => srcJump.A < srcJump.B)
+            var jumps = Database.MapSolarSystemJumpsTable.Where(srcJump => srcJump.A < srcJump.B)
                 .Select(srcJump => new SerializableJump
                 {
                     FirstSystemID = srcJump.A,
@@ -61,7 +61,7 @@ namespace EVEMon.XmlGenerator.Datafiles
                 });
 
             // Serialize
-            GeoDatafile datafile = new GeoDatafile();
+            var datafile = new GeoDatafile();
             datafile.Regions.AddRange(regions.OrderBy(x => x.Name));
             datafile.Jumps.AddRange(jumps);
 
@@ -79,7 +79,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             => Database.MapConstellationsTable.Where(x => x.RegionID == srcRegion.ID)
                 .Select(srcConstellation =>
                 {
-                    SerializableConstellation constellation = new SerializableConstellation
+                    var constellation = new SerializableConstellation
                     {
                         ID = srcConstellation.ID,
                         Name = srcConstellation.Name
@@ -99,7 +99,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             => Database.MapSolarSystemsTable.Where(x => x.ConstellationID == srcConstellation.ID)
                 .Select(srcSystem =>
                 {
-                    SerializableSolarSystem system = new SerializableSolarSystem
+                    var system = new SerializableSolarSystem
                     {
                         ID = srcSystem.ID,
                         Name = srcSystem.Name,
@@ -124,7 +124,7 @@ namespace EVEMon.XmlGenerator.Datafiles
         private static IEnumerable<SerializablePlanet> ExportPlanets(IHasID srcSystem)
             => Planets.ContainsKey(srcSystem.ID) ? Planets[srcSystem.ID].Select(srcPlanet =>
             {
-                SerializablePlanet planet = new SerializablePlanet
+                var planet = new SerializablePlanet
                 {
                     ID = srcPlanet.ID,
                     Name = Database.InvNamesTable[srcPlanet.ID].Name,
@@ -142,7 +142,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             => Database.StaStationsTable.Where(x => x.SolarSystemID == srcSystem.ID)
                 .Select(srcStation =>
                 {
-                    SerializableStation station = new SerializableStation
+                    var station = new SerializableStation
                     {
                         ID = srcStation.ID,
                         Name = srcStation.Name,

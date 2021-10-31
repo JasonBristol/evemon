@@ -19,7 +19,7 @@ namespace EVEMon.Common
         /// </summary>
         private InstanceManager()
         {
-            using (Semaphore semaphore = new Semaphore(0, 1, "EVEMonInstance", out m_createdNew))
+            using (var semaphore = new Semaphore(0, 1, "EVEMonInstance", out m_createdNew))
             {
                 ThreadPool.RegisterWaitForSingleObject(semaphore, SemaphoreReleased, null, -1, false);
                 m_semaphore = semaphore;

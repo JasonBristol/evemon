@@ -26,7 +26,7 @@ namespace EVEMon.Common.Models.Collections
             Items.Clear();
 
             // Import the standings from the API
-            foreach (EsiStandingsListItem srcStanding in src)
+            foreach (var srcStanding in src)
             {
                 Items.Add(new Standing(m_character, srcStanding));
             }

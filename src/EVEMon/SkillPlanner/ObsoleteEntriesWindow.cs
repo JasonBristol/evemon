@@ -46,7 +46,7 @@ namespace EVEMon.SkillPlanner
             if (!plan.ContainsObsoleteEntries)
                 return ObsoleteEntriesAction.None;
 
-            using (ObsoleteEntriesWindow form = new ObsoleteEntriesWindow(plan))
+            using (var form = new ObsoleteEntriesWindow(plan))
             {
                 return form.ShowObsoleteEntriesDialog();
             }
@@ -104,7 +104,7 @@ namespace EVEMon.SkillPlanner
             ObsoleteEntriesListView.BeginUpdate();
             ObsoleteEntriesListView.Items.Clear();
 
-            foreach (PlanEntry entry in m_plan.ObsoleteEntries)
+            foreach (var entry in m_plan.ObsoleteEntries)
             {
                 var lvi = new ListViewItem(entry.ToString());
 
@@ -135,7 +135,7 @@ namespace EVEMon.SkillPlanner
         /// <exception cref="NotImplementedException"></exception>
         private void FormatListViewItem(ListViewItem lvi)
         {
-            bool confirmed = (bool)lvi.Tag;
+            var confirmed = (bool)lvi.Tag;
 
             switch (m_previewResult)
             {

@@ -16,7 +16,7 @@ namespace EVEMon.Common.Data
             if (reactionInfo == null)
                 return;
 
-            foreach (SerializableReactionInfo reaction in reactionInfo)
+            foreach (var reaction in reactionInfo)
             {
                 Items.Add(reaction);
             }

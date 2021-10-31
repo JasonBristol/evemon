@@ -61,8 +61,8 @@ namespace EVEMon.Common.SettingsObjects
         {
             reader.ThrowIfNull(nameof(reader));
 
-            XmlSerializer keySer = new XmlSerializer(typeof(TKey));
-            XmlSerializer valueSer = new XmlSerializer(typeof(TValue));
+            var keySer = new XmlSerializer(typeof(TKey));
+            var valueSer = new XmlSerializer(typeof(TValue));
 
             reader.Read();
             reader.ReadStartElement("dictionary");
@@ -71,11 +71,11 @@ namespace EVEMon.Common.SettingsObjects
                 reader.ReadStartElement("item");
 
                 reader.ReadStartElement("key");
-                TKey key = (TKey)keySer.Deserialize(reader);
+                var key = (TKey)keySer.Deserialize(reader);
                 reader.ReadEndElement();
 
                 reader.ReadStartElement("value");
-                TValue value = (TValue)valueSer.Deserialize(reader);
+                var value = (TValue)valueSer.Deserialize(reader);
                 reader.ReadEndElement();
 
                 Add(key, value);
@@ -98,11 +98,11 @@ namespace EVEMon.Common.SettingsObjects
         {
             writer.ThrowIfNull(nameof(writer));
 
-            XmlSerializer keySer = new XmlSerializer(typeof(TKey));
-            XmlSerializer valueSer = new XmlSerializer(typeof(TValue));
+            var keySer = new XmlSerializer(typeof(TKey));
+            var valueSer = new XmlSerializer(typeof(TValue));
 
             writer.WriteStartElement("dictionary");
-            foreach (TKey key in Keys)
+            foreach (var key in Keys)
             {
                 writer.WriteStartElement("item");
 

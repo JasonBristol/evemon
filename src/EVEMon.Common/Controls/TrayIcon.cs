@@ -199,12 +199,12 @@ namespace EVEMon.Common.Controls
         {
             tooltipForm.ThrowIfNull(nameof(tooltipForm));
 
-            Point mp = Control.MousePosition;
-            NativeMethods.AppBarData appBarData = NativeMethods.AppBarData.Create();
+            var mp = Control.MousePosition;
+            var appBarData = NativeMethods.AppBarData.Create();
             NativeMethods.SHAppBarMessage(NativeMethods.ABM_GETTASKBARPOS, ref appBarData);
-            NativeMethods.RECT taskBarLocation = appBarData.Rect;
+            var taskBarLocation = appBarData.Rect;
 
-            Screen curScreen = Screen.FromPoint(mp);
+            var curScreen = Screen.FromPoint(mp);
             Point winPoint;
             bool slideLeftRight;
             switch (appBarData.UEdge)

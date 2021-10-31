@@ -26,7 +26,7 @@ namespace EVEMon.Common.Models.Collections
             Items.Clear();
 
             // Import the loyalty point info from the API
-            foreach (EsiLoyaltyListItem srcloyalty in src)
+            foreach (var srcloyalty in src)
             {
                 Items.Add(new Loyalty(m_character, srcloyalty));
             }

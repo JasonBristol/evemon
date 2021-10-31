@@ -41,7 +41,7 @@ namespace EVEMon.SettingsUI
         {
             base.OnLoad(e);
 
-            foreach (string tooltip in m_tooltipCodes)
+            foreach (var tooltip in m_tooltipCodes)
             {
                 cbTooltipDisplay.Items.Add(FormatExampleTooltipText(tooltip));
             }
@@ -87,9 +87,9 @@ namespace EVEMon.SettingsUI
             if (cbTooltipDisplay.SelectedIndex != -1)
                 return;
 
-            int index = m_tooltipCodes.Length;
+            var index = m_tooltipCodes.Length;
 
-            for (int i = 0; i < m_tooltipCodes.Length; i++)
+            for (var i = 0; i < m_tooltipCodes.Length; i++)
             {
                 if (m_tooltipCodes[i].Equals(tbTooltipString.Text))
                     index = i;
@@ -110,8 +110,8 @@ namespace EVEMon.SettingsUI
         /// <returns></returns>
         private static string TransformTooltipText(Match m)
         {
-            string value = string.Empty;
-            char capture = m.Groups[1].Value[0];
+            var value = string.Empty;
+            var capture = m.Groups[1].Value[0];
 
             switch (capture)
             {
@@ -131,7 +131,7 @@ namespace EVEMon.SettingsUI
                     value = "2h, 53m, 28s";
                     break;
                 default:
-                    int level = -1;
+                    var level = -1;
                     switch (capture)
                     {
                         case 'c':
@@ -169,7 +169,7 @@ namespace EVEMon.SettingsUI
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void cbTooltipDisplay_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            int index = cbTooltipDisplay.SelectedIndex;
+            var index = cbTooltipDisplay.SelectedIndex;
 
             if (index == m_tooltipCodes.Length)
             {

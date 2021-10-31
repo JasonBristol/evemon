@@ -82,7 +82,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         internal string Parse(string textLayout = null)
         {
-            string text = NotificationText;
+            var text = NotificationText;
             if (!string.IsNullOrWhiteSpace(textLayout))
             {
                 if (!textLayout.Contains("{") || NotificationID == 0)
@@ -97,7 +97,7 @@ namespace EVEMon.Common.Models
                         var parsedDict = GetParsedDictionary(textLayout, pairs);
                         foreach (var pair in pairs)
                             m_parser.Parse(m_notification, pair, parsedDict);
-                        string parsedText = parsedDict.Aggregate(textLayout, (current, pair) =>
+                        var parsedText = parsedDict.Aggregate(textLayout, (current, pair) =>
                             current.Replace("{" + pair.Key + "}", pair.Value.Trim('\'')));
                         text = parsedText.Contains("{") ? NotificationText : parsedText;
                     }

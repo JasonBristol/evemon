@@ -50,7 +50,7 @@ namespace EVEMon.Common.Helpers
         /// <param name="plan"></param>
         public static void Print(Plan plan)
         {
-            PlanPrinter printer = new PlanPrinter(plan);
+            var printer = new PlanPrinter(plan);
             printer.PrintPlan();
         }
 
@@ -59,13 +59,13 @@ namespace EVEMon.Common.Helpers
         /// </summary>
         private void PrintPlan()
         {
-            using (PrintDocument doc = new PrintDocument())
+            using (var doc = new PrintDocument())
             {
                 doc.DocumentName = $"Skill Plan for {m_character.Name} ({m_plan.Name})";
                 doc.PrintPage += doc_PrintPage;
 
                 //Display the options
-                using (PrintOptionsDialog prdlg = new PrintOptionsDialog(m_settings, doc))
+                using (var prdlg = new PrintOptionsDialog(m_settings, doc))
                 {
                     if (prdlg.ShowDialog() != DialogResult.OK)
                         return;
@@ -73,7 +73,7 @@ namespace EVEMon.Common.Helpers
                     doc.PrinterSettings.PrinterName = prdlg.PrinterName;
 
                     // Display the preview
-                    using (PrintPreviewDialog pd = new PrintPreviewDialog())
+                    using (var pd = new PrintPreviewDialog())
                     {
                         pd.Document = doc;
                         pd.ShowDialog();
@@ -89,8 +89,8 @@ namespace EVEMon.Common.Helpers
         /// <param name="e">The <see cref="System.Drawing.Printing.PrintPageEventArgs"/> instance containing the event data.</param>
         private void doc_PrintPage(object sender, PrintPageEventArgs e)
         {
-            Graphics g = e.Graphics;
-            string s = $"Skill Plan for {m_character.Name} ({m_plan.Name})";
+            var g = e.Graphics;
+            var s = $"Skill Plan for {m_character.Name} ({m_plan.Name})";
 
             m_point.X = 5;
             m_point.Y = 5;
@@ -98,7 +98,7 @@ namespace EVEMon.Common.Helpers
             // Print header
             if (m_settings.IncludeHeader)
             {
-                Size size = g.MeasureString(s, m_boldFont).ToSize();
+                var size = g.MeasureString(s, m_boldFont).ToSize();
                 m_point.X = (e.MarginBounds.Width - size.Width) / 2;
 
                 size = PrintBold(g, s);
@@ -106,13 +106,13 @@ namespace EVEMon.Common.Helpers
                 m_point.X = 5;
             }
 
-            bool resetTotal = true;
+            var resetTotal = true;
             if (m_entryToPrint == 0)
                 m_completionDate = DateTime.Now;
 
             // Scroll through entries
-            int index = 0;
-            foreach (PlanEntry pe in m_plan)
+            var index = 0;
+            foreach (var pe in m_plan)
             {
                 index++;
 
@@ -198,7 +198,7 @@ namespace EVEMon.Common.Helpers
                 m_point.X += size.Width;
 
                 // Training time ?
-                bool needComma = false;
+                var needComma = false;
                 if (m_settings.EntryTrainingTimes)
                 {
                     size = Print(g, pe.TrainingTime.ToDescriptiveText(
@@ -259,8 +259,8 @@ namespace EVEMon.Common.Helpers
         /// <param name="index">The index.</param>
         private void PrintPageFooter(Graphics g, int index)
         {
-            Size size = Size.Empty;
-            bool needComma = false;
+            var size = Size.Empty;
+            var needComma = false;
 
             if (!m_settings.FooterCount && !m_settings.FooterTotalTime && !m_settings.FooterDate)
                 return;
@@ -329,7 +329,7 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         private Size PrintBold(Graphics g, string s)
         {
-            using (SolidBrush brush = new SolidBrush(Color.Black))
+            using (var brush = new SolidBrush(Color.Black))
             {
                 g.DrawString(s, m_boldFont, brush, m_point);
             }
@@ -344,7 +344,7 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         private Size Print(Graphics g, string s)
         {
-            using (SolidBrush brush = new SolidBrush(Color.Black))
+            using (var brush = new SolidBrush(Color.Black))
             {
                 g.DrawString(s, m_font, brush, m_point);
             }

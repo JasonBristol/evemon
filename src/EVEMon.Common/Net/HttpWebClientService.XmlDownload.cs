@@ -39,7 +39,7 @@ namespace EVEMon.Common.Net
                     ConfigureAwait(false);
                 using (response)
                 {
-                    Stream stream = await response.Content.ReadAsStreamAsync().
+                    var stream = await response.Content.ReadAsStreamAsync().
                         ConfigureAwait(false);
                     return GetXmlDocument(request.BaseUrl, stream, response);
                 }
@@ -59,7 +59,7 @@ namespace EVEMon.Common.Net
         private static DownloadResult<IXPathNavigable> GetXmlDocument(Uri requestBaseUrl,
             Stream stream, HttpResponseMessage response)
         {
-            XmlDocument xmlDoc = new XmlDocument();
+            var xmlDoc = new XmlDocument();
             HttpWebClientServiceException error = null;
             var param = new ResponseParams(response);
             if (stream == null)

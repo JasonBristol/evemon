@@ -32,7 +32,7 @@ namespace EVEMon.Common.Data
         /// </summary>
         public void Initialize()
         {
-            foreach (KeyValuePair<int, MasteryShip> item in Items)
+            foreach (var item in Items)
                 item.Value.Initialize();
         }
     }

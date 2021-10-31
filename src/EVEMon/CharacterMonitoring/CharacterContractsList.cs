@@ -165,10 +165,10 @@ namespace EVEMon.CharacterMonitoring
             get
             {
                 // Add the visible columns; matching the display order
-                List<ContractColumnSettings> newColumns = new List<ContractColumnSettings>();
-                foreach (ColumnHeader header in lvContracts.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
+                var newColumns = new List<ContractColumnSettings>();
+                foreach (var header in lvContracts.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
                 {
-                    ContractColumnSettings columnSetting = m_columns.First(x => x.Column == (ContractColumn)header.Tag);
+                    var columnSetting = m_columns.First(x => x.Column == (ContractColumn)header.Tag);
                     if (columnSetting.Width > -1)
                         columnSetting.Width = header.Width;
 
@@ -301,9 +301,9 @@ namespace EVEMon.CharacterMonitoring
                 lvContracts.Groups.Clear();
                 lvContracts.Items.Clear();
 
-                foreach (ContractColumnSettings column in m_columns.Where(x => x.Visible))
+                foreach (var column in m_columns.Where(x => x.Visible))
                 {
-                    ColumnHeader header = lvContracts.Columns.Add(column.Column.GetHeader(), column.Width);
+                    var header = lvContracts.Columns.Add(column.Column.GetHeader(), column.Width);
                     header.Tag = column.Column;
 
                     switch (column.Column)
@@ -340,10 +340,10 @@ namespace EVEMon.CharacterMonitoring
             if (!Visible)
                 return;
 
-            int scrollBarPosition = lvContracts.GetVerticalScrollBarPosition();
+            var scrollBarPosition = lvContracts.GetVerticalScrollBarPosition();
 
             // Store the selected item (if any) to restore it after the update
-            int selectedItem = lvContracts.SelectedItems.Count > 0 ? lvContracts.
+            var selectedItem = lvContracts.SelectedItems.Count > 0 ? lvContracts.
                 SelectedItems[0].Tag.GetHashCode() : 0;
 
             lvContracts.BeginUpdate();
@@ -370,7 +370,7 @@ namespace EVEMon.CharacterMonitoring
                 // Restore the selected item (if any)
                 if (selectedItem > 0)
                 {
-                    foreach (ListViewItem lvItem in lvContracts.Items.Cast<ListViewItem>().Where(
+                    foreach (var lvItem in lvContracts.Items.Cast<ListViewItem>().Where(
                         lvItem => lvItem.Tag.GetHashCode() == selectedItem))
                     {
                         lvItem.Selected = true;
@@ -411,42 +411,42 @@ namespace EVEMon.CharacterMonitoring
             switch (m_grouping)
             {
                 case ContractGrouping.State:
-                    IOrderedEnumerable<IGrouping<ContractState, Contract>> groups0 =
+                    var groups0 =
                         contracts.GroupBy(x => x.State).OrderBy(x => (int)x.Key);
                     UpdateContent(groups0);
                     break;
                 case ContractGrouping.StateDesc:
-                    IOrderedEnumerable<IGrouping<ContractState, Contract>> groups1 =
+                    var groups1 =
                         contracts.GroupBy(x => x.State).OrderByDescending(x => (int)x.Key);
                     UpdateContent(groups1);
                     break;
                 case ContractGrouping.Issued:
-                    IOrderedEnumerable<IGrouping<DateTime, Contract>> groups4 =
+                    var groups4 =
                         contracts.GroupBy(x => x.Issued.ToLocalTime().Date).OrderBy(x => x.Key);
                     UpdateContent(groups4);
                     break;
                 case ContractGrouping.IssuedDesc:
-                    IOrderedEnumerable<IGrouping<DateTime, Contract>> groups5 =
+                    var groups5 =
                         contracts.GroupBy(x => x.Issued.ToLocalTime().Date).OrderByDescending(x => x.Key);
                     UpdateContent(groups5);
                     break;
                 case ContractGrouping.ContractType:
-                    IOrderedEnumerable<IGrouping<ContractType, Contract>> groups6 =
+                    var groups6 =
                         contracts.GroupBy(x => x.ContractType).OrderBy(x => x.Key);
                     UpdateContent(groups6);
                     break;
                 case ContractGrouping.ContractTypeDesc:
-                    IOrderedEnumerable<IGrouping<ContractType, Contract>> groups7 =
+                    var groups7 =
                         contracts.GroupBy(x => x.ContractType).OrderByDescending(x => x.Key);
                     UpdateContent(groups7);
                     break;
                 case ContractGrouping.StartLocation:
-                    IOrderedEnumerable<IGrouping<Station, Contract>> groups8 =
+                    var groups8 =
                         contracts.GroupBy(x => x.StartStation).OrderBy(x => x.Key.Name);
                     UpdateContent(groups8);
                     break;
                 case ContractGrouping.StartLocationDesc:
-                    IOrderedEnumerable<IGrouping<Station, Contract>> groups9 =
+                    var groups9 =
                         contracts.GroupBy(x => x.StartStation).OrderByDescending(x => x.Key.Name);
                     UpdateContent(groups9);
                     break;
@@ -464,7 +464,7 @@ namespace EVEMon.CharacterMonitoring
             lvContracts.Groups.Clear();
 
             // Add the groups
-            foreach (IGrouping<TKey, Contract> group in groups)
+            foreach (var group in groups)
             {
                 string groupText;
                 if (group.Key is ContractState)
@@ -476,7 +476,7 @@ namespace EVEMon.CharacterMonitoring
                 else
                     groupText = group.Key.ToString();
 
-                ListViewGroup listGroup = new ListViewGroup(groupText);
+                var listGroup = new ListViewGroup(groupText);
                 lvContracts.Groups.Add(listGroup);
 
                 // Add the items in every group
@@ -512,9 +512,9 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Creates the subitems
-            for (int i = 0; i < lvContracts.Columns.Count; i++)
+            for (var i = 0; i < lvContracts.Columns.Count; i++)
             {
-                ContractColumn column = (ContractColumn)lvContracts.Columns[i].Tag;
+                var column = (ContractColumn)lvContracts.Columns[i].Tag;
                 SetColumn(contract, item.SubItems[i], column);
             }
 
@@ -532,17 +532,17 @@ namespace EVEMon.CharacterMonitoring
                 builder.AppendLine();
             }
 
-            string prefix = contract.ContractType == ContractType.Courier ? "Starting " :
+            var prefix = contract.ContractType == ContractType.Courier ? "Starting " :
                 string.Empty;
-            string startSS = contract.StartStation.SolarSystem?.FullLocation ??
-                EveMonConstants.UnknownText;
+            var startSS = contract.StartStation.SolarSystem?.FullLocation ??
+                          EveMonConstants.UnknownText;
             builder.Append($"{prefix}Solar System: {startSS}").AppendLine();
             builder.Append($"{prefix}Station: {contract.StartStation.Name}").AppendLine();
 
             if (contract.ContractType == ContractType.Courier)
             {
-                string endSS = contract.EndStation.SolarSystem?.FullLocation ??
-                    EveMonConstants.UnknownText;
+                var endSS = contract.EndStation.SolarSystem?.FullLocation ??
+                            EveMonConstants.UnknownText;
                 builder.Append($"Ending Solar System: {endSS}").AppendLine();
                 builder.Append($"Ending Station: {contract.EndStation.Name}").AppendLine();
             }
@@ -573,14 +573,14 @@ namespace EVEMon.CharacterMonitoring
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (lvContracts.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += lvContracts.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -605,9 +605,9 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void UpdateSortVisualFeedback()
         {
-            foreach (ColumnHeader columnHeader in lvContracts.Columns.Cast<ColumnHeader>())
+            foreach (var columnHeader in lvContracts.Columns.Cast<ColumnHeader>())
             {
-                ContractColumn column = (ContractColumn)columnHeader.Tag;
+                var column = (ContractColumn)columnHeader.Tag;
                 if (m_sortCriteria == column)
                     columnHeader.ImageIndex = m_sortAscending ? 0 : 1;
                 else
@@ -722,7 +722,7 @@ namespace EVEMon.CharacterMonitoring
                     $"{contract.DaysToComplete} Day{(contract.DaysToComplete.S())}";
                 break;
             case ContractColumn.Expiration:
-                ListViewItemFormat format = FormatExpiration(contract);
+                var format = FormatExpiration(contract);
                 item.Text = format.Text;
                 item.ForeColor = format.TextColor;
                 break;
@@ -770,7 +770,7 @@ namespace EVEMon.CharacterMonitoring
         private static ListViewItemFormat FormatExpiration(Contract contract)
         {
             // Initialize to sensible defaults
-            ListViewItemFormat format = new ListViewItemFormat
+            var format = new ListViewItemFormat
             {
                 TextColor = Color.Black,
                 Text = contract.Expiration.ToRemainingTimeShortDescription(DateTimeKind.Utc)
@@ -875,7 +875,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void lvContracts_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            ContractColumn column = (ContractColumn)lvContracts.Columns[e.Column].Tag;
+            var column = (ContractColumn)lvContracts.Columns[e.Column].Tag;
             if (m_sortCriteria == column)
                 m_sortAscending = !m_sortAscending;
             else
@@ -917,7 +917,7 @@ namespace EVEMon.CharacterMonitoring
 
             lvContracts.Cursor = CustomCursors.ContextMenu;
 
-            ListViewItem item = lvContracts.GetItemAt(e.Location.X, e.Location.Y);
+            var item = lvContracts.GetItemAt(e.Location.X, e.Location.Y);
             if (item == null)
             {
                 m_tooltip.Hide();
@@ -954,7 +954,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.ComponentModel.CancelEventArgs"/> instance containing the event data.</param>
         private void contextMenu_Opening(object sender, CancelEventArgs e)
         {
-            bool visible = lvContracts.SelectedItems.Count != 0;
+            var visible = lvContracts.SelectedItems.Count != 0;
 
             showDetailsToolStripMenuItem.Visible =
                 showDetailsMenuSeparator.Visible =
@@ -964,7 +964,7 @@ namespace EVEMon.CharacterMonitoring
             if (!visible)
                 return;
 
-            Contract contract = lvContracts.SelectedItems[0]?.Tag as Contract;
+            var contract = lvContracts.SelectedItems[0]?.Tag as Contract;
 
             if (contract?.ContractItems == null)
                 return;
@@ -977,19 +977,19 @@ namespace EVEMon.CharacterMonitoring
             if (!visible)
                 return;
 
-            Item contractItem = contract.ContractItems.FirstOrDefault()?.Item;
+            var contractItem = contract.ContractItems.FirstOrDefault()?.Item;
 
             if (contractItem == null)
                 return;
 
-            Blueprint blueprint = StaticBlueprints.GetBlueprintByID(contractItem.ID);
-            Ship ship = contractItem as Ship;
-            Skill skill = Character.Skills[contractItem.ID];
+            var blueprint = StaticBlueprints.GetBlueprintByID(contractItem.ID);
+            var ship = contractItem as Ship;
+            var skill = Character.Skills[contractItem.ID];
 
             if (skill == Skill.UnknownSkill)
                 skill = null;
 
-            string text = ship != null ? "Ship" : blueprint != null ? "Blueprint" : skill != null ? "Skill" : "Item";
+            var text = ship != null ? "Ship" : blueprint != null ? "Blueprint" : skill != null ? "Skill" : "Item";
 
             showInBrowserMenuItem.Text = $"Show In {text} Browser...";
         }
@@ -1001,21 +1001,21 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void showInBrowserMenuItem_Click(object sender, EventArgs e)
         {
-            Contract contract = lvContracts.SelectedItems[0]?.Tag as Contract;
+            var contract = lvContracts.SelectedItems[0]?.Tag as Contract;
 
-            Item contractItem = contract?.ContractItems?.FirstOrDefault()?.Item;
+            var contractItem = contract?.ContractItems?.FirstOrDefault()?.Item;
 
             if (contractItem == null)
                 return;
 
-            Ship ship = contractItem as Ship;
-            Blueprint blueprint = StaticBlueprints.GetBlueprintByID(contractItem.ID);
-            Skill skill = Character.Skills[contractItem.ID];
+            var ship = contractItem as Ship;
+            var blueprint = StaticBlueprints.GetBlueprintByID(contractItem.ID);
+            var skill = Character.Skills[contractItem.ID];
 
             if (skill == Skill.UnknownSkill)
                 skill = null;
 
-            PlanWindow planWindow = PlanWindow.ShowPlanWindow(Character);
+            var planWindow = PlanWindow.ShowPlanWindow(Character);
 
             if (ship != null)
                 planWindow.ShowShipInBrowser(ship);
@@ -1097,7 +1097,7 @@ namespace EVEMon.CharacterMonitoring
             if (Character == null)
                 return;
 
-            foreach (Contract contract in m_list)
+            foreach (var contract in m_list)
             {
                 contract.UpdateStation();
             }

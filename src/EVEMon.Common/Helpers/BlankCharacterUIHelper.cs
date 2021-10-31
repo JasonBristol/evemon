@@ -248,7 +248,7 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         private static IEnumerable<SerializableCharacterSkill> GetSkillsForRace()
         {
-            Dictionary<int, int> startingSkills = GetStartingSkills();
+            var startingSkills = GetStartingSkills();
 
             return startingSkills.Select(
                 raceSkill => new
@@ -275,7 +275,7 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         private static Dictionary<int, int> GetStartingSkills()
         {
-            Dictionary<int, int> startingSkills = new Dictionary<int, int>();
+            var startingSkills = new Dictionary<int, int>();
 
             switch (Race)
             {
@@ -310,25 +310,25 @@ namespace EVEMon.Common.Helpers
         {
             callback.ThrowIfNull(nameof(callback));
 
-            SerializableCCPCharacter serial = CreateCharacter();
+            var serial = CreateCharacter();
 
-            using (SaveFileDialog fileDialog = new SaveFileDialog())
+            using (var fileDialog = new SaveFileDialog())
             {
                 fileDialog.Title = @"Save Blank Character";
                 fileDialog.Filter = @"Blank Character CCPXML (*.xml) | *.xml";
                 fileDialog.FileName = $"{serial.Name}.xml";
                 fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
-                DialogResult result = fileDialog.ShowDialog();
+                var result = fileDialog.ShowDialog();
                 if (result != DialogResult.OK)
                     return;
 
-                XmlDocument xmlDoc = (XmlDocument)Util.SerializeToXmlDocument(serial);
-                string content = Util.GetXmlStringRepresentation(xmlDoc);
+                var xmlDoc = (XmlDocument)Util.SerializeToXmlDocument(serial);
+                var content = Util.GetXmlStringRepresentation(xmlDoc);
                 await FileHelper.OverwriteOrWarnTheUserAsync(fileDialog.FileName,
                     async fs =>
                     {
-                        using (StreamWriter writer = new StreamWriter(fs, Encoding.UTF8))
+                        using (var writer = new StreamWriter(fs, Encoding.UTF8))
                         {
                             await writer.WriteAsync(content);
                             await writer.FlushAsync();
@@ -353,7 +353,7 @@ namespace EVEMon.Common.Helpers
             if (result == null || result.HasError)
                 return;
 
-            UriCharacter character = result.CreateCharacter();
+            var character = result.CreateCharacter();
             character.Monitored = true;
 
             callback.Invoke();

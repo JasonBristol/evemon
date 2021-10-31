@@ -54,9 +54,9 @@ namespace EVEMon.Common.Models.Collections
         /// <param name="src"></param>
         internal void Import(IEnumerable<SerializableOrderBase> src)
         {
-            long id = m_character.CharacterID;
+            var id = m_character.CharacterID;
             Items.Clear();
-            foreach (SerializableOrderBase srcOrder in src)
+            foreach (var srcOrder in src)
             {
                 if (srcOrder is SerializableBuyOrder)
                     Items.Add(new BuyOrder(srcOrder, m_character) { OwnerID = id });

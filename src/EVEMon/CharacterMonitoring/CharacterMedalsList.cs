@@ -140,7 +140,7 @@ namespace EVEMon.CharacterMonitoring
                 return;
             }
 
-            int scrollBarPosition = lbMedals.TopIndex;
+            var scrollBarPosition = lbMedals.TopIndex;
 
             // Update the medals list
             lbMedals.BeginUpdate();
@@ -151,11 +151,11 @@ namespace EVEMon.CharacterMonitoring
                 IList<Medal> medals = Character.CharacterMedals.Distinct(new MedalComparer())
                     .Where(medal => medal.TryAssignMissingTitleAndDescription()).ToList();
 
-                IEnumerable<IGrouping<MedalGroup, Medal>> groups = medals.GroupBy(x => x.Group);
+                var groups = medals.GroupBy(x => x.Group);
 
                 // Scroll through groups
                 lbMedals.Items.Clear();
-                foreach (IGrouping<MedalGroup, Medal> group in groups)
+                foreach (var group in groups)
                 {
                     lbMedals.Items.Add(group.Key.GetDescription());
 
@@ -164,7 +164,7 @@ namespace EVEMon.CharacterMonitoring
                         continue;
 
                     // Prevents multi rewarded medals to be drawn
-                    foreach (Medal medal in group)
+                    foreach (var medal in group)
                     {
                         lbMedals.Items.Add(medal);
                     }
@@ -199,8 +199,8 @@ namespace EVEMon.CharacterMonitoring
             if (e.Index < 0 || e.Index >= lbMedals.Items.Count)
                 return;
 
-            object item = lbMedals.Items[e.Index];
-            Medal medal = item as Medal;
+            var item = lbMedals.Items[e.Index];
+            var medal = item as Medal;
             if (medal != null)
                 DrawItem(medal, e);
             else
@@ -238,22 +238,22 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void DrawItem(Medal medal, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // Draw background
             g.FillRectangle(e.Index % 2 == 0 ? Brushes.White : Brushes.LightGray, e.Bounds);
 
             // Texts
-            string medalTitleText = medal.Title;
-            string medalDescriptionText = medal.Description;
-            string medalStatusText = medal.Status.ToTitleCase();
-            string medalTimesAwardedText = $"Number of times awarded: {medal.TimesAwarded:N0}";
+            var medalTitleText = medal.Title;
+            var medalDescriptionText = medal.Description;
+            var medalStatusText = medal.Status.ToTitleCase();
+            var medalTimesAwardedText = $"Number of times awarded: {medal.TimesAwarded:N0}";
 
             // Measure texts
-            Size medalTitleTextSize = TextRenderer.MeasureText(g, medalTitleText, m_medalsBoldFont, Size.Empty, Format);
-            Size medalDescriptionTextSize = TextRenderer.MeasureText(g, medalDescriptionText, m_medalsFont, Size.Empty, Format);
-            Size medalStatusTextSize = TextRenderer.MeasureText(g, medalStatusText, m_medalsBoldFont, Size.Empty, Format);
-            Size medalTimesAwardedTextSize = TextRenderer.MeasureText(g, medalTimesAwardedText, m_medalsFont, Size.Empty, Format);
+            var medalTitleTextSize = TextRenderer.MeasureText(g, medalTitleText, m_medalsBoldFont, Size.Empty, Format);
+            var medalDescriptionTextSize = TextRenderer.MeasureText(g, medalDescriptionText, m_medalsFont, Size.Empty, Format);
+            var medalStatusTextSize = TextRenderer.MeasureText(g, medalStatusText, m_medalsBoldFont, Size.Empty, Format);
+            var medalTimesAwardedTextSize = TextRenderer.MeasureText(g, medalTimesAwardedText, m_medalsFont, Size.Empty, Format);
 
             // Draw texts
             TextRenderer.DrawText(g, medalTitleText, m_medalsBoldFont,
@@ -297,16 +297,16 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void DrawItem(string group, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // Draws the background
-            using (LinearGradientBrush lgb = new LinearGradientBrush(new PointF(0F, 0F), new PointF(0F, 21F),
+            using (var lgb = new LinearGradientBrush(new PointF(0F, 0F), new PointF(0F, 21F),
                                                                      Color.FromArgb(75, 75, 75), Color.FromArgb(25, 25, 25)))
             {
                 g.FillRectangle(lgb, e.Bounds);
             }
 
-            using (Pen p = new Pen(Color.FromArgb(100, 100, 100)))
+            using (var p = new Pen(Color.FromArgb(100, 100, 100)))
             {
                 g.DrawLine(p, e.Bounds.Left, e.Bounds.Top, e.Bounds.Right + 1, e.Bounds.Top);
             }
@@ -315,9 +315,9 @@ namespace EVEMon.CharacterMonitoring
             NativeMethods.SetTextCharacterSpacing(g, 4);
 
             // Measure texts
-            Size standingGroupTextSize = TextRenderer.MeasureText(g, group.ToUpper(CultureConstants.DefaultCulture),
+            var standingGroupTextSize = TextRenderer.MeasureText(g, group.ToUpper(CultureConstants.DefaultCulture),
                                                                   m_medalsBoldFont, Size.Empty, Format);
-            Rectangle standingGroupTextRect = new Rectangle(e.Bounds.Left + PadLeft,
+            var standingGroupTextRect = new Rectangle(e.Bounds.Left + PadLeft,
                                                             e.Bounds.Top +
                                                             (e.Bounds.Height / 2 - standingGroupTextSize.Height / 2),
                                                             standingGroupTextSize.Width + PadRight,
@@ -328,7 +328,7 @@ namespace EVEMon.CharacterMonitoring
                                   Color.White, Color.Transparent, Format);
 
             // Draws the collapsing arrows
-            bool isCollapsed = m_collapsedGroups.Contains(group);
+            var isCollapsed = m_collapsedGroups.Contains(group);
             Image img = isCollapsed ? Resources.Expand : Resources.Collapse;
 
             g.DrawImageUnscaled(img, new Rectangle(e.Bounds.Right - img.Width - CollapserPadRight,
@@ -359,15 +359,15 @@ namespace EVEMon.CharacterMonitoring
                 return;
 
             // Update the drawing based upon the mouse wheel scrolling
-            int numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
-            int lines = numberOfItemLinesToMove;
+            var numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
+            var lines = numberOfItemLinesToMove;
             if (lines == 0)
                 return;
 
             // Compute the number of lines to move
-            int direction = lines / Math.Abs(lines);
-            int[] numberOfPixelsToMove = new int[lines * direction];
-            for (int i = 1; i <= Math.Abs(lines); i++)
+            var direction = lines / Math.Abs(lines);
+            var numberOfPixelsToMove = new int[lines * direction];
+            for (var i = 1; i <= Math.Abs(lines); i++)
             {
                 object item = null;
 
@@ -382,8 +382,8 @@ namespace EVEMon.CharacterMonitoring
                 else
                 {
                     // Compute the height of the items from current the topindex (included)
-                    int height = 0;
-                    for (int j = lbMedals.TopIndex + i - 1; j < lbMedals.Items.Count; j++)
+                    var height = 0;
+                    for (var j = lbMedals.TopIndex + i - 1; j < lbMedals.Items.Count; j++)
                     {
                         height += GetItemHeight(lbMedals.Items[j]);
                     }
@@ -412,7 +412,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.Windows.Forms.MouseEventArgs"/> instance containing the event data.</param>
         private void lbMedals_MouseDown(object sender, MouseEventArgs e)
         {
-            int index = lbMedals.IndexFromPoint(e.Location);
+            var index = lbMedals.IndexFromPoint(e.Location);
             if (index < 0 || index >= lbMedals.Items.Count)
                 return;
 
@@ -428,8 +428,8 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // For a medals group, we have to handle the collapse/expand mechanism
-            object item = lbMedals.Items[index];
-            string standingsGroup = item as string;
+            var item = lbMedals.Items[index];
+            var standingsGroup = item as string;
             if (standingsGroup == null)
                 return;
 
@@ -442,7 +442,7 @@ namespace EVEMon.CharacterMonitoring
 
             // If right click on the button, still expand/collapse
             itemRect = lbMedals.GetItemRectangle(lbMedals.Items.IndexOf(item));
-            Rectangle buttonRect = GetButtonRectangle(standingsGroup, itemRect);
+            var buttonRect = GetButtonRectangle(standingsGroup, itemRect);
             if (buttonRect.Contains(e.Location))
                 ToggleGroupExpandCollapse(standingsGroup);
         }
@@ -454,14 +454,14 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void lbMedals_MouseMove(object sender, MouseEventArgs e)
         {
-            for (int i = 0; i < lbMedals.Items.Count; i++)
+            for (var i = 0; i < lbMedals.Items.Count; i++)
             {
                 // Skip until we found the mouse location
-                Rectangle rect = lbMedals.GetItemRectangle(i);
+                var rect = lbMedals.GetItemRectangle(i);
                 if (!rect.Contains(e.Location))
                     continue;
 
-                Medal item = lbMedals.Items[i] as Medal;
+                var item = lbMedals.Items[i] as Medal;
 
                 // Updates the tooltip
                 if (item == null)
@@ -504,7 +504,7 @@ namespace EVEMon.CharacterMonitoring
         /// <returns></returns>
         private static string GetTooltipText(Medal item)
         {
-            StringBuilder toolTip = new StringBuilder();
+            var toolTip = new StringBuilder();
             toolTip
                 .Append($"Issuer: {item.Issuer}")
                 .AppendLine()
@@ -550,13 +550,13 @@ namespace EVEMon.CharacterMonitoring
         private Rectangle GetButtonRectangle(string group, Rectangle itemRect)
         {
             // Checks whether this group is collapsed
-            bool isCollapsed = m_collapsedGroups.Contains(group);
+            var isCollapsed = m_collapsedGroups.Contains(group);
 
             // Get the image for this state
             Image btnImage = isCollapsed ? Resources.Expand : Resources.Collapse;
 
             // Compute the top left point
-            Point btnPoint = new Point(itemRect.Right - btnImage.Width - CollapserPadRight,
+            var btnPoint = new Point(itemRect.Right - btnImage.Width - CollapserPadRight,
                                        MedalGroupHeaderHeight / 2 - btnImage.Height / 2 + itemRect.Top);
 
             return new Rectangle(btnPoint, btnImage.Size);

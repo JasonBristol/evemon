@@ -71,7 +71,7 @@ namespace EVEMon.Common.Controls.MultiPanel
                 owner.ThrowIfNull(nameof(owner), "Tried to create a MultiPanelPage.ControlCollection with a null owner.");
 
                 // Should not happen
-                MultiPanelPage c = owner as MultiPanelPage;
+                var c = owner as MultiPanelPage;
                 if (c == null)
                 {
                     throw new ArgumentException(
@@ -89,7 +89,7 @@ namespace EVEMon.Common.Controls.MultiPanel
             {
                 value.ThrowIfNull(nameof(value), "Tried to add a null value to the MultiPanelPage.ControlCollection.");
 
-                MultiPanelPage p = value as MultiPanelPage;
+                var p = value as MultiPanelPage;
                 if (p != null)
                 {
                     throw new ArgumentException("Tried to add a MultiPanelPage control to the MultiPanelPage.ControlCollection.",

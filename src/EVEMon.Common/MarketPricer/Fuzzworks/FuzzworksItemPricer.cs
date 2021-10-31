@@ -93,7 +93,7 @@ namespace EVEMon.Common.MarketPricer.Fuzzworks
             else
                 SelectedProviderName = Name;
 
-            string file = LocalXmlCache.GetFileInfo(Filename).FullName;
+            var file = LocalXmlCache.GetFileInfo(Filename).FullName;
 
             // Exit if we have already imported the list
             if (Loaded)
@@ -131,7 +131,7 @@ namespace EVEMon.Common.MarketPricer.Fuzzworks
         /// <param name="itemPrices">The item prices.</param>
         private static void Import(IEnumerable<SerializableECItemPriceListItem> itemPrices)
         {
-            foreach (SerializableECItemPriceListItem item in itemPrices)
+            foreach (var item in itemPrices)
             {
                 PriceByItemID[item.ID] = item.Prices.Average;
             }
@@ -145,7 +145,7 @@ namespace EVEMon.Common.MarketPricer.Fuzzworks
         {
             foreach (var pair in itemPrices)
                 // IDs in JSON cannot be integers
-                if (int.TryParse(pair.Key, out int id))
+                if (int.TryParse(pair.Key, out var id))
                 {
                     var item = pair.Value;
 
@@ -174,7 +174,7 @@ namespace EVEMon.Common.MarketPricer.Fuzzworks
                     if (s_queue.Count == 0)
                         return;
                     idsToQuery.Clear();
-                    for (int i = 0; i < MAX_QUERY && s_queue.Count > 0; i++)
+                    for (var i = 0; i < MAX_QUERY && s_queue.Count > 0; i++)
                         idsToQuery.Add(s_queue.Dequeue());
                 }
 
@@ -197,7 +197,7 @@ namespace EVEMon.Common.MarketPricer.Fuzzworks
         private static string GetQueryString(IReadOnlyCollection<int> idsToQuery)
         {
             var sb = new StringBuilder(256);
-            foreach (int i in idsToQuery)
+            foreach (var i in idsToQuery)
             {
                 sb.Append(i);
 
@@ -286,7 +286,7 @@ namespace EVEMon.Common.MarketPricer.Fuzzworks
         /// <returns></returns>
         private static SerializableECItemPrices Export()
         {
-            IEnumerable<SerializableECItemPriceListItem> entitiesList = PriceByItemID
+            var entitiesList = PriceByItemID
                 .OrderBy(x => x.Key)
                 .Select(
                     item =>
@@ -296,7 +296,7 @@ namespace EVEMon.Common.MarketPricer.Fuzzworks
                             Prices = new SerializableECItemPriceItem { Average = item.Value }
                         });
 
-            SerializableECItemPrices serial = new SerializableECItemPrices();
+            var serial = new SerializableECItemPrices();
             serial.ItemPrices.AddRange(entitiesList);
 
             return serial;

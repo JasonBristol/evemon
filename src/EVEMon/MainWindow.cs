@@ -393,7 +393,7 @@ namespace EVEMon
                 return;
             }
 
-            using (TimeCheckNotification timeDialog = new TimeCheckNotification(e.ServerTimeToLocalTime, e.LocalTime))
+            using (var timeDialog = new TimeCheckNotification(e.ServerTimeToLocalTime, e.LocalTime))
             {
                 timeDialog.ShowDialog(this);
             }
@@ -455,18 +455,18 @@ namespace EVEMon
 
             try
             {
-                TabPage selectedTab = tcCharacterTabs.SelectedTab;
+                var selectedTab = tcCharacterTabs.SelectedTab;
 
                 // Collect the existing pages
-                Dictionary<Character, TabPage> pages = tcCharacterTabs.TabPages.Cast<TabPage>().Where(
+                var pages = tcCharacterTabs.TabPages.Cast<TabPage>().Where(
                     page => page.Tag is Character).ToDictionary(page => (Character)page.Tag);
 
                 // Rebuild the pages
-                int index = 0;
-                foreach (Character character in EveMonClient.MonitoredCharacters)
+                var index = 0;
+                foreach (var character in EveMonClient.MonitoredCharacters)
                 {
                     // Retrieve the current page, or null if we're past the limits
-                    TabPage currentPage = index < tcCharacterTabs.TabCount ? tcCharacterTabs.TabPages[index] : null;
+                    var currentPage = index < tcCharacterTabs.TabCount ? tcCharacterTabs.TabPages[index] : null;
 
                     // Is it the overview ? We'll deal with it later
                     if (currentPage == tpOverview)
@@ -501,7 +501,7 @@ namespace EVEMon
                 AddOverviewTab();
 
                 // Dispose the removed tabs
-                foreach (TabPage page in pages.Values)
+                foreach (var page in pages.Values)
                 {
                     page.Dispose();
                 }
@@ -530,7 +530,7 @@ namespace EVEMon
             if (Settings.UI.MainWindow.ShowOverview)
             {
                 // Trim the overview page index
-                int overviewIndex = Math.Max(0, Math.Min(tcCharacterTabs.TabCount - 1,
+                var overviewIndex = Math.Max(0, Math.Min(tcCharacterTabs.TabCount - 1,
                     Settings.UI.MainWindow.OverviewIndex));
 
                 // Inserts it if it doesn't exist
@@ -601,7 +601,7 @@ namespace EVEMon
                 tempMonitor.Parent = tabPage;
                 tempMonitor.Dock = DockStyle.Fill;
 
-                CharacterMonitor monitor = tempMonitor;
+                var monitor = tempMonitor;
                 tempMonitor = null;
                 tabPage.Controls.Add(monitor);
             }
@@ -620,7 +620,7 @@ namespace EVEMon
         {
             Settings.UI.MainWindow.OverviewIndex = tcCharacterTabs.TabPages.IndexOf(tpOverview);
 
-            IEnumerable<Character> order = tcCharacterTabs.TabPages.Cast<TabPage>().Where(
+            var order = tcCharacterTabs.TabPages.Cast<TabPage>().Where(
                 page => page.Tag is Character).Select(page => page.Tag as Character);
 
             m_isUpdatingTabOrder = true;
@@ -644,7 +644,7 @@ namespace EVEMon
         private void UpdateControlsOnTabSelectionChange()
         {
             // Enable or disable the menu buttons
-            foreach (ToolStripItem item in m_characterEnabledMenuItems)
+            foreach (var item in m_characterEnabledMenuItems)
             {
                 item.Enabled = GetCurrentCharacter() != null;
             }
@@ -657,7 +657,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private void overview_CharacterClicked(object sender, CharacterChangedEventArgs e)
         {
-            foreach (TabPage tab in tcCharacterTabs.TabPages.Cast<TabPage>().Select(
+            foreach (var tab in tcCharacterTabs.TabPages.Cast<TabPage>().Select(
                 tab => new { tab, character = tab.Tag as Character }).Where(
                     tab => tab.character == e.Character).Select(character => character.tab))
             {
@@ -730,8 +730,8 @@ namespace EVEMon
             UpdateNotifications();
 
             // Takes care of the tooltip
-            NotificationCategorySettings catSettings = Settings.Notifications.Categories[e.Category];
-            ToolTipNotificationBehaviour behaviour = catSettings.ToolTipBehaviour;
+            var catSettings = Settings.Notifications.Categories[e.Category];
+            var behaviour = catSettings.ToolTipBehaviour;
             if (behaviour == ToolTipNotificationBehaviour.Never)
                 return;
 
@@ -739,7 +739,7 @@ namespace EVEMon
             m_popupNotifications.Add(e);
 
             // Group by API key
-            IEnumerable<IGrouping<long, NotificationEventArgs>> groups = m_popupNotifications
+            var groups = m_popupNotifications
                 .GroupBy(
                     notification =>
                     {
@@ -762,8 +762,8 @@ namespace EVEMon
                     });
 
             // Add every group, order by character's name, accounts being on top
-            List<NotificationEventArgs> newList = new List<NotificationEventArgs>();
-            foreach (IGrouping<long, NotificationEventArgs> group in groups)
+            var newList = new List<NotificationEventArgs>();
+            foreach (var group in groups)
             {
                 newList.AddRange(group.OrderBy(x => x.SenderCharacter?.Name ?? string.Empty));
             }
@@ -817,25 +817,25 @@ namespace EVEMon
             int maxlevel = 0,
                 textlenght = 0,
                 count = 0;
-            object lastSender = m_popupNotifications[0].Sender;
-            StringBuilder builder = new StringBuilder();
+            var lastSender = m_popupNotifications[0].Sender;
+            var builder = new StringBuilder();
 
             // We build the tooltip notification text
-            foreach (NotificationEventArgs notification in m_popupNotifications)
+            foreach (var notification in m_popupNotifications)
             {
                 // Tooltip notification text space is limited 
                 // so we apply restrains in how many notifications will be shown
                 if (textlenght <= 100)
                 {
-                    bool senderIsCharacter = (notification.Sender != null) &&
-                                             (notification.Sender == notification.SenderCharacter);
+                    var senderIsCharacter = (notification.Sender != null) &&
+                                            (notification.Sender == notification.SenderCharacter);
 
-                    bool senderIsCorporation = (notification.Sender != null) &&
-                                               (notification.Sender == notification.SenderCorporation);
+                    var senderIsCorporation = (notification.Sender != null) &&
+                                              (notification.Sender == notification.SenderCorporation);
 
-                    string tooltipText = notification.ToString();
+                    var tooltipText = notification.ToString();
                     maxlevel = Math.Max(maxlevel, (int)notification.Priority);
-                    int level = (int)notification.Priority;
+                    var level = (int)notification.Priority;
 
                     if (notification.Sender != lastSender)
                         builder.AppendLine();
@@ -928,7 +928,7 @@ namespace EVEMon
                 return;
 
             // Play the sound
-            using (SoundPlayer sp = new SoundPlayer(Resources.SkillTrained))
+            using (var sp = new SoundPlayer(Resources.SkillTrained))
             {
                 sp.Play();
             }
@@ -1013,7 +1013,7 @@ namespace EVEMon
             if (WindowState == FormWindowState.Minimized)
                 return;
 
-            DateTime serverTime = EveMonClient.EVEServer?.ServerDateTime ?? DateTime.UtcNow;
+            var serverTime = EveMonClient.EVEServer?.ServerDateTime ?? DateTime.UtcNow;
             lblStatus.Text = $"EVE Time: {serverTime:HH:mm}";
             lblStatus.ToolTipText = $"YC{serverTime.Year - 1898} ({serverTime.Date.ToShortDateString()})";
         }
@@ -1036,21 +1036,21 @@ namespace EVEMon
             StringBuilder builder;
 
             // Retrieve the selected character
-            CCPCharacter selectedChar = GetCurrentCharacter() as CCPCharacter;
+            var selectedChar = GetCurrentCharacter() as CCPCharacter;
 
-            int trimTimeSpanComponents = 0;
+            var trimTimeSpanComponents = 0;
 
             do
             {
                 builder = new StringBuilder();
 
                 // Scroll through the ordered list of chars in training
-                SortedList<TimeSpan, CCPCharacter> orderedTrainingTimes = GetOrderedCharactersTrainingTime();
-                foreach (TimeSpan ts in orderedTrainingTimes.Keys)
+                var orderedTrainingTimes = GetOrderedCharactersTrainingTime();
+                foreach (var ts in orderedTrainingTimes.Keys)
                 {
-                    CCPCharacter character = orderedTrainingTimes[ts];
+                    var character = orderedTrainingTimes[ts];
 
-                    TimeSpan trimmedTime = ts;
+                    var trimmedTime = ts;
 
                     // First pass we remove the seconds from the TimeSpan,
                     // if training time is over one minute
@@ -1090,7 +1090,7 @@ namespace EVEMon
                             if (selectedChar == character)
                             {
                                 // Precreate the string for this char
-                                StringBuilder subBuilder = new StringBuilder();
+                                var subBuilder = new StringBuilder();
                                 subBuilder.Append(AppendCharacterTrainingTime(character, trimmedTime));
                                 if (builder.Length > 0)
                                     subBuilder.Append(" | ");
@@ -1115,7 +1115,7 @@ namespace EVEMon
             while (builder.Length > MaxTitleLength && trimTimeSpanComponents < 3);
 
             // Adds EVEMon at the end if there is space in the title bar
-            string appSuffix = $" - {EveMonClient.FileVersionInfo.ProductName}";
+            var appSuffix = $" - {EveMonClient.FileVersionInfo.ProductName}";
             if (builder.Length + appSuffix.Length <= MaxTitleLength)
                 builder.Append(appSuffix);
 
@@ -1130,7 +1130,7 @@ namespace EVEMon
         /// <returns></returns>
         private SortedList<TimeSpan, CCPCharacter> GetOrderedCharactersTrainingTime()
         {
-            SortedList<TimeSpan, CCPCharacter> sortedList = new SortedList<TimeSpan, CCPCharacter>();
+            var sortedList = new SortedList<TimeSpan, CCPCharacter>();
             foreach (TabPage tp in tcCharacterTabs.TabPages)
             {
                 // Is it a character bound to CCP ?
@@ -1138,11 +1138,11 @@ namespace EVEMon
                     continue;
 
                 // Is it in training ?
-                CCPCharacter character = tp.Tag as CCPCharacter;
+                var character = tp.Tag as CCPCharacter;
                 if (!character.IsTraining)
                     continue;
 
-                TimeSpan ts = character.CurrentlyTrainingSkill.RemainingTime;
+                var ts = character.CurrentlyTrainingSkill.RemainingTime;
 
                 // While the timespan is not unique, we add 1ms
                 while (sortedList.ContainsKey(ts))
@@ -1166,7 +1166,7 @@ namespace EVEMon
         /// <returns></returns>
         private static string AppendCharacterTrainingTime(Character character, TimeSpan time)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
 
             builder.Append($"{time.ToDescriptiveText(DescriptiveTextOptions.None)} {character.Name}");
 
@@ -1197,7 +1197,7 @@ namespace EVEMon
             // New release of the same major version available
             if (!string.IsNullOrWhiteSpace(e.UpdateMessage))
             {
-                using (UpdateNotifyForm form = new UpdateNotifyForm(e))
+                using (var form = new UpdateNotifyForm(e))
                 {
                     if (form.ShowDialog() == DialogResult.OK)
                     {
@@ -1212,9 +1212,9 @@ namespace EVEMon
             // new major version release
             else
             {
-                string message = $"A new version ({e.NewestVersion}) is available at " +
-                    $"{NetworkConstants.EVEMonMainPage}.{Environment.NewLine}" +
-                    $"{Environment.NewLine}Your current version is: {e.CurrentVersion}.";
+                var message = $"A new version ({e.NewestVersion}) is available at " +
+                              $"{NetworkConstants.EVEMonMainPage}.{Environment.NewLine}" +
+                              $"{Environment.NewLine}Your current version is: {e.CurrentVersion}.";
                     
                 MessageBoxCustom.Show(this, message, @"EVEMon Update Available", "Ignore this upgrade",
                     icon: MessageBoxIcon.Information);
@@ -1238,7 +1238,7 @@ namespace EVEMon
                 return;
 
             m_isShowingDataUpdateWindow = true;
-            using (DataUpdateNotifyForm form = new DataUpdateNotifyForm(e))
+            using (var form = new DataUpdateNotifyForm(e))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                     await RestartApplicationAsync();
@@ -1257,7 +1257,7 @@ namespace EVEMon
             await Settings.SaveImmediateAsync();
 
             // Try to save settings to cloud storage service provider
-            bool canExit = await TryUploadToCloudStorageProviderAsync();
+            var canExit = await TryUploadToCloudStorageProviderAsync();
             if (!canExit)
                 return;
 
@@ -1265,14 +1265,14 @@ namespace EVEMon
             m_isUpdatingData = true;
 
             // Find the expected path for 'EVEMon.Watchdog.exe'
-            string executable = typeof(WatchdogWindow).Assembly.Location;
+            var executable = typeof(WatchdogWindow).Assembly.Location;
 
             // If the 'Watchdog' exist start the process
             if (File.Exists(executable))
             {
                 try
                 {
-                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    var startInfo = new ProcessStartInfo
                     {
                         FileName = executable,
                         Arguments = string.Join(" ", Environment.GetCommandLineArgs()),
@@ -1302,7 +1302,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private void addAPIKeyMenu_Click(object sender, EventArgs e)
         {
-            using (EsiKeyUpdateOrAdditionWindow window = new EsiKeyUpdateOrAdditionWindow())
+            using (var window = new EsiKeyUpdateOrAdditionWindow())
             {
                 window.ShowDialog(this);
             }
@@ -1316,7 +1316,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private void manageAPIKeysMenuItem_Click(object sender, EventArgs e)
         {
-            using (EsiKeysManagementWindow window = new EsiKeysManagementWindow())
+            using (var window = new EsiKeysManagementWindow())
             {
                 window.ShowDialog(this);
             }
@@ -1332,7 +1332,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private void hideCharacterMenu_Click(object sender, EventArgs e)
         {
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
             if (character == null)
                 return;
 
@@ -1349,11 +1349,11 @@ namespace EVEMon
         /// <param name="e"></param>
         private void deleteCharacterMenu_Click(object sender, EventArgs e)
         {
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
             if (character == null)
                 return;
 
-            using (CharacterDeletionWindow window = new CharacterDeletionWindow(character))
+            using (var window = new CharacterDeletionWindow(character))
             {
                 window.ShowDialog(this);
             }
@@ -1370,7 +1370,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private async void saveCharacterInfosMenuItem_Click(object sender, EventArgs e)
         {
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
             if (character == null)
                 return;
 
@@ -1387,7 +1387,7 @@ namespace EVEMon
         {
             // Prompts the user for a location
             saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            DialogResult result = saveFileDialog.ShowDialog();
+            var result = saveFileDialog.ShowDialog();
 
             // Copy settings if OK
             if (result == DialogResult.OK)
@@ -1440,7 +1440,7 @@ namespace EVEMon
         private void clearCacheToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Manually delete the Settings file for any non-recoverable errors
-            DialogResult dr = MessageBox.Show(Properties.Resources.PromptClearCache,
+            var dr = MessageBox.Show(Properties.Resources.PromptClearCache,
                 @"Confirm Cache Clearing", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                 MessageBoxDefaultButton.Button2);
 
@@ -1457,7 +1457,7 @@ namespace EVEMon
         private async void resetSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Manually delete the Settings file for any non-recoverable errors
-            DialogResult dr = MessageBox.Show(Properties.Resources.PromptResetSettings,
+            var dr = MessageBox.Show(Properties.Resources.PromptResetSettings,
                 @"Confirm Settings Reset", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                 MessageBoxDefaultButton.Button2);
 
@@ -1491,7 +1491,7 @@ namespace EVEMon
         private async void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Try to save settings to cloud storage service provider
-            bool canExit = await TryUploadToCloudStorageProviderAsync();
+            var canExit = await TryUploadToCloudStorageProviderAsync();
 
             if (canExit)
                 Application.Exit();
@@ -1505,7 +1505,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private void editToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
             copySkillsToClipboardBBFormatToolStripMenuItem.Enabled = character != null;
         }
 
@@ -1516,7 +1516,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private void copySkillsToClipboardBBFormatToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
             if (character == null)
                 return;
 
@@ -1543,17 +1543,17 @@ namespace EVEMon
         /// <param name="e"></param>
         private void plansToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
 
             // Enable or disable items
             tsmiNewPlan.Enabled = tsmiImportPlanFromFile.Enabled =
                 tsmiManagePlans.Enabled = plansSeparator.Visible = (character != null);
 
-            CCPCharacter ccpCharacter = character as CCPCharacter;
+            var ccpCharacter = character as CCPCharacter;
             tsmiCreatePlanFromSkillQueue.Enabled = ccpCharacter != null && ccpCharacter.SkillQueue.Any();
 
             // Remove everything after the separator
-            int index = plansToolStripMenuItem.DropDownItems.IndexOf(plansSeparator) + 1;
+            var index = plansToolStripMenuItem.DropDownItems.IndexOf(plansSeparator) + 1;
             while (plansToolStripMenuItem.DropDownItems.Count > index)
             {
                 plansToolStripMenuItem.DropDownItems.RemoveAt(index);
@@ -1571,15 +1571,15 @@ namespace EVEMon
         /// <param name="e"></param>
         private void tsmiNewPlan_Click(object sender, EventArgs e)
         {
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
             if (character == null)
                 return;
 
             // Ask the user for a new name
             Plan newPlan;
-            using (NewPlanWindow npw = new NewPlanWindow())
+            using (var npw = new NewPlanWindow())
             {
-                DialogResult dr = npw.ShowDialog();
+                var dr = npw.ShowDialog();
                 if (dr == DialogResult.Cancel)
                     return;
 
@@ -1605,19 +1605,19 @@ namespace EVEMon
         /// <param name="e"></param>
         private void tsmiCreatePlanFromSkillQueue_Click(object sender, EventArgs e)
         {
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
 
             if (character == null)
                 return;
 
             // Create new plan
-            Plan newPlan = PlanWindow.CreateNewPlan(character, EveMonConstants.CurrentSkillQueueText);
+            var newPlan = PlanWindow.CreateNewPlan(character, EveMonConstants.CurrentSkillQueueText);
 
             if (newPlan == null)
                 return;
 
             // Add skill queue to new plan and insert it on top of the plans
-            bool planCreated = PlanIOHelper.CreatePlanFromCharacterSkillQueue(newPlan, character);
+            var planCreated = PlanIOHelper.CreatePlanFromCharacterSkillQueue(newPlan, character);
 
             // Show the editor for this plan
             if (planCreated)
@@ -1631,27 +1631,27 @@ namespace EVEMon
         /// <param name="e"></param>
         private void tsmiImportPlanFromFile_Click(object sender, EventArgs e)
         {
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
 
             // Prompt the user to select a file
-            DialogResult dr = ofdOpenDialog.ShowDialog();
+            var dr = ofdOpenDialog.ShowDialog();
             if (dr == DialogResult.Cancel)
                 return;
 
             // Load from file and returns if an error occurred (user has already been warned)
-            SerializablePlan serial = PlanIOHelper.ImportFromXML(ofdOpenDialog.FileName);
+            var serial = PlanIOHelper.ImportFromXML(ofdOpenDialog.FileName);
             if (serial == null)
                 return;
 
             // Imports the plan
-            Plan loadedPlan = new Plan(character);
+            var loadedPlan = new Plan(character);
             loadedPlan.Import(serial);
 
             // Prompt the user for the plan name
-            using (NewPlanWindow npw = new NewPlanWindow())
+            using (var npw = new NewPlanWindow())
             {
                 npw.PlanName = Path.GetFileNameWithoutExtension(ofdOpenDialog.FileName);
-                DialogResult xdr = npw.ShowDialog();
+                var xdr = npw.ShowDialog();
                 if (xdr == DialogResult.Cancel)
                     return;
 
@@ -1669,7 +1669,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private void manageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
 
             if (character == null)
                 return;
@@ -1700,7 +1700,7 @@ namespace EVEMon
         private void planItem_Click(object sender, EventArgs e)
         {
             // Retrieve the plan
-            Plan plan = ((ToolStripMenuItem)sender)?.Tag as Plan;
+            var plan = ((ToolStripMenuItem)sender)?.Tag as Plan;
 
             // Show or bring to front if a window with the same plan as tag already exists
             PlanWindow.ShowPlanWindow(GetCurrentCharacter(), plan);
@@ -1725,7 +1725,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private void blankCreatorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (BlankCharacterWindow form = new BlankCharacterWindow())
+            using (var form = new BlankCharacterWindow())
             {
                 form.ShowDialog(this);
             }
@@ -1795,7 +1795,7 @@ namespace EVEMon
         private void tsSkillsPieChartTool_Click(object sender, EventArgs e)
         {
             // Return if no selected tab (cannot infere which character the chart should represent)
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
             if (character == null)
                 return;
 
@@ -1810,7 +1810,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private void manualImplantGroupsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
             if (character == null)
                 return;
 
@@ -1825,7 +1825,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private void tsShowOwnedSkillbooks_Click(object sender, EventArgs e)
         {
-            Character character = GetCurrentCharacter();
+            var character = GetCurrentCharacter();
             if (character == null)
                 return;
 
@@ -1840,7 +1840,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private void optionsMenuItem_Click(object sender, EventArgs e)
         {
-            using (SettingsForm form = new SettingsForm())
+            using (var form = new SettingsForm())
             {
                 form.ShowDialog(this);
             }
@@ -2009,7 +2009,7 @@ namespace EVEMon
         private static void CloseOpenWindowsOf(Character character)
         {
             // Close any open Skill Planner window
-            foreach (Plan plan in character.Plans)
+            foreach (var plan in character.Plans)
             {
                 WindowsFactory.GetAndCloseByTag<PlanWindow, Plan>(plan);
             }
@@ -2024,7 +2024,7 @@ namespace EVEMon
             WindowsFactory.GetAndCloseByTag<OwnedSkillBooksWindow, Character>(character);
 
             // Now CCP character related windows
-            CCPCharacter ccpCharacter = character as CCPCharacter;
+            var ccpCharacter = character as CCPCharacter;
 
             if (ccpCharacter == null)
                 return;
@@ -2033,25 +2033,25 @@ namespace EVEMon
             WindowsFactory.GetAndCloseByTag<WalletJournalChartWindow, CCPCharacter>(ccpCharacter);
 
             // Close any open EVE Mail window
-            foreach (EveMailMessage mailMessage in ccpCharacter.EVEMailMessages)
+            foreach (var mailMessage in ccpCharacter.EVEMailMessages)
             {
                 WindowsFactory.GetAndCloseByTag<EveMessageWindow, EveMailMessage>(mailMessage);
             }
 
             // Close any open EVE Notification window
-            foreach (EveNotification eveNotification in ccpCharacter.EVENotifications)
+            foreach (var eveNotification in ccpCharacter.EVENotifications)
             {
                 WindowsFactory.GetAndCloseByTag<EveMessageWindow, EveNotification>(eveNotification);
             }
 
             // Close any open Contract Details window
-            foreach (Contract contract in ccpCharacter.Contracts)
+            foreach (var contract in ccpCharacter.Contracts)
             {
                 WindowsFactory.GetAndCloseByTag<ContractDetailsWindow, Contract>(contract);
             }
 
             // Close any open Kill Report window
-            foreach (KillLog killLog in ccpCharacter.KillLog)
+            foreach (var killLog in ccpCharacter.KillLog)
             {
                 WindowsFactory.GetAndCloseByTag<KillReportWindow, KillLog>(killLog);
             }
@@ -2072,7 +2072,7 @@ namespace EVEMon
             m_popupNotifications.Clear();
 
             // Clear all character monitor notifications
-            foreach (CharacterMonitor monitor in tcCharacterTabs.TabPages.Cast<TabPage>()
+            foreach (var monitor in tcCharacterTabs.TabPages.Cast<TabPage>()
                 .Select(tabPage => tabPage.Controls[0] as CharacterMonitor))
             {
                 monitor?.ClearNotifications();
@@ -2115,7 +2115,7 @@ namespace EVEMon
         private void trayIcon_Click(object sender, EventArgs e)
         {
             // Returns for right-button click
-            MouseEventArgs mouseClick = e as MouseEventArgs;
+            var mouseClick = e as MouseEventArgs;
             if (mouseClick != null && mouseClick.Button == MouseButtons.Right)
                 return;
 
@@ -2188,11 +2188,11 @@ namespace EVEMon
             HidePopup();
 
             // Create the Plans sub-menu
-            List<Character> characters = new List<Character>(EveMonClient.MonitoredCharacters);
+            var characters = new List<Character>(EveMonClient.MonitoredCharacters);
             characters.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
-            foreach (Character character in characters)
+            foreach (var character in characters)
             {
-                ToolStripMenuItem characterItem = new ToolStripMenuItem(character.Name);
+                var characterItem = new ToolStripMenuItem(character.Name);
                 planToolStripMenuItem.DropDownItems.Add(characterItem);
 
                 character.Plans.AddTo(characterItem.DropDownItems, InitializePlanItem);
@@ -2219,7 +2219,7 @@ namespace EVEMon
         private async void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Try to save settings to cloud storage service provider
-            bool canExit = await TryUploadToCloudStorageProviderAsync();
+            var canExit = await TryUploadToCloudStorageProviderAsync();
 
             if (canExit)
                 Application.Exit();
@@ -2318,12 +2318,12 @@ namespace EVEMon
             m_apiProviderName = EveMonClient.APIProviders.CurrentProvider.Name;
             EveMonClient.EVEServer.ForceUpdate();
 
-            foreach (ESIKey apiKey in EveMonClient.ESIKeys)
+            foreach (var apiKey in EveMonClient.ESIKeys)
             {
                 apiKey.ForceUpdate();
             }
 
-            foreach (CCPCharacter character in EveMonClient.MonitoredCharacters.OfType<CCPCharacter>())
+            foreach (var character in EveMonClient.MonitoredCharacters.OfType<CCPCharacter>())
             {
                 character.QueryMonitors.QueryEverything();
             }
@@ -2340,7 +2340,7 @@ namespace EVEMon
         private void UpdateSettingsControlsVisibility(bool enabled)
         {
             // Enable or disable the menu buttons
-            foreach (ToolStripItem item in m_settingsEnabledMenuItems)
+            foreach (var item in m_settingsEnabledMenuItems)
             {
                 item.Enabled = enabled;
             }
@@ -2365,7 +2365,7 @@ namespace EVEMon
                 lblCSSProviderStatus.Visible = true;
             }
 
-            bool success = await Settings.CloudStorageServiceProvider.Provider.UploadSettingsFileOnExitAsync()
+            var success = await Settings.CloudStorageServiceProvider.Provider.UploadSettingsFileOnExitAsync()
                 .ConfigureAwait(false);
 
             lblCSSProviderStatus.Visible = false;
@@ -2426,7 +2426,7 @@ namespace EVEMon
         /// <param name="e"></param>
         private void testNotificationToolstripMenuItem_Click(object sender, EventArgs e)
         {
-            NotificationEventArgs notification = new NotificationEventArgs(null, NotificationCategory.TestNofitication)
+            var notification = new NotificationEventArgs(null, NotificationCategory.TestNofitication)
             {
                 Priority = NotificationPriority.Information,
                 Behaviour = NotificationBehaviour.Overwrite,

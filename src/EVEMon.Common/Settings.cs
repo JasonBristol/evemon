@@ -266,14 +266,14 @@ namespace EVEMon.Common
         private static void OnImportCompleted()
         {
             // Add missing notification behaviours
-            foreach (NotificationCategory category in EnumExtensions.GetValues<NotificationCategory>()
+            foreach (var category in EnumExtensions.GetValues<NotificationCategory>()
                 .Where(category => !Notifications.Categories.ContainsKey(category) && category.HasHeader()))
             {
                 Notifications.Categories[category] = new NotificationCategorySettings();
             }
 
             // Add missing ESI methods update periods
-            foreach (Enum method in ESIMethods.Methods.Where(method => method.GetUpdatePeriod() != null)
+            foreach (var method in ESIMethods.Methods.Where(method => method.GetUpdatePeriod() != null)
                 .Where(method => !Updates.Periods.ContainsKey(method.ToString())))
                 Updates.Periods.Add(method.ToString(), method.GetUpdatePeriod().DefaultPeriod);
 
@@ -281,25 +281,25 @@ namespace EVEMon.Common
             InitializeOrAddMissingColumns();
 
             // Removes redundant notification behaviours
-            List<KeyValuePair<NotificationCategory, NotificationCategorySettings>> notifications =
+            var notifications =
                 Notifications.Categories.ToList();
-            foreach (KeyValuePair<NotificationCategory, NotificationCategorySettings> notification in notifications
+            foreach (var notification in notifications
                 .Where(notification => !notification.Key.HasHeader()))
             {
                 Notifications.Categories.Remove(notification.Key);
             }
 
             // Removes redundant windows locations
-            List<KeyValuePair<string, WindowLocationSettings>> locations = UI.WindowLocations.ToList();
-            foreach (KeyValuePair<string, WindowLocationSettings> windowLocation in locations
+            var locations = UI.WindowLocations.ToList();
+            foreach (var windowLocation in locations
                 .Where(windowLocation => windowLocation.Key == "FeaturesWindow"))
             {
                 UI.WindowLocations.Remove(windowLocation.Key);
             }
 
             // Removes redundant splitters
-            List<KeyValuePair<string, int>> splitters = UI.Splitters.ToList();
-            foreach (KeyValuePair<string, int> splitter in splitters
+            var splitters = UI.Splitters.ToList();
+            foreach (var splitter in splitters
                 .Where(splitter => splitter.Key == "EFTLoadoutImportationForm"))
             {
                 UI.Splitters.Remove(splitter.Key);
@@ -351,7 +351,7 @@ namespace EVEMon.Common
         /// <returns></returns>
         public static SerializableSettings Export()
         {
-            SerializableSettings serial = new SerializableSettings
+            var serial = new SerializableSettings
             {
                 SSOClientID = SSOClientID,
                 SSOClientSecret = SSOClientSecret,
@@ -403,7 +403,7 @@ namespace EVEMon.Common
             s_settings = TryDeserializeFromFile();
 
             // Try to download the settings file from the cloud
-            CloudStorageServiceAPIFile settingsFile = s_settings?.CloudStorageServiceProvider?.Provider?.DownloadSettingsFile();
+            var settingsFile = s_settings?.CloudStorageServiceProvider?.Provider?.DownloadSettingsFile();
 
             // If a settings file was downloaded try to deserialize it
             s_settings = settingsFile != null
@@ -432,10 +432,10 @@ namespace EVEMon.Common
             EveMonClient.Trace("begin");
 
             // Gets the revision number of the assembly which generated this file
-            int revision = Util.GetRevisionNumber(fileContent);
+            var revision = Util.GetRevisionNumber(fileContent);
 
             // Try to load from a file (when no revision found then it's a pre 1.3.0 version file)
-            SerializableSettings settings = revision == 0
+            var settings = revision == 0
                 ? (SerializableSettings)UIHelper.ShowNoSupportMessage()
                 : Util.DeserializeXmlFromString<SerializableSettings>(fileContent,
                     SettingsTransform);
@@ -448,8 +448,8 @@ namespace EVEMon.Common
 
             const string Caption = "Corrupt Settings";
 
-            DialogResult dr = MessageBox.Show($"Loading settings from {CloudStorageServiceProvider.ProviderName} failed." +
-                                              $"{Environment.NewLine}Do you want to use the local settings file?",
+            var dr = MessageBox.Show($"Loading settings from {CloudStorageServiceProvider.ProviderName} failed." +
+                                     $"{Environment.NewLine}Do you want to use the local settings file?",
                 Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 
             if (dr != DialogResult.No)
@@ -488,8 +488,8 @@ namespace EVEMon.Common
         /// <returns><c>Null</c> if we have been unable to load anything from files, the generated settings otherwise</returns>
         private static SerializableSettings TryDeserializeFromFile()
         {
-            string settingsFile = EveMonClient.SettingsFileNameFullPath;
-            string backupFile = settingsFile + ".bak";
+            var settingsFile = EveMonClient.SettingsFileNameFullPath;
+            var backupFile = settingsFile + ".bak";
 
             // If settings file doesn't exists
             // try to recover from the backup
@@ -499,13 +499,13 @@ namespace EVEMon.Common
             EveMonClient.Trace("begin");
 
             // Check settings file length
-            FileInfo settingsInfo = new FileInfo(settingsFile);
+            var settingsInfo = new FileInfo(settingsFile);
             if (settingsInfo.Length == 0)
                 return TryDeserializeFromBackupFile(backupFile);
 
             // Get the revision number of the assembly which generated this file
             // Try to load from a file (when no revision found then it's a pre 1.3.0 version file)
-            SerializableSettings settings = Util.GetRevisionNumber(settingsFile) == 0
+            var settings = Util.GetRevisionNumber(settingsFile) == 0
                 ? (SerializableSettings)UIHelper.ShowNoSupportMessage()
                 : Util.DeserializeXmlFromFile<SerializableSettings>(settingsFile,
                     SettingsTransform);
@@ -538,20 +538,20 @@ namespace EVEMon.Common
             EveMonClient.Trace("begin");
 
             // Check backup settings file length
-            FileInfo backupInfo = new FileInfo(backupFile);
+            var backupInfo = new FileInfo(backupFile);
             if (backupInfo.Length == 0)
                 return null;
 
-            string settingsFile = EveMonClient.SettingsFileNameFullPath;
+            var settingsFile = EveMonClient.SettingsFileNameFullPath;
 
             const string Caption = "Corrupt Settings";
             if (recover)
             {
                 // Prompts the user to use the backup
-                string fileDate =
+                var fileDate =
                     $"{backupInfo.LastWriteTime.ToLocalTime().ToShortDateString()} " +
                     $"at {backupInfo.LastWriteTime.ToLocalTime().ToShortTimeString()}";
-                DialogResult dialogResult = MessageBox.Show(
+                var dialogResult = MessageBox.Show(
                     $"The settings file is missing or corrupt. There is a backup available from {fileDate}.{Environment.NewLine}" +
                     @"Do you want to use the backup file?", Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 
@@ -570,7 +570,7 @@ namespace EVEMon.Common
 
             // Get the revision number of the assembly which generated this file
             // Try to load from a file (when no revision found then it's a pre 1.3.0 version file)
-            SerializableSettings settings = Util.GetRevisionNumber(backupFile) == 0
+            var settings = Util.GetRevisionNumber(backupFile) == 0
                 ? (SerializableSettings)UIHelper.ShowNoSupportMessage()
                 : Util.DeserializeXmlFromFile<SerializableSettings>(backupFile,
                     SettingsTransform);
@@ -618,7 +618,7 @@ namespace EVEMon.Common
             if (Revision == settings.Revision)
                 return;
 
-            DialogResult backupSettings =
+            var backupSettings =
                 MessageBox.Show($"The current EVEMon settings file is from a previous version.{Environment.NewLine}" +
                                 @"Backup the current file before proceeding (recommended)?",
                     @"EVEMon version changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
@@ -627,7 +627,7 @@ namespace EVEMon.Common
             if (backupSettings != DialogResult.Yes)
                 return;
 
-            using (SaveFileDialog fileDialog = new SaveFileDialog())
+            using (var fileDialog = new SaveFileDialog())
             {
                 fileDialog.Title = @"Settings file backup";
                 fileDialog.Filter = @"Settings Backup Files (*.bak)|*.bak";
@@ -690,13 +690,13 @@ namespace EVEMon.Common
 
             try
             {
-                SerializableSettings settings = Export();
+                var settings = Export();
 
                 // Save in settings file
                 await FileHelper.OverwriteOrWarnTheUserAsync(EveMonClient.SettingsFileNameFullPath,
                     async fs =>
                     {
-                        XmlSerializer xs = new XmlSerializer(typeof(SerializableSettings));
+                        var xs = new XmlSerializer(typeof(SerializableSettings));
                         xs.Serialize(fs, settings);
                         await fs.FlushAsync();
                         return true;

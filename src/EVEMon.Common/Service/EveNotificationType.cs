@@ -58,8 +58,8 @@ namespace EVEMon.Common.Service
             {
                 // Create a template notification type; this will probably be disabled once all
                 // of the unknown notifications are coded
-                int newkey = s_notificationRefTypes.Keys.Max() + 1;
-                string subject = Regex.Replace(name, "([A-Z]*)([A-Z][^A-Z$])", "$1 $2").Trim();
+                var newkey = s_notificationRefTypes.Keys.Max() + 1;
+                var subject = Regex.Replace(name, "([A-Z]*)([A-Z][^A-Z$])", "$1 $2").Trim();
 
                 s_notificationRefTypes.Add(newkey, new SerializableNotificationRefTypesListItem()
                 {
@@ -177,7 +177,7 @@ namespace EVEMon.Common.Service
             {
                 foreach (var refType in result.Types)
                 {
-                    int id = refType.TypeID;
+                    var id = refType.TypeID;
                     if (!s_notificationRefTypes.ContainsKey(id))
                         s_notificationRefTypes.Add(id, refType);
                 }

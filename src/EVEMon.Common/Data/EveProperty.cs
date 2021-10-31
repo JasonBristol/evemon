@@ -123,7 +123,7 @@ namespace EVEMon.Common.Data
         {
             obj.ThrowIfNull(nameof(obj));
 
-            EvePropertyValue? value = obj.Properties[ID];
+            var value = obj.Properties[ID];
             return Format(value?.Value ?? DefaultValue);
         }
 
@@ -139,8 +139,8 @@ namespace EVEMon.Common.Data
             obj.ThrowIfNull(nameof(obj));
 
             // Retrieve the string for the number
-            EvePropertyValue? value = obj.Properties[ID];
-            string number = value?.Value ?? DefaultValue;
+            var value = obj.Properties[ID];
+            var number = value?.Value ?? DefaultValue;
 
             // Try to parse it as a real
             float result;

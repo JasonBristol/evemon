@@ -78,8 +78,8 @@ namespace EVEMon.Common.Notifications
         /// <returns></returns>
         public static long GetKey(object sender, NotificationCategory category)
         {
-            long left = (long)category << 32;
-            int right = sender?.GetHashCode() ?? 0;
+            var left = (long)category << 32;
+            var right = sender?.GetHashCode() ?? 0;
             return left | unchecked((uint)right);
         }
 

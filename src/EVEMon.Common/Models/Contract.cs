@@ -238,10 +238,10 @@ namespace EVEMon.Common.Models
             {
                 if (ContractType == ContractType.Courier)
                 {
-                    string startName = StartStation.SolarSystemChecked?.Name ??
-                        EveMonConstants.UnknownText;
-                    string endName = EndStation.SolarSystemChecked?.Name ??
-                        EveMonConstants.UnknownText;
+                    var startName = StartStation.SolarSystemChecked?.Name ??
+                                    EveMonConstants.UnknownText;
+                    var endName = EndStation.SolarSystemChecked?.Name ??
+                                  EveMonConstants.UnknownText;
                     return $"{startName} >> {endName} ({Math.Round(Volume)} m³)";
                 }
 
@@ -339,7 +339,7 @@ namespace EVEMon.Common.Models
         {
             // Note that, before a match is found, all contracts have been marked for deletion:
             // m_markedForDeletion == true
-            bool matches = MatchesWith(src);
+            var matches = MatchesWith(src);
             if (matches)
             {
                 // Prevent deletion
@@ -348,7 +348,7 @@ namespace EVEMon.Common.Models
                 if (IssuerID == 0L || Issuer.IsEmptyOrUnknown())
                     PopulateContractInfo(src);
                 // Update if modified
-                ContractState state = GetState(src);
+                var state = GetState(src);
                 if (state != m_state || NeedsAttention)
                 {
                     if (state != m_state || Overdue)
@@ -422,7 +422,7 @@ namespace EVEMon.Common.Models
         /// <param name="src">The source.</param>
         private void Import(IEnumerable<EsiContractItemsListItem> src)
         {
-            foreach (EsiContractItemsListItem item in src)
+            foreach (var item in src)
                 m_contractItems.Add(new ContractItem(item));
         }
 
@@ -434,7 +434,7 @@ namespace EVEMon.Common.Models
         {
             m_bids.Clear();
             // Add new bids to collection
-            foreach (EsiContractBidsListItem item in src)
+            foreach (var item in src)
                 m_bids.Add(new ContractBid(item));
         }
 
@@ -598,7 +598,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         private ContractState GetState(EsiContractListItem src)
         {
-            CCPContractStatus status = src.ContractStatus;
+            var status = src.ContractStatus;
 
             if (status == CCPContractStatus.Outstanding && IsExpired)
                 return ContractState.Expired;

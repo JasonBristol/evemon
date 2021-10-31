@@ -26,7 +26,7 @@ namespace EVEMon.Common.Models.Collections
             Items.Clear();
 
             // Import the wallet journal from the API
-            foreach (SerializableWalletJournalListItem srcWalletJournal in src)
+            foreach (var srcWalletJournal in src)
             {
                 Items.Add(new WalletJournal(srcWalletJournal));
             }

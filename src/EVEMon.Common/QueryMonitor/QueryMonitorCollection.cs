@@ -35,17 +35,17 @@ namespace EVEMon.Common.QueryMonitor
         {
             get
             {
-                IOrderedEnumerable<IQueryMonitor> monitors = Items.OrderBy(x => x.NextUpdate);
+                var monitors = Items.OrderBy(x => x.NextUpdate);
 
                 // Returns the monitors which are planned for an autoupdate
-                foreach (IQueryMonitorEx monitor in monitors.Select(monitor => (IQueryMonitorEx)monitor).Where(
+                foreach (var monitor in monitors.Select(monitor => (IQueryMonitorEx)monitor).Where(
                     monitor => monitor.Status == QueryStatus.Pending || monitor.Status == QueryStatus.Updating))
                 {
                     yield return monitor;
                 }
 
                 // Returns the monitors which won't autoupdate
-                foreach (IQueryMonitorEx monitor in monitors.Select(monitor => (IQueryMonitorEx)monitor).Where(
+                foreach (var monitor in monitors.Select(monitor => (IQueryMonitorEx)monitor).Where(
                     monitor => monitor.Status != QueryStatus.Pending && monitor.Status != QueryStatus.Updating))
                 {
                     yield return monitor;
@@ -60,14 +60,14 @@ namespace EVEMon.Common.QueryMonitor
         {
             get
             {
-                DateTime nextTime = DateTime.MaxValue;
+                var nextTime = DateTime.MaxValue;
                 IQueryMonitor nextMonitor = null;
-                foreach (IQueryMonitorEx monitor in Items.Cast<IQueryMonitorEx>())
+                foreach (var monitor in Items.Cast<IQueryMonitorEx>())
                 {
                     if (monitor.Status != QueryStatus.Pending && monitor.Status != QueryStatus.Updating)
                         continue;
 
-                    DateTime monitorNextTime = monitor.NextUpdate;
+                    var monitorNextTime = monitor.NextUpdate;
                     if (monitorNextTime >= nextTime)
                         continue;
 
@@ -87,7 +87,7 @@ namespace EVEMon.Common.QueryMonitor
         {
             method.ThrowIfNull(nameof(method));
 
-            IQueryMonitorEx monitor = this[method] as IQueryMonitorEx;
+            var monitor = this[method] as IQueryMonitorEx;
             if (monitor != null && monitor.HasAccess)
                 monitor.ForceUpdate();
         }
@@ -98,8 +98,8 @@ namespace EVEMon.Common.QueryMonitor
         /// <param name="methods">The methods.</param>
         public void Query(IEnumerable<Enum> methods)
         {
-            IEnumerable<IQueryMonitorEx> monitors = methods.Select(apiMethod => this[apiMethod]).Cast<IQueryMonitorEx>();
-            foreach (IQueryMonitorEx monitor in monitors.Where(monitor => monitor.HasAccess))
+            var monitors = methods.Select(apiMethod => this[apiMethod]).Cast<IQueryMonitorEx>();
+            foreach (var monitor in monitors.Where(monitor => monitor.HasAccess))
             {
                 monitor.ForceUpdate();
             }
@@ -110,7 +110,7 @@ namespace EVEMon.Common.QueryMonitor
         /// </summary>
         public void QueryEverything()
         {
-            foreach (IQueryMonitorEx monitor in Items.Where(monitor => monitor.HasAccess).Cast<IQueryMonitorEx>())
+            foreach (var monitor in Items.Where(monitor => monitor.HasAccess).Cast<IQueryMonitorEx>())
             {
                 monitor.ForceUpdate();
             }

@@ -84,7 +84,7 @@ namespace EVEMon.Common.Controls
         {
             base.OnDragDrop(e);
 
-            Skill dragSkill = GetDraggingSkill(e);
+            var dragSkill = GetDraggingSkill(e);
             if (dragSkill != null)
                 return;
 
@@ -96,18 +96,18 @@ namespace EVEMon.Common.Controls
             if (SelectedItems.Count == 0)
                 return;
 
-            Point cp = PointToClient(new Point(e.X, e.Y));
-            ListViewItem dragToItem = GetItemAt(cp.X, cp.Y);
+            var cp = PointToClient(new Point(e.X, e.Y));
+            var dragToItem = GetItemAt(cp.X, cp.Y);
             if (dragToItem == null)
                 return;
 
-            int dropIndex = dragToItem.Index;
+            var dropIndex = dragToItem.Index;
             if (dropIndex > SelectedItems[0].Index)
                 dropIndex++;
 
             if (ListViewItemsDragging != null)
             {
-                ListViewDragEventArgs args = new ListViewDragEventArgs(SelectedItems[0].Index,
+                var args = new ListViewDragEventArgs(SelectedItems[0].Index,
                                                                        SelectedItems.Count, dropIndex);
                 ListViewItemsDragging(this, args);
                 if (args.Cancel)
@@ -115,7 +115,7 @@ namespace EVEMon.Common.Controls
             }
 
             // Make a copy of all the selected items
-            ArrayList insertItems = new ArrayList(SelectedItems.Count);
+            var insertItems = new ArrayList(SelectedItems.Count);
             foreach (ListViewItem item in SelectedItems)
             {
                 insertItems.Add(item.Clone());
@@ -123,7 +123,7 @@ namespace EVEMon.Common.Controls
 
             // insert the copied items in reverse order at the drop index so 
             // they appear in the right order after they've all been inserted
-            for (int i = insertItems.Count - 1; i >= 0; i--)
+            for (var i = insertItems.Count - 1; i >= 0; i--)
             {
                 Items.Insert(dropIndex, (ListViewItem)insertItems[i]);
             }
@@ -153,7 +153,7 @@ namespace EVEMon.Common.Controls
         {
             base.OnDragOver(e);
 
-            Skill dragSkill = GetDraggingSkill(e);
+            var dragSkill = GetDraggingSkill(e);
             if (dragSkill != null)
                 return;
 
@@ -169,8 +169,8 @@ namespace EVEMon.Common.Controls
                 ClearDropMarker();
                 return;
             }
-            Point cp = PointToClient(new Point(e.X, e.Y));
-            ListViewItem hoverItem = GetItemAt(cp.X, cp.Y);
+            var cp = PointToClient(new Point(e.X, e.Y));
+            var hoverItem = GetItemAt(cp.X, cp.Y);
             if (hoverItem == null)
             {
                 e.Effect = DragDropEffects.None;
@@ -187,13 +187,13 @@ namespace EVEMon.Common.Controls
             }
 
             base.OnDragOver(e);
-            string text = (string)e.Data.GetData(Reorder.GetType());
+            var text = (string)e.Data.GetData(Reorder.GetType());
             if (string.Compare(text, Reorder, StringComparison.CurrentCulture) == 0)
             {
                 e.Effect = DragDropEffects.Move;
                 hoverItem.EnsureVisible();
 
-                Rectangle hoverBounds = hoverItem.GetBounds(ItemBoundsPortion.ItemOnly);
+                var hoverBounds = hoverItem.GetBounds(ItemBoundsPortion.ItemOnly);
                 DrawDropMarker(hoverItem.Index, cp.Y > hoverBounds.Top + hoverBounds.Height / 2);
             }
             else
@@ -211,7 +211,7 @@ namespace EVEMon.Common.Controls
         {
             base.OnDragEnter(e);
 
-            Skill dragSkill = GetDraggingSkill(e);
+            var dragSkill = GetDraggingSkill(e);
             if (dragSkill != null)
                 return;
 
@@ -230,7 +230,7 @@ namespace EVEMon.Common.Controls
             }
 
             base.OnDragEnter(e);
-            string text = (string)e.Data.GetData(Reorder.GetType());
+            var text = (string)e.Data.GetData(Reorder.GetType());
             if (string.Compare(text, Reorder, StringComparison.CurrentCulture) == 0)
                 e.Effect = DragDropEffects.Move;
             else
@@ -262,9 +262,9 @@ namespace EVEMon.Common.Controls
 
         private void RestrictedPaint()
         {
-            Rectangle itemRect = GetItemRect(m_dropMarkerOn, ItemBoundsPortion.ItemOnly);
-            Point start = new Point(itemRect.Left, m_dropMarkerBelow ? itemRect.Bottom : itemRect.Top);
-            Point end = new Point(Width < itemRect.Right ? Width : itemRect.Right,
+            var itemRect = GetItemRect(m_dropMarkerOn, ItemBoundsPortion.ItemOnly);
+            var start = new Point(itemRect.Left, m_dropMarkerBelow ? itemRect.Bottom : itemRect.Top);
+            var end = new Point(Width < itemRect.Right ? Width : itemRect.Right,
                                   m_dropMarkerBelow ? itemRect.Bottom : itemRect.Top);
             start = PointToScreen(start);
             end = PointToScreen(end);

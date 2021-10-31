@@ -16,8 +16,8 @@ namespace EVEMon.Common.Controls
         /// <returns></returns>
         public static IEnumerable<TreeNode> GetAllNodes(this TreeView treeView)
         {
-            Stack<IEnumerator> enumerators = new Stack<IEnumerator>();
-            IEnumerator currentEnumerator = treeView.Nodes.GetEnumerator();
+            var enumerators = new Stack<IEnumerator>();
+            var currentEnumerator = treeView.Nodes.GetEnumerator();
 
             try
             {
@@ -27,7 +27,7 @@ namespace EVEMon.Common.Controls
                     if (currentEnumerator.MoveNext())
                     {
                         // Retrieve the new current node
-                        TreeNode node = (TreeNode)currentEnumerator.Current;
+                        var node = (TreeNode)currentEnumerator.Current;
 
                         // Pushes the enumerator over its children
                         if (node.Nodes.Count != 0)
@@ -43,7 +43,7 @@ namespace EVEMon.Common.Controls
                     else if (enumerators.Count != 0)
                     {
                         // Clean up
-                        IDisposable disposable = currentEnumerator as IDisposable;
+                        var disposable = currentEnumerator as IDisposable;
                         disposable?.Dispose();
 
                         // Previous level
@@ -57,7 +57,7 @@ namespace EVEMon.Common.Controls
             finally
             {
                 // Clean up the enumerators
-                foreach (IDisposable disposable in enumerators.OfType<IDisposable>())
+                foreach (var disposable in enumerators.OfType<IDisposable>())
                 {
                     disposable.Dispose();
                 }
@@ -71,7 +71,7 @@ namespace EVEMon.Common.Controls
         /// <returns></returns>
         public static IEnumerable<TreeNode> GetAllVisibleNodes(this TreeView treeView)
         {
-            for (TreeNode node = treeView.TopNode; node != null; node = node.NextVisibleNode)
+            for (var node = treeView.TopNode; node != null; node = node.NextVisibleNode)
             {
                 yield return node;
             }
@@ -99,7 +99,7 @@ namespace EVEMon.Common.Controls
         {
             treeView.ThrowIfNull(nameof(treeView));
 
-            foreach (TreeNode node in GetAllNodes(treeView).Where(node => ReferenceEquals(node.Tag, tag)))
+            foreach (var node in GetAllNodes(treeView).Where(node => ReferenceEquals(node.Tag, tag)))
             {
                 node.EnsureVisible();
                 treeView.UnselectAllNodesExceptNode(node, TreeViewAction.ByMouse);

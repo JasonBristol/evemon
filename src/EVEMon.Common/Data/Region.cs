@@ -22,7 +22,7 @@ namespace EVEMon.Common.Data
             ID = src.ID;
             Name = src.Name;
 
-            foreach (SerializableConstellation srcConstellation in src.Constellations)
+            foreach (var srcConstellation in src.Constellations)
             {
                 Items.Add(new Constellation(this, srcConstellation));
             }

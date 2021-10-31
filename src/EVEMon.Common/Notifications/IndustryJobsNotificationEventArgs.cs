@@ -23,7 +23,7 @@ namespace EVEMon.Common.Notifications
             jobs.ThrowIfNull(nameof(jobs));
 
             Jobs = new Collection<IndustryJob>();
-            foreach (IndustryJob job in jobs)
+            foreach (var job in jobs)
             {
                 Jobs.Add(job);
             }
@@ -46,7 +46,7 @@ namespace EVEMon.Common.Notifications
         /// <param name="other"></param>
         public override void Append(NotificationEventArgs other)
         {
-            foreach (IndustryJob job in ((IndustryJobsNotificationEventArgs)other).Jobs)
+            foreach (var job in ((IndustryJobsNotificationEventArgs)other).Jobs)
             {
                 Jobs.Add(job);
             }

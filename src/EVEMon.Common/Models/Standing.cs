@@ -91,7 +91,7 @@ namespace EVEMon.Common.Models
         {
             get
             {
-                int skillLevel = m_character.LastConfirmedSkillLevel((StandingValue < 0) ?
+                var skillLevel = m_character.LastConfirmedSkillLevel((StandingValue < 0) ?
                     DBConstants.DiplomacySkillID : DBConstants.ConnectionsSkillID);
                 return StandingValue + (10.0 - StandingValue) * (skillLevel * 0.04);
             }
@@ -144,7 +144,7 @@ namespace EVEMon.Common.Models
         /// </summary>
         private async Task GetImageAsync()
         {
-            Image img = await ImageService.GetImageAsync(GetImageUrl()).ConfigureAwait(false);
+            var img = await ImageService.GetImageAsync(GetImageUrl()).ConfigureAwait(false);
             if (img != null)
             {
                 m_image = img;

@@ -34,13 +34,13 @@ namespace EVEMon.Common.Helpers
                     return;
 
                 var sb = new StringBuilder(8192);
-                bool hasGroups = (listViewToExport.Groups?.Count ?? 0) > 0;
+                var hasGroups = (listViewToExport.Groups?.Count ?? 0) > 0;
 
                 // Export the column headers
-                bool ignoreSemicolon = true;
-                for (int i = 0; i < listViewToExport.Columns.Count; i++)
+                var ignoreSemicolon = true;
+                for (var i = 0; i < listViewToExport.Columns.Count; i++)
                 {
-                    ColumnHeader myColumn = listViewToExport.Columns[i];
+                    var myColumn = listViewToExport.Columns[i];
                     sb.Append(MakeCSVString(myColumn.Text, ignoreSemicolon));
                     ignoreSemicolon = false;
 
@@ -51,26 +51,26 @@ namespace EVEMon.Common.Helpers
                     sb.Append(MakeCSVString("Group"));
                 sb.AppendLine();
 
-                for (int line = 0; line < listViewToExport.Items.Count; line++)
+                for (var line = 0; line < listViewToExport.Items.Count; line++)
                 {
                     var item = listViewToExport.Items[line];
-                    string[] elements = item.SubItems[1].Text.Split(" ".ToCharArray());
-                    string unit = string.Empty;
+                    var elements = item.SubItems[1].Text.Split(" ".ToCharArray());
+                    var unit = string.Empty;
                     if (withUnit)
                     {
                         // Determine if the items have a unit description
-                        string possibleUnit = string.Join(" ", elements.Skip(1));
-                        bool hasUnit = elements.Length > 1 &&
-                                       StaticProperties.AllProperties.Any(prop => prop.Unit == possibleUnit);
+                        var possibleUnit = string.Join(" ", elements.Skip(1));
+                        var hasUnit = elements.Length > 1 &&
+                                      StaticProperties.AllProperties.Any(prop => prop.Unit == possibleUnit);
                         if (hasUnit)
                             unit = possibleUnit;
                     }
 
                     // Export the lines
                     ignoreSemicolon = true;
-                    int maxElements = Math.Min(listViewToExport.Columns.Count, item.SubItems.Count);
+                    var maxElements = Math.Min(listViewToExport.Columns.Count, item.SubItems.Count);
 
-                    for (int subitem = 0; subitem < maxElements; subitem++)
+                    for (var subitem = 0; subitem < maxElements; subitem++)
                     {
                         elements = item.SubItems[subitem].Text.Split(" ".ToCharArray());
 

@@ -183,16 +183,16 @@ namespace EVEMon.Common.Service
                 {
                     // Take up to MAX_IDS of them, in sorted order
                     var enumerator = m_pendingIDs.GetEnumerator();
-                    for (int i = 0; i < MAX_IDS && enumerator.MoveNext(); i++)
+                    for (var i = 0; i < MAX_IDS && enumerator.MoveNext(); i++)
                         toDo.AddLast(enumerator.Current.Key);
-                    foreach (long key in toDo)
+                    foreach (var key in toDo)
                     {
                         m_pendingIDs.Remove(key);
-                        m_cache.TryGetValue(key, out StringIDInfo info);
+                        m_cache.TryGetValue(key, out var info);
                         info?.OnRequestStart(null);
                     }
                 }
-                string ids = "[ " + string.Join(",", toDo) + " ]";
+                var ids = "[ " + string.Join(",", toDo) + " ]";
                 // Given the number of IDs we are requesting, it is very unlikely that the
                 // eTag or expiration will be useful
                 EveMonClient.APIProviders.CurrentProvider.QueryEsi<EsiAPICharacterNames>(
@@ -220,7 +220,7 @@ namespace EVEMon.Common.Service
                             // but guard against them defensively
                             foreach (var namePair in result.Result)
                             {
-                                m_cache.TryGetValue(namePair.ID, out StringIDInfo info);
+                                m_cache.TryGetValue(namePair.ID, out var info);
                                 info?.OnRequestComplete(namePair.Name);
                             }
                         }
@@ -237,7 +237,7 @@ namespace EVEMon.Common.Service
                     name = EveMonConstants.UnknownText;
                 else if (id < int.MaxValue && id > int.MinValue)
                 {
-                    int intId = (int)id;
+                    var intId = (int)id;
 
                     // Check NPC corporations
                     var npcCorp = StaticGeography.GetCorporationByID(intId);
@@ -306,7 +306,7 @@ namespace EVEMon.Common.Service
 
             public void OnRequestComplete(string result)
             {
-                bool isBlank = string.IsNullOrWhiteSpace(result);
+                var isBlank = string.IsNullOrWhiteSpace(result);
                 if (Value == null || !isBlank)
                     // Avoid overwriting cached result with failed result
                     Value = isBlank ? null : result;

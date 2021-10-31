@@ -27,9 +27,9 @@ namespace EVEMon.Common.Helpers
         /// <param name="loadout">The loadout.</param>
         public static void ExportToClipboard(ILoadoutInfo loadoutInfo, Loadout loadout)
         {
-            Dictionary<string, List<string>> items = GetItemsBySlots(loadout.Items);
+            var items = GetItemsBySlots(loadout.Items);
             ExtractProperties(loadoutInfo, items);
-            string exportText = SerializeToEFTFormat(loadoutInfo, loadout, items);
+            var exportText = SerializeToEFTFormat(loadoutInfo, loadout, items);
 
             // Copy to clipboard
             try
@@ -53,12 +53,12 @@ namespace EVEMon.Common.Helpers
         private static Dictionary<string, List<string>> GetItemsBySlots(IEnumerable<Item> items)
         {
             // AllGroups items by slots
-            Dictionary<string, List<string>> dictionary = new Dictionary<string, List<string>>();
+            var dictionary = new Dictionary<string, List<string>>();
 
-            foreach (IGrouping<string, Item> slotItems in items.GroupBy(LoadoutHelper.GetSlotByItem))
+            foreach (var slotItems in items.GroupBy(LoadoutHelper.GetSlotByItem))
             {
                 dictionary[slotItems.Key] = new List<string>();
-                foreach (Item item in slotItems)
+                foreach (var item in slotItems)
                 {
                     dictionary[slotItems.Key].Add(item.Name);
                 }
@@ -75,9 +75,9 @@ namespace EVEMon.Common.Helpers
         private static void ExtractProperties(ILoadoutInfo loadoutInfo, IDictionary<string, List<string>> items)
         {
             // Add "empty slot" mentions for every slot type
-            foreach (EvePropertyValue prop in loadoutInfo.Ship.Properties.Where(prop => prop.Property != null))
+            foreach (var prop in loadoutInfo.Ship.Properties.Where(prop => prop.Property != null))
             {
-                for (int i = 0; i < 5; i++)
+                for (var i = 0; i < 5; i++)
                 {
                     string slotName = LoadoutHelper.OrderedSlotNames[i], empty;
                     // Fill slots by type
@@ -106,17 +106,17 @@ namespace EVEMon.Common.Helpers
         {
             string name;
             // Build the output format for EFT
-            StringBuilder exportText = new StringBuilder();
+            var exportText = new StringBuilder();
             exportText.AppendLine($"[{loadoutInfo.Ship.Name}, {loadout.Name} (EVEMon)]");
 
             // Slots in order: Low, Medium, High, Rig, Subsystem
-            foreach (int index in SLOT_ORDER)
+            foreach (var index in SLOT_ORDER)
             {
                 name = LoadoutHelper.OrderedSlotNames[index];
                 if (items.ContainsKey(name))
                 {
                     // Same function as appending the joined string, but faster
-                    foreach (string slotItem in items[name])
+                    foreach (var slotItem in items[name])
                         exportText.AppendLine(slotItem);
                     exportText.AppendLine();
                 }

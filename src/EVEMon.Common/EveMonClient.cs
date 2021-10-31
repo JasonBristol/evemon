@@ -242,7 +242,7 @@ namespace EVEMon.Common
             if (!string.IsNullOrEmpty(SettingsFileName))
                 return;
 
-            string debugAddition = IsDebugBuild ? "-debug" : string.Empty;
+            var debugAddition = IsDebugBuild ? "-debug" : string.Empty;
             SettingsFileName = $"settings{debugAddition}.xml";
             s_traceFile = $"trace{debugAddition}.txt";
 
@@ -256,11 +256,11 @@ namespace EVEMon.Common
                 }
                 catch (UnauthorizedAccessException exc)
                 {
-                    string msg = "An error occurred while EVEMon was looking for its data directory. " +
-                                 "You may have insufficient rights or a synchronization may be taking place.\n\n" +
-                                 $"The message was :{Environment.NewLine}{exc.Message}";
+                    var msg = "An error occurred while EVEMon was looking for its data directory. " +
+                              "You may have insufficient rights or a synchronization may be taking place.\n\n" +
+                              $"The message was :{Environment.NewLine}{exc.Message}";
 
-                    DialogResult result = MessageBox.Show(msg, @"EVEMon Error", MessageBoxButtons.RetryCancel,
+                    var result = MessageBox.Show(msg, @"EVEMon Error", MessageBoxButtons.RetryCancel,
                         MessageBoxIcon.Error);
 
                     if (result != DialogResult.Cancel)
@@ -280,7 +280,7 @@ namespace EVEMon.Common
             // Assign or create the EVEMon data directory
             if (!Directory.Exists(EVEMonDataDir))
             {
-                string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EVEMon");
+                var appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EVEMon");
 
                 // If settings.xml exists in the app's directory, we use this one
                 EVEMonDataDir = Path.GetDirectoryName(Application.ExecutablePath) ?? appDataPath;
@@ -320,7 +320,7 @@ namespace EVEMon.Common
         /// </summary>
         private static void InitializeDefaultEvePortraitCachePath()
         {
-            string localApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var localApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             EVEApplicationDataDir = $"{localApplicationData}\\CCP\\EVE";
 
             // Check folder exists
@@ -329,8 +329,8 @@ namespace EVEMon.Common
 
             // Create a pattern that matches anything "*_tranquility"
             // Enumerate files in the EVE cache directory
-            DirectoryInfo di = new DirectoryInfo(EVEApplicationDataDir);
-            DirectoryInfo[] tranquilityFolders = di.GetDirectories("*_tranquility");
+            var di = new DirectoryInfo(EVEApplicationDataDir);
+            var tranquilityFolders = di.GetDirectories("*_tranquility");
 
             EveAppDataFoldersExistInDefaultLocation = tranquilityFolders.Any();
 
@@ -397,7 +397,7 @@ namespace EVEMon.Common
         {
             try
             {
-                List<FileInfo> cachedFiles = new List<FileInfo>();
+                var cachedFiles = new List<FileInfo>();
                 cachedFiles.AddRange(new DirectoryInfo(EVEMonImageCacheDir).GetFiles());
                 cachedFiles.AddRange(new DirectoryInfo(EVEMonXmlCacheDir).GetFiles());
                 cachedFiles.AddRange(new DirectoryInfo(EVEMonPortraitCacheDir).GetFiles());
@@ -453,7 +453,7 @@ namespace EVEMon.Common
         /// <param name="args"></param>
         public static void Trace(string format, params object[] args)
         {
-            string message = string.Format(CultureConstants.DefaultCulture, format, args);
+            var message = string.Format(CultureConstants.DefaultCulture, format, args);
             Trace(message);
         }
 
@@ -464,24 +464,24 @@ namespace EVEMon.Common
         /// <param name="printMethod">if set to <c>true</c> [print method].</param>
         public static void Trace(string message = null, bool printMethod = true)
         {
-            string header = string.Empty;
+            var header = string.Empty;
 
             if (printMethod)
             {
-                StackTrace stackTrace = new StackTrace();
-                StackFrame frame = stackTrace.GetFrame(1);
-                MethodBase method = frame.GetMethod();
+                var stackTrace = new StackTrace();
+                var frame = stackTrace.GetFrame(1);
+                var method = frame.GetMethod();
                 if (method.Name == "MoveNext")
                     method = stackTrace.GetFrame(3).GetMethod();
 
-                Type declaringType = method.DeclaringType;
+                var declaringType = method.DeclaringType;
                 header = $"{declaringType?.Name}.{method.Name}";
             }
 
-            TimeSpan time = DateTime.UtcNow.Subtract(s_startTime);
-            string timeStr = $"{time.Days:#0}d {time.Hours:#0}h {time.Minutes:00}m {time.Seconds:00}s > ";
+            var time = DateTime.UtcNow.Subtract(s_startTime);
+            var timeStr = $"{time.Days:#0}d {time.Hours:#0}h {time.Minutes:00}m {time.Seconds:00}s > ";
             message = string.IsNullOrWhiteSpace(message) || !printMethod ? message : $" - {message}";
-            string msgStr = $"{header}{message}";
+            var msgStr = $"{header}{message}";
 
             System.Diagnostics.Trace.WriteLine($"{timeStr}{msgStr.TrimEnd(Environment.NewLine.ToCharArray())}");
         }
@@ -492,11 +492,11 @@ namespace EVEMon.Common
         /// </summary>
         public static void TraceMethod()
         {
-            StackTrace stackTrace = new StackTrace();
-            StackFrame frame = stackTrace.GetFrame(1);
-            MethodBase method = frame.GetMethod();
-            string parameters = FormatParameters(method.GetParameters());
-            string declaringType = method.DeclaringType?.ToString().Replace("EVEMon.", string.Empty);
+            var stackTrace = new StackTrace();
+            var frame = stackTrace.GetFrame(1);
+            var method = frame.GetMethod();
+            var parameters = FormatParameters(method.GetParameters());
+            var declaringType = method.DeclaringType?.ToString().Replace("EVEMon.", string.Empty);
 
             Trace($"{declaringType}.{method.Name}({parameters})");
         }
@@ -508,9 +508,9 @@ namespace EVEMon.Common
         /// <returns>A comma seperated string of paramater types and names.</returns>
         private static string FormatParameters(IEnumerable<ParameterInfo> parameters)
         {
-            StringBuilder paramDetail = new StringBuilder();
+            var paramDetail = new StringBuilder();
 
-            foreach (ParameterInfo param in parameters)
+            foreach (var param in parameters)
             {
                 if (paramDetail.Length != 0)
                     paramDetail.Append(", ");
@@ -535,8 +535,8 @@ namespace EVEMon.Common
             }
             catch (IOException e)
             {
-                string text = "EVEMon has encountered an error and needs to terminate.\n" +
-                              $"The error message is:\n\n\"{e.Message}\"";
+                var text = "EVEMon has encountered an error and needs to terminate.\n" +
+                           $"The error message is:\n\n\"{e.Message}\"";
 
                 MessageBox.Show(text, @"EVEMon Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();

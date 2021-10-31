@@ -124,7 +124,7 @@ namespace EVEMon.Common.Net
                 throw new InvalidOperationException("Only WebException and HttpRequestException allowed");
 
             HttpWebClientServiceExceptionStatus status;
-            string msg = webException != null
+            var msg = webException != null
                 ? ParseWebRequestException(webException, url, GetProxyHost(url), out status)
                 : ParseHttpRequestException(httpRequestException, httpStatusCode, url, GetProxyHost(url), out status);
 
@@ -155,11 +155,11 @@ namespace EVEMon.Common.Net
         private static string ParseWebRequestException(WebException webException, Uri url, string proxyHost,
             out HttpWebClientServiceExceptionStatus status)
         {
-            StringBuilder messageBuilder = new StringBuilder();
+            var messageBuilder = new StringBuilder();
             switch (webException.Status)
             {
                 case WebExceptionStatus.ProtocolError:
-                    HttpWebResponse response = (HttpWebResponse)webException.Response;
+                    var response = (HttpWebResponse)webException.Response;
                     switch (response.StatusCode)
                     {
                         case HttpStatusCode.ProxyAuthenticationRequired:
@@ -217,7 +217,7 @@ namespace EVEMon.Common.Net
         private static string ParseHttpRequestException(HttpRequestException httpRequestException, HttpStatusCode httpStatusCode,
             Uri url, string proxyHost, out HttpWebClientServiceExceptionStatus status)
         {
-            StringBuilder messageBuilder = new StringBuilder();
+            var messageBuilder = new StringBuilder();
             switch (httpStatusCode)
             {
                 // Informational

@@ -90,8 +90,8 @@ namespace EVEMon.Common.Models
         /// </summary>
         private async Task GetImageAsync()
         {
-            Uri uri = ImageHelper.GetCorporationImageURL(CorpId);
-            Image img = await ImageService.GetImageAsync(uri).ConfigureAwait(false);
+            var uri = ImageHelper.GetCorporationImageURL(CorpId);
+            var img = await ImageService.GetImageAsync(uri).ConfigureAwait(false);
             if (img != null) {
                 m_image = img;
                 LoyaltyCorpImageUpdated?.ThreadSafeInvoke(this, EventArgs.Empty);

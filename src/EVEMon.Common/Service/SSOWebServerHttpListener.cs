@@ -57,7 +57,7 @@ namespace EVEMon.Common.Service
                 throw new InvalidOperationException("HTTP listener not supported");
             listener = new HttpListener();
             // Calculate prefix, must end with slash according to HttpListener documentation
-            string prefix = string.Format(NetworkConstants.SSORedirect, PORT);
+            var prefix = string.Format(NetworkConstants.SSORedirect, PORT);
             if (!prefix.EndsWith("/"))
                 prefix += "/";
             listener.Prefixes.Add(prefix);
@@ -102,7 +102,7 @@ namespace EVEMon.Common.Service
         private async Task<string> SendReponseAsync(string state, HttpListenerResponse output,
             NameValueCollection queryParams)
         {
-            string code = "";
+            var code = "";
             byte[] response;
             HttpStatusCode responseCode;
             // Check for matching state in response
@@ -128,7 +128,7 @@ namespace EVEMon.Common.Service
             // Send the response
             using (var stream = output.OutputStream)
             {
-                int len = response.Length;
+                var len = response.Length;
                 // HTTP response code
                 output.StatusCode = (int)responseCode;
                 // Supply the length
@@ -183,7 +183,7 @@ namespace EVEMon.Common.Service
             // Blank states are bad
             if (string.IsNullOrEmpty(state))
                 throw new ArgumentNullException("state");
-            string code = string.Empty;
+            var code = string.Empty;
             try
             {
                 do
@@ -193,7 +193,7 @@ namespace EVEMon.Common.Service
                     using (var output = context.Response)
                     {
                         // Check for state in the URL
-                        string query = context.Request.Url.Query;
+                        var query = context.Request.Url.Query;
                         if (query == null)
                             query = "";
                         var queryParams = HttpUtility.ParseQueryString(query);

@@ -81,7 +81,7 @@ namespace EVEMon.Common.ExternalCalendar
         internal override Task AddOrUpdateEventAsync(bool eventExists, int queuePosition, bool lastSkillInQueue)
             => TaskHelper.RunIOBoundTaskAsync(() =>
             {
-                AppointmentItem eventItem = eventExists
+                var eventItem = eventExists
                     ? (AppointmentItem)Events[0]
                     : (AppointmentItem)s_mapiFolder.Items.Add(OlItemType.olAppointmentItem);
 
@@ -89,7 +89,7 @@ namespace EVEMon.Common.ExternalCalendar
                 eventItem.Start = StartDate;
                 eventItem.End = EndDate;
 
-                string queuePositionText = lastSkillInQueue
+                var queuePositionText = lastSkillInQueue
                     ? "End Of Queue"
                     : queuePosition.ToString(CultureConstants.DefaultCulture);
 
@@ -118,10 +118,10 @@ namespace EVEMon.Common.ExternalCalendar
                         LateReminder.Minute,
                         LateReminder.Second);
 
-                    DateTime dateTimeAlternateReminder = WorkOutAlternateReminders();
+                    var dateTimeAlternateReminder = WorkOutAlternateReminders();
 
                     // Subtract the reminder time from the event time
-                    TimeSpan timeSpan = eventItem.Start.Subtract(dateTimeAlternateReminder);
+                    var timeSpan = eventItem.Start.Subtract(dateTimeAlternateReminder);
                     eventItem.ReminderMinutesBeforeStart = Math.Abs(timeSpan.Hours * 60 + timeSpan.Minutes);
                     Minutes = eventItem.ReminderMinutesBeforeStart;
                 }
@@ -141,7 +141,7 @@ namespace EVEMon.Common.ExternalCalendar
             if (Events.Count < 1)
                 return false;
 
-            AppointmentItem eventItem = (AppointmentItem)Events[0];
+            var eventItem = (AppointmentItem)Events[0];
             StartDate = eventItem.Start;
             EndDate = eventItem.End;
             Subject = eventItem.Subject;
@@ -203,9 +203,9 @@ namespace EVEMon.Common.ExternalCalendar
             if (!path.StartsWith(@"\\", StringComparison.Ordinal))
                 return s_mapiFolder != null;
 
-            string pathRoot = GetFolderPathRoot(path);
+            var pathRoot = GetFolderPathRoot(path);
 
-            foreach (MAPIFolder folder in folders.Cast<MAPIFolder>().TakeWhile(
+            foreach (var folder in folders.Cast<MAPIFolder>().TakeWhile(
                 folder => s_mapiFolder == null).Select(
                     folder => new { folder, folderRoot = GetFolderPathRoot(folder.FolderPath) }).Where(
                         folder => folder.folderRoot == pathRoot).Select(folder => folder.folder))
@@ -237,19 +237,19 @@ namespace EVEMon.Common.ExternalCalendar
         private ArrayList GetEventItems()
         {
             // Use a Jet Query to filter the details we need initially between the two specified dates
-            string dateFilter = $"[Start] >= '{StartDate:g}' and [End] <= '{EndDate:g}'";
-            _Items calendarItems = s_mapiFolder.Items.Restrict(dateFilter);
+            var dateFilter = $"[Start] >= '{StartDate:g}' and [End] <= '{EndDate:g}'";
+            var calendarItems = s_mapiFolder.Items.Restrict(dateFilter);
             calendarItems.Sort("[Start]", Type.Missing);
             calendarItems.IncludeRecurrences = true;
 
             // Must use 'like' comparison for Find/FindNext
-            string subjectFilter = !string.IsNullOrEmpty(Subject)
+            var subjectFilter = !string.IsNullOrEmpty(Subject)
                 ? $"@SQL=\"urn:schemas:httpmail:subject\" like '%{Subject.Replace("'", "''")}%'"
                 : "@SQL=\"urn:schemas:httpmail:subject\" <> '!@#'";
 
             // Use Find and FindNext methods to get all the items
-            ArrayList resultArray = new ArrayList();
-            AppointmentItem eventItem = calendarItems.Find(subjectFilter) as AppointmentItem;
+            var resultArray = new ArrayList();
+            var eventItem = calendarItems.Find(subjectFilter) as AppointmentItem;
             while (eventItem != null)
             {
                 resultArray.Add(eventItem);
@@ -272,7 +272,7 @@ namespace EVEMon.Common.ExternalCalendar
             folderPath = folderPath.Remove(0, 2);
 
             // Find the index of a directory seperator character
-            int index = folderPath.IndexOf(Path.DirectorySeparatorChar, 0);
+            var index = folderPath.IndexOf(Path.DirectorySeparatorChar, 0);
 
             // Reconstruct the root path according to the index found
             return $"\\{(index > 0 ? folderPath.Substring(0, index) : folderPath)}";

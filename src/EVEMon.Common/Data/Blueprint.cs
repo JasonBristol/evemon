@@ -46,7 +46,7 @@ namespace EVEMon.Common.Data
             if (src.ReqMaterial == null)
                 return;
 
-            foreach (SerializableRequiredMaterial prereq in src.ReqMaterial)
+            foreach (var prereq in src.ReqMaterial)
             {
                 m_materialRequirements.Add(new StaticRequiredMaterial(prereq));
             }

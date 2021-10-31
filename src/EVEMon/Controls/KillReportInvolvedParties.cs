@@ -54,9 +54,9 @@ namespace EVEMon.Controls
         /// </summary>
         private void UpdateContent()
         {
-            int topDamageDone = m_killLog.Attackers.Max(y => y.DamageDone);
-            SerializableKillLogAttackersListItem finalBlowAttacker = m_killLog.Attackers.Single(x => x.FinalBlow);
-            SerializableKillLogAttackersListItem topDamageAttacker = m_killLog.Attackers.Single(x => x.DamageDone == topDamageDone);
+            var topDamageDone = m_killLog.Attackers.Max(y => y.DamageDone);
+            var finalBlowAttacker = m_killLog.Attackers.Single(x => x.FinalBlow);
+            var topDamageAttacker = m_killLog.Attackers.Single(x => x.DamageDone == topDamageDone);
 
             FinalBlowAttacker.KillLog = m_killLog;
             FinalBlowAttacker.Attacker = finalBlowAttacker;
@@ -75,9 +75,9 @@ namespace EVEMon.Controls
             if (remainingAttackers.Any())
                 InvolvedPartiesPanel.BorderStyle = BorderStyle.Fixed3D;
 
-            foreach (SerializableKillLogAttackersListItem attacker in remainingAttackers.OrderBy(x => x.DamageDone))
+            foreach (var attacker in remainingAttackers.OrderBy(x => x.DamageDone))
             {
-                KillReportAttacker attackerControl = new KillReportAttacker();
+                var attackerControl = new KillReportAttacker();
                 InvolvedPartiesPanel.Controls.Add(attackerControl);
                 attackerControl.Dock = DockStyle.Top;
                 attackerControl.KillLog = m_killLog;

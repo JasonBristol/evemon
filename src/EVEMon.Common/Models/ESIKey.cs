@@ -226,7 +226,7 @@ namespace EVEMon.Common.Models
         /// </summary>
         private void OnTokenInfo(JsonResult<EsiAPITokenInfo> result)
         {
-            EsiAPITokenInfo tokenInfo = result.Result;
+            var tokenInfo = result.Result;
             if (result.HasError)
             {
                 HasError = true;
@@ -374,7 +374,7 @@ namespace EVEMon.Common.Models
         {
             message = string.Empty;
 
-            List<ESIKey> accountsNotTraining = EveMonClient.ESIKeys.Where(
+            var accountsNotTraining = EveMonClient.ESIKeys.Where(
                 esiKey => esiKey.CharacterIdentities.Any() && !esiKey.HasCharacterInTraining)
                 .ToList();
 
@@ -383,12 +383,12 @@ namespace EVEMon.Common.Models
                 return false;
 
             // Creates the string, scrolling through every not training account
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.Append(accountsNotTraining.Count == 1
                 ? $"{(EveMonClient.ESIKeys.Count == 1 ? "The account" : "One of the accounts")} is not in training"
                 : "Some of the accounts are not in training.");
 
-            foreach (ESIKey esiKey in accountsNotTraining)
+            foreach (var esiKey in accountsNotTraining)
             {
                 builder.AppendLine().Append($"ESI key : {esiKey}");
             }
@@ -409,15 +409,15 @@ namespace EVEMon.Common.Models
         private void ImportIdentities(EsiAPITokenInfo tokenInfo)
         {
             var chars = EveMonClient.CharacterIdentities.Where(id => id.ESIKeys.Contains(this));
-            long charID = tokenInfo.CharacterID;
+            var charID = tokenInfo.CharacterID;
             // Clear the API key on this character
-            foreach (CharacterIdentity id in chars)
+            foreach (var id in chars)
                 id.ESIKeys.Remove(this);
 
             // Find characters who own this ESI key
             // Can match at most one character
-            CharacterIdentity cid = EveMonClient.CharacterIdentities[charID] ??
-                EveMonClient.CharacterIdentities.Add(charID, tokenInfo.CharacterName);
+            var cid = EveMonClient.CharacterIdentities[charID] ??
+                      EveMonClient.CharacterIdentities.Add(charID, tokenInfo.CharacterName);
             // Add the ESI key to the identity
             cid.ESIKeys.Add(this);
             if (cid.CCPCharacter != null)
@@ -435,7 +435,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         internal SerializableESIKey Export()
         {
-            SerializableESIKey serial = new SerializableESIKey
+            var serial = new SerializableESIKey
             {
                 ID = ID,
                 RefreshToken = RefreshToken,
@@ -479,7 +479,7 @@ namespace EVEMon.Common.Models
             CheckAccessToken();
 
             // Clear the ESI key for the currently associated identities
-            foreach (CharacterIdentity id in EveMonClient.CharacterIdentities.Where(id => id.ESIKeys.Contains(this)))
+            foreach (var id in EveMonClient.CharacterIdentities.Where(id => id.ESIKeys.Contains(this)))
                 id.ESIKeys.Remove(this);
 
             // Assign this API key to the new identities and create CCP characters
@@ -521,8 +521,8 @@ namespace EVEMon.Common.Models
                 return ID.ToString(CultureConstants.DefaultCulture);
 
             // Otherwise, return the chars' names into parenthesis
-            StringBuilder names = new StringBuilder();
-            foreach (CharacterIdentity id in CharacterIdentities)
+            var names = new StringBuilder();
+            foreach (var id in CharacterIdentities)
             {
                 names.Append(id.CharacterName);
                 if (id != CharacterIdentities.Last())

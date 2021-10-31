@@ -134,7 +134,7 @@ namespace EVEMon.Common.Models
         public CharacterScratchpad After<T>(IEnumerable<T> trainings)
             where T : ISkillLevel
         {
-            CharacterScratchpad scratchpad = new CharacterScratchpad(this);
+            var scratchpad = new CharacterScratchpad(this);
             scratchpad.Train(trainings);
             return scratchpad;
         }
@@ -149,10 +149,10 @@ namespace EVEMon.Common.Models
         {
             set.ThrowIfNull(nameof(set));
 
-            CharacterScratchpad scratchpad = new CharacterScratchpad(this);
-            for (int i = 0; i < 5; i++)
+            var scratchpad = new CharacterScratchpad(this);
+            for (var i = 0; i < 5; i++)
             {
-                EveAttribute attribute = (EveAttribute)i;
+                var attribute = (EveAttribute)i;
                 scratchpad[attribute].ImplantBonus = set[attribute].Bonus;
             }
             return scratchpad;
@@ -179,12 +179,12 @@ namespace EVEMon.Common.Models
 
             while (remainingSkillPoints > 0)
             {
-                long projectedSkillPoints = targetSP - remainingSkillPoints;
-                long nextInjector = GetSkillPointsGainedFromLargeInjector(projectedSkillPoints);
+                var projectedSkillPoints = targetSP - remainingSkillPoints;
+                var nextInjector = GetSkillPointsGainedFromLargeInjector(projectedSkillPoints);
                 // Can we use smalls instead?
                 if (remainingSkillPoints < nextInjector)
                 {
-                    long nextSmallInjector = nextInjector / SKILL_INJECTOR_SMALL_DIVIDER;
+                    var nextSmallInjector = nextInjector / SKILL_INJECTOR_SMALL_DIVIDER;
                     remainingSkillPoints -= nextSmallInjector;
                     injectorsSmall++;
                 }
@@ -205,7 +205,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         private static long GetSkillPointsGainedFromLargeInjector(long skillPoints)
         {
-            double sp = skillPoints / 1000000d;
+            var sp = skillPoints / 1000000d;
             if (sp < 5.0)
                 return 5 * SKILL_INJECTOR_MULTIPLIER;
             if (sp < 50.0)
@@ -244,7 +244,7 @@ namespace EVEMon.Common.Models
         {
             if (level == 0)
                 return 0;
-            long sp = skill.GetPointsRequiredForLevel(level);
+            var sp = skill.GetPointsRequiredForLevel(level);
 
             // Deals with the origin
             long result;
@@ -301,8 +301,8 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         public TimeSpan GetTrainingTime(StaticSkill skill, long level, TrainingOrigin origin = TrainingOrigin.FromCurrent)
         {
-            float spPerHour = GetBaseSPPerHour(skill);
-            long sp = GetSPToTrain(skill, level, origin);
+            var spPerHour = GetBaseSPPerHour(skill);
+            var sp = GetSPToTrain(skill, level, origin);
             return GetTrainingTime(sp, spPerHour);
         }
 

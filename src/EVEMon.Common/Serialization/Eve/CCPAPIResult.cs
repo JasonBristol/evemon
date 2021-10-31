@@ -207,7 +207,7 @@ namespace EVEMon.Common.Serialization.Eve
             }
 
             // Fix the start/end times for the results implementing synchronization
-            ISynchronizableWithLocalClock synchronizable = Result as ISynchronizableWithLocalClock;
+            var synchronizable = Result as ISynchronizableWithLocalClock;
 
             synchronizable?.SynchronizeWithLocalClock(drift);
         }

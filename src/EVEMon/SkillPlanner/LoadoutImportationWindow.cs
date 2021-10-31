@@ -193,11 +193,11 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void btnPlan_Click(object sender, EventArgs e)
         {
-            IPlanOperation operation = m_plan.TryAddSet(m_skillsToAdd, m_loadoutInfo.Loadouts.First().Name);
+            var operation = m_plan.TryAddSet(m_skillsToAdd, m_loadoutInfo.Loadouts.First().Name);
             if (operation == null)
                 return;
 
-            PlanWindow planWindow = PlanWindow.ShowPlanWindow(plan: operation.Plan);
+            var planWindow = PlanWindow.ShowPlanWindow(plan: operation.Plan);
             if (planWindow == null)
                 return;
 
@@ -214,7 +214,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="e">Arguments of the event.</param>
         private void tvLoadout_DoubleClick(object sender, EventArgs e)
         {
-            Item item = ResultsTreeView.SelectedNode?.Tag as Item;
+            var item = ResultsTreeView.SelectedNode?.Tag as Item;
 
             PlanWindow.ShowPlanWindow(m_character, m_plan).ShowItemInBrowser(item);
         }
@@ -266,8 +266,8 @@ namespace EVEMon.SkillPlanner
             if (e.Cancel)
                 return;
 
-            TreeNode node = ResultsTreeView.SelectedNode;
-            Item selectedItem = node?.Tag as Item;
+            var node = ResultsTreeView.SelectedNode;
+            var selectedItem = node?.Tag as Item;
 
             ShowInBrowserMenuItem.Visible = showInMenuSeparator.Visible = selectedItem != null;
 
@@ -389,7 +389,7 @@ namespace EVEMon.SkillPlanner
             BuildTreeNodes(m_loadoutInfo.Loadouts.First().Items);
 
             // Order the nodes
-            TreeNode[] orderNodes = ResultsTreeView.Nodes.Cast<TreeNode>().OrderBy(
+            var orderNodes = ResultsTreeView.Nodes.Cast<TreeNode>().OrderBy(
                 node => LoadoutHelper.OrderedSlotNames.IndexOf(string.Intern(node.Text))).ToArray();
             ResultsTreeView.Nodes.Clear();
             ResultsTreeView.Nodes.AddRange(orderNodes);
@@ -408,10 +408,10 @@ namespace EVEMon.SkillPlanner
         /// <param name="items">The items.</param>
         private void BuildTreeNodes(IEnumerable<Item> items)
         {
-            foreach (Item item in items)
+            foreach (var item in items)
             {
                 TreeNode slotNode;
-                string nodeName = LoadoutHelper.OrderedSlotNames[7];
+                var nodeName = LoadoutHelper.OrderedSlotNames[7];
 
                 // Regular item ?
                 if (!item.MarketGroup.BelongsIn(DBConstants.AmmosAndChargesMarketGroupID))
@@ -446,7 +446,7 @@ namespace EVEMon.SkillPlanner
                         : ResultsTreeView.Nodes[nodeName];
 
                     // Add a new node
-                    TreeNode itemNode = new TreeNode { Text = item.Name, Tag = item };
+                    var itemNode = new TreeNode { Text = item.Name, Tag = item };
                     slotNode.Nodes.Add(itemNode);
 
                     m_objects.Add(item);
@@ -460,7 +460,7 @@ namespace EVEMon.SkillPlanner
                     ? ResultsTreeView.Nodes.Add(nodeName, nodeName)
                     : ResultsTreeView.Nodes[nodeName];
 
-                TreeNode ammoNode = new TreeNode { Text = item.Name, Tag = item };
+                var ammoNode = new TreeNode { Text = item.Name, Tag = item };
                 slotNode.Nodes.Add(ammoNode);
 
                 m_objects.Add(item);
@@ -477,10 +477,10 @@ namespace EVEMon.SkillPlanner
 
             // Compute the skills to add
             m_skillsToAdd.Clear();
-            CharacterScratchpad scratchpad = new CharacterScratchpad(m_character);
+            var scratchpad = new CharacterScratchpad(m_character);
 
             // Compute the training time for the prerequisites
-            foreach (Item obj in m_objects)
+            foreach (var obj in m_objects)
             {
                 scratchpad.Train(obj.Prerequisites.Where(x => m_character.Skills[x.Skill.ID].Level < x.Level));
             }
@@ -511,7 +511,7 @@ namespace EVEMon.SkillPlanner
                 TrainTimeLabel.Visible = true;
 
                 // Compute training time
-                TimeSpan trainingTime = m_character.GetTrainingTimeToMultipleSkills(m_skillsToAdd);
+                var trainingTime = m_character.GetTrainingTimeToMultipleSkills(m_skillsToAdd);
                 TrainTimeLabel.Text = trainingTime.ToDescriptiveText(
                     DescriptiveTextOptions.IncludeCommas | DescriptiveTextOptions.SpaceText);
             }

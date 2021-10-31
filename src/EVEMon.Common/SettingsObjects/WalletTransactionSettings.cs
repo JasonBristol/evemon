@@ -48,7 +48,7 @@ namespace EVEMon.Common.SettingsObjects
         {
             get
             {
-                WalletTransactionColumn[] defaultColumns = new[]
+                var defaultColumns = new[]
                                                                {
                                                                    WalletTransactionColumn.Date,
                                                                    WalletTransactionColumn.ItemName,

@@ -303,7 +303,7 @@ namespace EVEMon.XmlGenerator.Providers
             Console.Write(s_text);
 
             // Initialize the SQL Connection
-            SQLiteConnection connection = GetConnection("EveStaticData");
+            var connection = GetConnection("EveStaticData");
 
             try
             {
@@ -333,7 +333,7 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns></returns>
         private static SQLiteConnection GetConnection(string connectionName)
         {
-            ConnectionStringSettings connectionStringSetting = ConfigurationManager.ConnectionStrings[connectionName];
+            var connectionStringSetting = ConfigurationManager.ConnectionStrings[connectionName];
             if (connectionStringSetting != null)
                 return new SQLiteConnection(connectionStringSetting.ConnectionString);
 
@@ -357,7 +357,7 @@ namespace EVEMon.XmlGenerator.Providers
         {
             s_totalTablesCount = Util.GetCountOfTypesInNamespace("EVEMon.XmlGenerator.StaticData");
 
-            SQLiteConnection connection = CreateConnection();
+            var connection = CreateConnection();
 
             // Data dumps are available from CCP
             Console.Write(@"Loading data from '{0}' database... ", connection.Database);
@@ -455,11 +455,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Agent Agents.</returns>
         private static BagCollection<AgtAgents> Agents()
         {
-            IndexedCollection<AgtAgents> collection = new IndexedCollection<AgtAgents>();
+            var collection = new IndexedCollection<AgtAgents>();
 
-            foreach (agtAgents agent in s_context.agtAgents)
+            foreach (var agent in s_context.agtAgents)
             {
-                AgtAgents item = new AgtAgents
+                var item = new AgtAgents
                 {
                     ID = agent.agentID,
                 };
@@ -494,9 +494,9 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Agent Agent Types.</returns>
         private static BagCollection<AgtAgentTypes> AgentTypes()
         {
-            IndexedCollection<AgtAgentTypes> collection = new IndexedCollection<AgtAgentTypes>();
+            var collection = new IndexedCollection<AgtAgentTypes>();
 
-            foreach (AgtAgentTypes item in s_context.agtAgentTypes.Select(
+            foreach (var item in s_context.agtAgentTypes.Select(
                 agentType => new AgtAgentTypes
                 {
                     ID = agentType.agentTypeID,
@@ -515,9 +515,9 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Agent Research Agents.</returns>
         private static BagCollection<AgtResearchAgents> ResearchAgents()
         {
-            IndexedCollection<AgtResearchAgents> collection = new IndexedCollection<AgtResearchAgents>();
+            var collection = new IndexedCollection<AgtResearchAgents>();
 
-            foreach (AgtResearchAgents item in s_context.agtResearchAgents.Select(
+            foreach (var item in s_context.agtResearchAgents.Select(
                 researchAgent => new AgtResearchAgents
                 {
                     ID = researchAgent.agentID,
@@ -536,11 +536,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Character Factions.</returns>
         private static BagCollection<ChrFactions> Factions()
         {
-            IndexedCollection<ChrFactions> collection = new IndexedCollection<ChrFactions>();
+            var collection = new IndexedCollection<ChrFactions>();
 
-            foreach (chrFactions faction in s_context.chrFactions)
+            foreach (var faction in s_context.chrFactions)
             {
-                ChrFactions item = new ChrFactions
+                var item = new ChrFactions
                 {
                     ID = faction.factionID,
                     FactionName = faction.factionName,
@@ -587,7 +587,7 @@ namespace EVEMon.XmlGenerator.Providers
             var collection = new IndexedCollection<CrpNPCDivisions>();
             var items = collection.Items;
 
-            foreach (CrpNPCDivisions item in s_context.crpNPCDivisions.Select(
+            foreach (var item in s_context.crpNPCDivisions.Select(
                 npcDivision => new CrpNPCDivisions
                 {
                     ID = npcDivision.divisionID,
@@ -598,7 +598,7 @@ namespace EVEMon.XmlGenerator.Providers
             }
 
             // Looks like some new divisions were forgotten in the SDE
-            for (int i = 18; i <= 30; i++)
+            for (var i = 18; i <= 30; i++)
                 items.Add(new CrpNPCDivisions
                 {
                     ID = i, DivisionName = "Unknown"
@@ -613,9 +613,9 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Dogma Attribute Categories.</returns>
         private static BagCollection<DgmAttributeCategories> AttributeCategories()
         {
-            IndexedCollection<DgmAttributeCategories> collection = new IndexedCollection<DgmAttributeCategories>();
+            var collection = new IndexedCollection<DgmAttributeCategories>();
 
-            foreach (DgmAttributeCategories item in s_context.dgmAttributeCategories.Select(
+            foreach (var item in s_context.dgmAttributeCategories.Select(
                 category => new DgmAttributeCategories
                 {
                     ID = category.categoryID,
@@ -638,11 +638,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Dogma Attribute Types.</returns>
         private static BagCollection<DgmAttributeTypes> AttributeTypes()
         {
-            IndexedCollection<DgmAttributeTypes> collection = new IndexedCollection<DgmAttributeTypes>();
+            var collection = new IndexedCollection<DgmAttributeTypes>();
 
-            foreach (dgmAttributeTypes attribute in s_context.dgmAttributeTypes)
+            foreach (var attribute in s_context.dgmAttributeTypes)
             {
-                DgmAttributeTypes item = new DgmAttributeTypes
+                var item = new DgmAttributeTypes
                 {
                     ID = attribute.attributeID,
                     CategoryID = attribute.categoryID,
@@ -681,9 +681,9 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns></returns>
         private static BagCollection<InvTraits> Traits()
         {
-            IndexedCollection<InvTraits> collection = new IndexedCollection<InvTraits>();
+            var collection = new IndexedCollection<InvTraits>();
 
-            foreach (InvTraits item in s_context.invTraits.Select(
+            foreach (var item in s_context.invTraits.Select(
                 trait => new InvTraits
                 {
                     ID = trait.traitID,
@@ -726,7 +726,7 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>RelationSetCollection</c> of Types and Effects.</returns>
         private static RelationSetCollection<DgmTypeEffects> TypeEffects()
         {
-            List<DgmTypeEffects> list = s_context.dgmTypeEffects.Select(
+            var list = s_context.dgmTypeEffects.Select(
                 typeEffect => new DgmTypeEffects
                 {
                     EffectID = typeEffect.effectID,
@@ -742,9 +742,9 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of EVE icons.</returns>
         private static BagCollection<EveIcons> Icons()
         {
-            IndexedCollection<EveIcons> collection = new IndexedCollection<EveIcons>();
+            var collection = new IndexedCollection<EveIcons>();
 
-            foreach (EveIcons item in s_context.eveIcons.Select(
+            foreach (var item in s_context.eveIcons.Select(
                 icon => new EveIcons
                 {
                     ID = icon.iconID,
@@ -763,9 +763,9 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of EVE Units.</returns>
         private static BagCollection<EveUnits> Units()
         {
-            IndexedCollection<EveUnits> collection = new IndexedCollection<EveUnits>();
+            var collection = new IndexedCollection<EveUnits>();
 
-            foreach (EveUnits item in s_context.eveUnits.Select(
+            foreach (var item in s_context.eveUnits.Select(
                 unit => new EveUnits
                 {
                     Description = unit.description,
@@ -881,11 +881,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of industry blueprints.</returns>
         private static BagCollection<IndustryBlueprints> IndustryBlueprints()
         {
-            IndexedCollection<IndustryBlueprints> collection = new IndexedCollection<IndustryBlueprints>();
+            var collection = new IndexedCollection<IndustryBlueprints>();
 
-            foreach (industryBlueprints blueprint in s_context.industryBlueprints)
+            foreach (var blueprint in s_context.industryBlueprints)
             {
-                IndustryBlueprints item = new IndustryBlueprints
+                var item = new IndustryBlueprints
                 {
                     ID = blueprint.typeID,
                     MaxProductionLimit = blueprint.maxProductionLimit
@@ -905,11 +905,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Inventory Categories.</returns>
         private static BagCollection<InvCategories> Categories()
         {
-            IndexedCollection<InvCategories> collection = new IndexedCollection<InvCategories>();
+            var collection = new IndexedCollection<InvCategories>();
 
-            foreach (invCategories category in s_context.invCategories)
+            foreach (var category in s_context.invCategories)
             {
-                InvCategories item = new InvCategories
+                var item = new InvCategories
                 {
                     ID = category.categoryID,
                     Name = category.categoryName,
@@ -931,10 +931,10 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Inventory Control Tower Resource Purposes.</returns>
         private static BagCollection<InvControlTowerResourcePurposes> ControlTowerResourcePurposes()
         {
-            IndexedCollection<InvControlTowerResourcePurposes> collection =
+            var collection =
                 new IndexedCollection<InvControlTowerResourcePurposes>();
 
-            foreach (InvControlTowerResourcePurposes item in s_context.invControlTowerResourcePurposes.Select(
+            foreach (var item in s_context.invControlTowerResourcePurposes.Select(
                 resource => new InvControlTowerResourcePurposes
                 {
                     ID = resource.purpose,
@@ -953,11 +953,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>List</c> of Inventory Control Tower Resources .</returns>
         private static List<InvControlTowerResources> ControlTowerResources()
         {
-            List<InvControlTowerResources> list = new List<InvControlTowerResources>();
+            var list = new List<InvControlTowerResources>();
 
-            foreach (invControlTowerResources resource in s_context.invControlTowerResources)
+            foreach (var resource in s_context.invControlTowerResources)
             {
-                InvControlTowerResources item = new InvControlTowerResources
+                var item = new InvControlTowerResources
                 {
                     ID = resource.controlTowerTypeID,
                     ResourceID = resource.resourceTypeID,
@@ -983,9 +983,9 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Inventory Flags.</returns>
         private static BagCollection<InvFlags> Flags()
         {
-            IndexedCollection<InvFlags> collection = new IndexedCollection<InvFlags>();
+            var collection = new IndexedCollection<InvFlags>();
 
-            foreach (InvFlags item in s_context.invFlags.Select(
+            foreach (var item in s_context.invFlags.Select(
                 flag => new InvFlags
                 {
                     ID = flag.flagID,
@@ -1006,11 +1006,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Inventory Groups.</returns>
         private static BagCollection<InvGroups> Groups()
         {
-            IndexedCollection<InvGroups> collection = new IndexedCollection<InvGroups>();
+            var collection = new IndexedCollection<InvGroups>();
 
-            foreach (invGroups group in s_context.invGroups)
+            foreach (var group in s_context.invGroups)
             {
-                InvGroups item = new InvGroups
+                var item = new InvGroups
                 {
                     ID = group.groupID,
                     Name = group.groupName,
@@ -1048,9 +1048,9 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Inventory Items.</returns>
         private static BagCollection<InvItems> Items()
         {
-            IndexedCollection<InvItems> collection = new IndexedCollection<InvItems>();
+            var collection = new IndexedCollection<InvItems>();
 
-            foreach (InvItems item in s_context.invItems.Select(
+            foreach (var item in s_context.invItems.Select(
                 item => new InvItems
                 {
                     ID = (int)item.itemID,
@@ -1073,9 +1073,9 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Market Groups available on the market.</returns>
         private static BagCollection<InvMarketGroups> MarketGroups()
         {
-            IndexedCollection<InvMarketGroups> collection = new IndexedCollection<InvMarketGroups>();
+            var collection = new IndexedCollection<InvMarketGroups>();
 
-            foreach (InvMarketGroups item in s_context.invMarketGroups.Select(
+            foreach (var item in s_context.invMarketGroups.Select(
                 marketGroup => new InvMarketGroups
                 {
                     ID = marketGroup.marketGroupID,
@@ -1106,11 +1106,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>RelationSetCollection</c> parent-child relationships between types.</returns>
         private static RelationSetCollection<InvMetaTypes> MetaTypes()
         {
-            List<InvMetaTypes> list = new List<InvMetaTypes>();
+            var list = new List<InvMetaTypes>();
 
-            foreach (invMetaTypes metaType in s_context.invMetaTypes)
+            foreach (var metaType in s_context.invMetaTypes)
             {
-                InvMetaTypes item = new InvMetaTypes
+                var item = new InvMetaTypes
                 {
                     ItemID = metaType.typeID
                 };
@@ -1131,9 +1131,9 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Inventory Names.</returns>
         private static BagCollection<InvNames> Names()
         {
-            IndexedCollection<InvNames> collection = new IndexedCollection<InvNames>();
+            var collection = new IndexedCollection<InvNames>();
 
-            foreach (InvNames item in s_context.invNames.Select(
+            foreach (var item in s_context.invNames.Select(
                 name => new InvNames
                 {
                     ID = (int)name.itemID,
@@ -1165,11 +1165,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns>List of reaction info.</returns>
         private static List<InvTypeReactions> TypeReactions()
         {
-            List<InvTypeReactions> list = new List<InvTypeReactions>();
+            var list = new List<InvTypeReactions>();
 
-            foreach (invTypeReactions reaction in s_context.invTypeReactions)
+            foreach (var reaction in s_context.invTypeReactions)
             {
-                InvTypeReactions item = new InvTypeReactions
+                var item = new InvTypeReactions
                 {
                     ID = reaction.reactionTypeID,
                     Input = reaction.input,
@@ -1191,11 +1191,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of items from the Inventory.</returns>
         private static BagCollection<InvTypes> Types()
         {
-            IndexedCollection<InvTypes> collection = new IndexedCollection<InvTypes>();
+            var collection = new IndexedCollection<InvTypes>();
 
-            foreach (invTypes type in s_context.invTypes)
+            foreach (var type in s_context.invTypes)
             {
-                InvTypes item = new InvTypes
+                var item = new InvTypes
                 {
                     ID = type.typeID,
                     Description = type.description,
@@ -1247,11 +1247,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <remarks>Constallations in the EVE Universe.</remarks>
         private static BagCollection<MapConstellations> Constellations()
         {
-            IndexedCollection<MapConstellations> collection = new IndexedCollection<MapConstellations>();
+            var collection = new IndexedCollection<MapConstellations>();
 
-            foreach (mapConstellations constellation in s_context.mapConstellations)
+            foreach (var constellation in s_context.mapConstellations)
             {
-                MapConstellations item = new MapConstellations
+                var item = new MapConstellations
                 {
                     ID = constellation.constellationID,
                     Name = constellation.constellationName,
@@ -1273,9 +1273,9 @@ namespace EVEMon.XmlGenerator.Providers
         /// <remarks>Regions in the EVE Universe.</remarks>
         private static BagCollection<MapRegions> Regions()
         {
-            IndexedCollection<MapRegions> collection = new IndexedCollection<MapRegions>();
+            var collection = new IndexedCollection<MapRegions>();
 
-            foreach (MapRegions item in s_context.mapRegions.Select(
+            foreach (var item in s_context.mapRegions.Select(
                 region => new MapRegions
                 {
                     ID = region.regionID,
@@ -1310,11 +1310,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <returns><c>BagCollection</c> of Map Solar Systems.</returns>
         private static BagCollection<MapSolarSystems> SolarSystems()
         {
-            IndexedCollection<MapSolarSystems> collection = new IndexedCollection<MapSolarSystems>();
+            var collection = new IndexedCollection<MapSolarSystems>();
 
-            foreach (mapSolarSystems solarsystem in s_context.mapSolarSystems)
+            foreach (var solarsystem in s_context.mapSolarSystems)
             {
-                MapSolarSystems item = new MapSolarSystems
+                var item = new MapSolarSystems
                 {
                     ID = solarsystem.solarSystemID,
                     Name = solarsystem.solarSystemName
@@ -1348,11 +1348,11 @@ namespace EVEMon.XmlGenerator.Providers
         /// <remarks>Stations in the EVE Universe.</remarks>
         private static LongBagCollection<StaStations> Stations()
         {
-            LongIndexedCollection<StaStations> collection = new LongIndexedCollection<StaStations>();
+            var collection = new LongIndexedCollection<StaStations>();
 
-            foreach (staStations station in s_context.staStations)
+            foreach (var station in s_context.staStations)
             {
-                StaStations item = new StaStations
+                var item = new StaStations
                 {
                     ID = station.stationID,
                     Name = station.stationName,

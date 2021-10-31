@@ -148,14 +148,14 @@ namespace EVEMon.DetailsWindow
         {
             get
             {
-                Region startStationRegion = m_contract.StartStation.SolarSystemChecked.
+                var startStationRegion = m_contract.StartStation.SolarSystemChecked.
                     Constellation.Region;
-                Region characterLastKnownRegion = m_characterLastSolarSystem != null ?
+                var characterLastKnownRegion = m_characterLastSolarSystem != null ?
                     m_characterLastSolarSystem.Constellation.Region : null;
-                string destinationRegionText = (characterLastKnownRegion != null) ?
+                var destinationRegionText = (characterLastKnownRegion != null) ?
                     ((characterLastKnownRegion == startStationRegion) ? "(Current Region)" :
                     "(Other Region)") : string.Empty;
-                string secondHalfText = m_contract.Availability == ContractAvailability.Private ?
+                var secondHalfText = m_contract.Availability == ContractAvailability.Private ?
                     m_contract.Assignee : $"Region: {startStationRegion.Name}  {destinationRegionText}";
                 return $"{m_contract.Availability.GetDescription()} - {secondHalfText}";
             }
@@ -230,7 +230,7 @@ namespace EVEMon.DetailsWindow
         {
             m_height += Pad;
 
-            string exclamation = m_contract.IssuerID == m_contract.Character.CharacterID ? "Buyer" : "You";
+            var exclamation = m_contract.IssuerID == m_contract.Character.CharacterID ? "Buyer" : "You";
 
             if (m_contractItems.Any(x => x.Included))
             {
@@ -242,11 +242,11 @@ namespace EVEMon.DetailsWindow
                     DisplayListView(m_lvIncludedItems);
                 else
                 {
-                    ContractItem contractItem = m_contractItems.First();
+                    var contractItem = m_contractItems.First();
 
                     // Display the item's image
                     m_height += Pad * 2;
-                    int left = DetailsPanel.Left + FirstIntendPosition + Pad * 2;
+                    var left = DetailsPanel.Left + FirstIntendPosition + Pad * 2;
                     ItemImage.EveItem = contractItem.Item;
                     ItemImage.Location = new Point(left, m_height);
                     ItemImage.BringToFront();
@@ -254,9 +254,9 @@ namespace EVEMon.DetailsWindow
 
                     // Draw the item's name and quantity
                     m_height += Pad * 2;
-                    string itemText = $"{contractItem.Item.Name} x {contractItem.Quantity:N0}";
-                    Size itemTextSize = e.Graphics.MeasureString(itemText, m_bigBoldFont).ToSize();
-                    int itemTextHeight = itemTextSize.Width < DetailsPanel.Width - SecondIndentPosition
+                    var itemText = $"{contractItem.Item.Name} x {contractItem.Quantity:N0}";
+                    var itemTextSize = e.Graphics.MeasureString(itemText, m_bigBoldFont).ToSize();
+                    var itemTextHeight = itemTextSize.Width < DetailsPanel.Width - SecondIndentPosition
                         ? itemTextSize.Height
                         : itemTextSize.Height * 2;
                     e.Graphics.DrawString(itemText, m_bigBoldFont, Brushes.Black,
@@ -264,13 +264,13 @@ namespace EVEMon.DetailsWindow
                             DetailsPanel.Width - SecondIndentPosition, itemTextHeight));
 
                     m_height += itemTextHeight;
-                    int position = left + ItemImage.Width + Pad * 2 - DetailsPanel.Left - SecondIndentPosition;
+                    var position = left + ItemImage.Width + Pad * 2 - DetailsPanel.Left - SecondIndentPosition;
 
                     // Draw the item's category and group
                     if (!string.IsNullOrEmpty(contractItem.Item.CategoryName) &&
                         !string.IsNullOrEmpty(contractItem.Item.GroupName))
                     {
-                        string itemCategoryGroup = $"{contractItem.Item.CategoryName}  /  {contractItem.Item.GroupName}";
+                        var itemCategoryGroup = $"{contractItem.Item.CategoryName}  /  {contractItem.Item.GroupName}";
                         DrawText(e, string.Empty, itemCategoryGroup, m_mediumBoldFont, true, position);
                     }
 
@@ -278,7 +278,7 @@ namespace EVEMon.DetailsWindow
                     if (contractItem.RawQuantity < 0 &&
                         contractItem.Item.MarketGroup.BelongsIn(DBConstants.BlueprintsMarketGroupID))
                     {
-                        string itemTypeText = $"BLUEPRINT {(contractItem.RawQuantity == -2 ? "COPY" : "ORIGINAL")}";
+                        var itemTypeText = $"BLUEPRINT {(contractItem.RawQuantity == -2 ? "COPY" : "ORIGINAL")}";
                         DrawText(e, string.Empty, itemTypeText, m_boldFont, true, position);
                     }
 
@@ -308,7 +308,7 @@ namespace EVEMon.DetailsWindow
             listView.BringToFront();
             listView.Visible = true;
 
-            int listViewHeight = m_contract.IsTrading && listView == m_lvIncludedItems
+            var listViewHeight = m_contract.IsTrading && listView == m_lvIncludedItems
                 ? (DetailsPanel.Height - m_height - Pad * 2) / 2
                 : DetailsPanel.Height - m_height - Pad * 2;
             listView.Size = new Size(DetailsPanel.Width - FirstIntendPosition * 2, listViewHeight);
@@ -327,12 +327,12 @@ namespace EVEMon.DetailsWindow
 
             m_height += Pad;
 
-            string labelText = $"{(m_contract.IssuerID == m_contract.Character.CharacterID ? "Buyer" : "You")} " +
-                               $"Will {(m_contract.Price > 0 ? "Pay" : "Get")}";
+            var labelText = $"{(m_contract.IssuerID == m_contract.Character.CharacterID ? "Buyer" : "You")} " +
+                            $"Will {(m_contract.Price > 0 ? "Pay" : "Get")}";
 
             if (m_contract.Price > 0)
             {
-                string priceText = string.Format(CultureConstants.DefaultCulture, GetNumberFormat(m_contract.Price),
+                var priceText = string.Format(CultureConstants.DefaultCulture, GetNumberFormat(m_contract.Price),
                     m_contract.Price,
                     m_contract.Price < 10000M
                         ? string.Empty
@@ -342,7 +342,7 @@ namespace EVEMon.DetailsWindow
             }
             else
             {
-                string rewardText = string.Format(CultureConstants.DefaultCulture, GetNumberFormat(m_contract.Reward),
+                var rewardText = string.Format(CultureConstants.DefaultCulture, GetNumberFormat(m_contract.Reward),
                     m_contract.Reward,
                     m_contract.Reward < 10000M
                         ? string.Empty
@@ -366,7 +366,7 @@ namespace EVEMon.DetailsWindow
 
             m_height += Pad;
 
-            string text = string.Format(CultureConstants.DefaultCulture, GetNumberFormat(m_contract.Price),
+            var text = string.Format(CultureConstants.DefaultCulture, GetNumberFormat(m_contract.Price),
                 m_contract.Price, m_contract.Price < 10000M ? string.Empty :
                 $" ({FormatHelper.Format(m_contract.Price, AbbreviationFormat.AbbreviationWords, false)})");
             DrawText(e, "Starting Bid", text, Font);
@@ -376,8 +376,8 @@ namespace EVEMon.DetailsWindow
                 : $" ({FormatHelper.Format(m_contract.Buyout, AbbreviationFormat.AbbreviationWords, false)})");
             DrawText(e, "Buyout Price", text, Font);
 
-            decimal amount = m_contract.ContractBids.Select(bid => bid.Amount).Concat(new[] { 0M }).Max();
-            int numberOfBids = m_contract.ContractBids.Count();
+            var amount = m_contract.ContractBids.Select(bid => bid.Amount).Concat(new[] { 0M }).Max();
+            var numberOfBids = m_contract.ContractBids.Count();
             text = numberOfBids == 0 ? "No Bids" :
                 string.Format(CultureConstants.DefaultCulture, GetNumberFormat(amount), amount, string.Empty) +
                 $" ({numberOfBids} bid{(numberOfBids.S())} so far)";
@@ -387,7 +387,7 @@ namespace EVEMon.DetailsWindow
             text = m_contract.IsAvailable ? m_contract.Expiration.
                 ToRemainingTimeShortDescription(DateTimeKind.Utc) : m_contract.State.ToString();
 
-            Color color = (m_contract.IsAvailable && m_contract.Expiration < DateTime.UtcNow.AddDays(1)) ?
+            var color = (m_contract.IsAvailable && m_contract.Expiration < DateTime.UtcNow.AddDays(1)) ?
                 Color.DarkOrange : (m_contract.State == ContractState.Expired ? Color.Red : ForeColor);
 
             DrawText(e, "Time Left", string.Empty, Font, false);
@@ -411,28 +411,28 @@ namespace EVEMon.DetailsWindow
             }
             else
             {
-                DateTime timeToComplete = m_contract.Accepted.AddDays(m_contract.DaysToComplete);
-                string timeToCompleteText = timeToComplete.Subtract(DateTime.UtcNow).
+                var timeToComplete = m_contract.Accepted.AddDays(m_contract.DaysToComplete);
+                var timeToCompleteText = timeToComplete.Subtract(DateTime.UtcNow).
                     ToDescriptiveText(DescriptiveTextOptions.SpaceText |
                     DescriptiveTextOptions.FullText | DescriptiveTextOptions.SpaceBetween,
                     includeSeconds: false);
-                string timeToCompleteFormattedDateTimeText = timeToComplete.ToLocalTime().DateTimeToDotFormattedString();
+                var timeToCompleteFormattedDateTimeText = timeToComplete.ToLocalTime().DateTimeToDotFormattedString();
 
                 DrawText(e, "Time Left", $"{timeToCompleteText} ({timeToCompleteFormattedDateTimeText})", Font);
             }
 
             DrawText(e, "Volume", $"{m_contract.Volume:N1} m³", Font);
 
-            string text = string.Format(CultureConstants.DefaultCulture, GetNumberFormat(m_contract.Reward), m_contract.Reward,
+            var text = string.Format(CultureConstants.DefaultCulture, GetNumberFormat(m_contract.Reward), m_contract.Reward,
                 m_contract.Reward < 10000M ? string.Empty :
                 $"({FormatHelper.Format(m_contract.Reward, AbbreviationFormat.AbbreviationWords, false)})");
 
             // null SolarSystem is OK here, count will be zero as expected
-            int startToEndSystemJumps = GetStartToEndRoute.Count(system => system !=
-                m_contract.StartStation.SolarSystem);
-            decimal iskPerJump = startToEndSystemJumps > 0 ? (m_contract.Reward /
-                startToEndSystemJumps) : 0;
-            string iskPerJumpText = iskPerJump > 0 ?
+            var startToEndSystemJumps = GetStartToEndRoute.Count(system => system !=
+                                                                           m_contract.StartStation.SolarSystem);
+            var iskPerJump = startToEndSystemJumps > 0 ? (m_contract.Reward /
+                                                          startToEndSystemJumps) : 0;
+            var iskPerJumpText = iskPerJump > 0 ?
                 $"({string.Format(CultureConstants.DefaultCulture, GetNumberFormat(iskPerJump), iskPerJump, string.Empty)} /  Jump)" :
                 string.Empty;
 
@@ -510,24 +510,24 @@ namespace EVEMon.DetailsWindow
             if (m_contract.Status != CCPContractStatus.Outstanding)
                 return;
 
-            string expirationTimeText = m_contract.Expiration.ToLocalTime().DateTimeToDotFormattedString();
-            string expirationRemainingTimeText = m_contract.IsAvailable
+            var expirationTimeText = m_contract.Expiration.ToLocalTime().DateTimeToDotFormattedString();
+            var expirationRemainingTimeText = m_contract.IsAvailable
                 ? m_contract.Expiration.ToRemainingTimeShortDescription(DateTimeKind.Utc)
                 : m_contract.State.ToString();
 
-            Size expirationTimeTextSize = e.Graphics.MeasureString(expirationTimeText, Font).ToSize();
-            Size expirationRemainingTimeTextSize = e.Graphics.MeasureString(expirationRemainingTimeText, Font).ToSize();
-            Color color = m_contract.IsAvailable && m_contract.Expiration < DateTime.UtcNow.AddDays(1)
+            var expirationTimeTextSize = e.Graphics.MeasureString(expirationTimeText, Font).ToSize();
+            var expirationRemainingTimeTextSize = e.Graphics.MeasureString(expirationRemainingTimeText, Font).ToSize();
+            var color = m_contract.IsAvailable && m_contract.Expiration < DateTime.UtcNow.AddDays(1)
                 ? Color.DarkOrange
                 : m_contract.State == ContractState.Expired
                     ? Color.Red
                     : ForeColor;
 
-            int position = expirationTimeTextSize.Width;
+            var position = expirationTimeTextSize.Width;
             DrawText(e, "Expiration Date", expirationTimeText, Font, false);
             DrawText(e, string.Empty, "(", Font, false, position);
             position += Pad * 2;
-            Point point = new Point(SecondIndentPosition + position, m_height);
+            var point = new Point(SecondIndentPosition + position, m_height);
             DrawColoredText(e, expirationRemainingTimeText, Font, point, color, false);
             position += expirationRemainingTimeTextSize.Width;
             DrawText(e, string.Empty, ")", Font, true, position);
@@ -541,11 +541,11 @@ namespace EVEMon.DetailsWindow
         /// <param name="station">The station.</param>
         private void DrawStationText(PaintEventArgs e, string labelText, Station station)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
             SolarSystem system = null;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            string secLevelText = string.Empty;
+            var secLevelText = string.Empty;
             if (station != null)
             {
                 // If we fetch from an inaccessible citadel not on hammertime, station can
@@ -557,10 +557,10 @@ namespace EVEMon.DetailsWindow
             // Calculate the amount of whitespaces needed after which the station name must be drawn
             // in order to not overlap the security level text
             // (I know it looks weird but couldn't thing of another way)
-            int secLevelTextWidth = g.MeasureString(secLevelText, Font).ToSize().Width;
-            int spaceWidth = g.MeasureString(" ", Font).ToSize().Width;
-            int tempSpaceWidth = 0;
-            int spaceCount = 0;
+            var secLevelTextWidth = g.MeasureString(secLevelText, Font).ToSize().Width;
+            var spaceWidth = g.MeasureString(" ", Font).ToSize().Width;
+            var tempSpaceWidth = 0;
+            var spaceCount = 0;
 
             do
             {
@@ -568,13 +568,13 @@ namespace EVEMon.DetailsWindow
                 spaceCount++;
             } while (secLevelTextWidth > tempSpaceWidth);
 
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < spaceCount; i++)
+            var sb = new StringBuilder();
+            for (var i = 0; i < spaceCount; i++)
             {
                 sb.Append(" ");
             }
             sb.Append(station?.Name ?? EveMonConstants.UnknownText);
-            string stationText = sb.ToString();
+            var stationText = sb.ToString();
 
             //Draw the label text
             g.DrawString(labelText, Font, Brushes.DimGray, new Point(DetailsPanel.Left + FirstIntendPosition, m_height));
@@ -585,8 +585,8 @@ namespace EVEMon.DetailsWindow
                     SecondIndentPosition, m_height), system.SecurityLevelColor, false);
 
             // Draw the station name
-            Size stationTextSize = g.MeasureString(stationText, Font).ToSize();
-            int stationTextHeight = stationTextSize.Width < DetailsPanel.Width - SecondIndentPosition ?
+            var stationTextSize = g.MeasureString(stationText, Font).ToSize();
+            var stationTextHeight = stationTextSize.Width < DetailsPanel.Width - SecondIndentPosition ?
                 stationTextSize.Height : stationTextSize.Height * 2;
             g.DrawString(stationText, Font, Brushes.Black, new Rectangle(DetailsPanel.Left + SecondIndentPosition, m_height,
                 DetailsPanel.Width - SecondIndentPosition, stationTextHeight));
@@ -612,7 +612,7 @@ namespace EVEMon.DetailsWindow
         /// <param name="station">The station.</param>
         private void DrawJumps(PaintEventArgs e, Station station)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             int startToEndSystemJumps;
             string jumpsText;
@@ -695,9 +695,9 @@ namespace EVEMon.DetailsWindow
             if (m_characterLastSolarSystem == null)
                 return;
 
-            bool routeThroughNullSec = false;
-            bool routeThroughLowSec = false;
-            bool routeThroughHighSec = false;
+            var routeThroughNullSec = false;
+            var routeThroughLowSec = false;
+            var routeThroughHighSec = false;
 
             if (station == m_contract.StartStation)
             {
@@ -723,14 +723,14 @@ namespace EVEMon.DetailsWindow
             if (!routeThroughNullSec && !routeThroughLowSec && !routeThroughHighSec)
                 return;
 
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
             const string RouteText = "Route will take you through: ";
-            Size routeTextSize = g.MeasureString(RouteText, Font).ToSize();
+            var routeTextSize = g.MeasureString(RouteText, Font).ToSize();
 
             DrawText(e, string.Empty, RouteText, Font, false);
-            int left = DetailsPanel.Left + SecondIndentPosition + routeTextSize.Width;
+            var left = DetailsPanel.Left + SecondIndentPosition + routeTextSize.Width;
 
             // Route through "Null Sec"
             if (routeThroughNullSec)
@@ -784,7 +784,7 @@ namespace EVEMon.DetailsWindow
             bool increaseHeight = true)
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            SizeF textSize = e.Graphics.MeasureString(text, font);
+            var textSize = e.Graphics.MeasureString(text, font);
             DrawColoredText(e, text, font, new RectangleF(point, textSize), color, increaseHeight);
         }
 
@@ -800,7 +800,7 @@ namespace EVEMon.DetailsWindow
         private void DrawColoredText(PaintEventArgs e, string text, Font font, RectangleF rectangle, Color color,
             bool increaseHeight = true)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
             using (Brush secLevelBrush = new SolidBrush(color))
@@ -824,10 +824,10 @@ namespace EVEMon.DetailsWindow
         private void DrawText(PaintEventArgs e, string labelText, string text, Font font, bool increaseHeight = true,
             int position = 0)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            Size textSize = g.MeasureString(text, font).ToSize();
+            var textSize = g.MeasureString(text, font).ToSize();
 
             // Draw the label text
             if (!string.IsNullOrEmpty(labelText))
@@ -847,7 +847,7 @@ namespace EVEMon.DetailsWindow
         private void DrawHeader(PaintEventArgs e)
         {
             Image headerImage;
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
             // Select image according to contract type
@@ -871,10 +871,10 @@ namespace EVEMon.DetailsWindow
                 headerImage.Width, headerImage.Height));
 
             // Draw the header text
-            Font headerTextFont = FontFactory.GetDefaultFont(10.25f);
-            string headerText = $"{m_contract.ContractText} ({m_contract.ContractType.GetDescription()})";
-            Size textSize = g.MeasureString(headerText, headerTextFont).ToSize();
-            int imageWidth = headerImage.Width + Pad * 2;
+            var headerTextFont = FontFactory.GetDefaultFont(10.25f);
+            var headerText = $"{m_contract.ContractText} ({m_contract.ContractType.GetDescription()})";
+            var textSize = g.MeasureString(headerText, headerTextFont).ToSize();
+            var imageWidth = headerImage.Width + Pad * 2;
             g.DrawString(headerText, headerTextFont, Brushes.Black,
                 new Rectangle(DetailsPanel.Left + imageWidth,
                     headerImage.Height / 2 - textSize.Height,
@@ -894,7 +894,7 @@ namespace EVEMon.DetailsWindow
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            using (Pen pen = new Pen(ForeColor))
+            using (var pen = new Pen(ForeColor))
             {
                 e.Graphics.DrawLine(pen, DetailsPanel.Left + FirstIntendPosition, m_height,
                     DetailsPanel.Right - FirstIntendPosition, m_height);
@@ -916,7 +916,7 @@ namespace EVEMon.DetailsWindow
             if (m_route == null)
                 return;
 
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
             m_height = Pad;
@@ -924,7 +924,7 @@ namespace EVEMon.DetailsWindow
             g.DrawString("Start Location:", Font, Brushes.Black, FirstIntendPosition, m_height);
             m_height += g.MeasureString("Start Location:", Font).ToSize().Height;
 
-            int width = DrawSolarSystemText(e, m_route.First(), FirstIntendPosition + Pad);
+            var width = DrawSolarSystemText(e, m_route.First(), FirstIntendPosition + Pad);
             m_height += Pad * 2;
 
             width = m_route.Where(solarSystem => solarSystem != m_route.First() && solarSystem != m_route.Last()).Select(
@@ -951,12 +951,12 @@ namespace EVEMon.DetailsWindow
         /// <returns>The width of the drawn text.</returns>
         private int DrawSolarSystemText(PaintEventArgs e, SolarSystem solarSystem, int left)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            string secLevelText = solarSystem.SecurityLevel.ToString("N1", CultureConstants.DefaultCulture);
-            int intend = g.MeasureString(secLevelText, Font).ToSize().Width;
-            Size systemTextSize = g.MeasureString(solarSystem.Name, Font).ToSize();
+            var secLevelText = solarSystem.SecurityLevel.ToString("N1", CultureConstants.DefaultCulture);
+            var intend = g.MeasureString(secLevelText, Font).ToSize().Width;
+            var systemTextSize = g.MeasureString(solarSystem.Name, Font).ToSize();
             DrawColoredText(e, secLevelText, Font, new Point(left, m_height),
                 solarSystem.SecurityLevelColor, false);
             g.DrawString(solarSystem.Name, Font, Brushes.Black, left + intend, m_height);
@@ -1057,7 +1057,7 @@ namespace EVEMon.DetailsWindow
                 return;
             }
 
-            int width = Width + RoutePanelParent.Width;
+            var width = Width + RoutePanelParent.Width;
             MaximumSize = new Size(width, MaximumSize.Height);
             MinimumSize = new Size(width, MinimumSize.Height);
             RoutePanelParent.Visible = true;
@@ -1073,7 +1073,7 @@ namespace EVEMon.DetailsWindow
                 return;
 
             RoutePanelParent.Visible = !RoutePanelParent.Visible;
-            int width = Width - RoutePanelParent.Width;
+            var width = Width - RoutePanelParent.Width;
             MaximumSize = new Size(width, MaximumSize.Height);
             MinimumSize = new Size(width, MinimumSize.Height);
         }
@@ -1141,7 +1141,7 @@ namespace EVEMon.DetailsWindow
             private void InitializeComponent()
             {
                 components = new Container();
-                ContextMenuStrip contextMenu = new ContextMenuStrip(components);
+                var contextMenu = new ContextMenuStrip(components);
                 m_showInBrowserMenuItem = new ToolStripMenuItem();
                 contextMenu.SuspendLayout();
 
@@ -1159,20 +1159,20 @@ namespace EVEMon.DetailsWindow
                 m_showInBrowserMenuItem.Click += showInBrowserMenuItem_Click;
 
                 contextMenu.ResumeLayout(false);
-                ColumnHeader chName = new ColumnHeader
+                var chName = new ColumnHeader
                 {
                     Text = @"Name",
                     Width = 120
                 };
 
-                ColumnHeader chQuantity = new ColumnHeader
+                var chQuantity = new ColumnHeader
                 {
                     Text = @"Qty",
                     Width = 60,
                     TextAlign = HorizontalAlignment.Right
                 };
 
-                ColumnHeader chType = new ColumnHeader
+                var chType = new ColumnHeader
                 {
                     Text = @"Type",
                     Width = 60
@@ -1227,7 +1227,7 @@ namespace EVEMon.DetailsWindow
             {
                 base.OnEnter(e);
 
-                Message m = Message.Create(Handle, 295, new IntPtr(65537), IntPtr.Zero);
+                var m = Message.Create(Handle, 295, new IntPtr(65537), IntPtr.Zero);
                 WndProc(ref m);
             }
 
@@ -1242,7 +1242,7 @@ namespace EVEMon.DetailsWindow
                 if (e.Button == MouseButtons.Right)
                     return;
 
-                ListViewItem item = GetItemAt(e.X, e.Y);
+                var item = GetItemAt(e.X, e.Y);
 
                 Cursor = item != null ? CustomCursors.ContextMenu : Cursors.Default;
             }
@@ -1278,20 +1278,20 @@ namespace EVEMon.DetailsWindow
                 if (e.Cancel)
                     return;
 
-                ContractItem contractItem = SelectedItems[0]?.Tag as ContractItem;
+                var contractItem = SelectedItems[0]?.Tag as ContractItem;
 
 
                 if (contractItem?.Item == null)
                     return;
 
-                Blueprint blueprint = StaticBlueprints.GetBlueprintByID(contractItem.Item.ID);
-                Ship ship = contractItem.Item as Ship;
-                Skill skill = m_character.Skills[contractItem.Item.ID];
+                var blueprint = StaticBlueprints.GetBlueprintByID(contractItem.Item.ID);
+                var ship = contractItem.Item as Ship;
+                var skill = m_character.Skills[contractItem.Item.ID];
 
                 if (skill == Skill.UnknownSkill)
                     skill = null;
 
-                string text = ship != null ? "Ship" : blueprint != null ? "Blueprint" : skill != null ? "Skill" : "Item";
+                var text = ship != null ? "Ship" : blueprint != null ? "Blueprint" : skill != null ? "Skill" : "Item";
 
                 m_showInBrowserMenuItem.Text = $"Show In {text} Browser...";
             }
@@ -1303,19 +1303,19 @@ namespace EVEMon.DetailsWindow
             /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
             private void showInBrowserMenuItem_Click(object sender, EventArgs e)
             {
-                ContractItem contractItem = SelectedItems[0]?.Tag as ContractItem;
+                var contractItem = SelectedItems[0]?.Tag as ContractItem;
 
                 if (contractItem?.Item == null)
                     return;
 
-                Ship ship = contractItem.Item as Ship;
-                Blueprint blueprint = StaticBlueprints.GetBlueprintByID(contractItem.Item.ID);
-                Skill skill = m_character.Skills[contractItem.Item.ID];
+                var ship = contractItem.Item as Ship;
+                var blueprint = StaticBlueprints.GetBlueprintByID(contractItem.Item.ID);
+                var skill = m_character.Skills[contractItem.Item.ID];
 
                 if (skill == Skill.UnknownSkill)
                     skill = null;
 
-                PlanWindow planWindow = PlanWindow.ShowPlanWindow(m_character);
+                var planWindow = PlanWindow.ShowPlanWindow(m_character);
 
                 if (ship != null)
                     planWindow.ShowShipInBrowser(ship);
@@ -1344,9 +1344,9 @@ namespace EVEMon.DetailsWindow
 
                     Items.Clear();
 
-                    foreach (ContractItem contractItem in m_list)
+                    foreach (var contractItem in m_list)
                     {
-                        ListViewItem lvItem = new ListViewItem(contractItem.Item.Name) { Tag = contractItem };
+                        var lvItem = new ListViewItem(contractItem.Item.Name) { Tag = contractItem };
 
                         // Add enough subitems to match the number of columns
                         while (lvItem.SubItems.Count < Columns.Count + 1)
@@ -1355,7 +1355,7 @@ namespace EVEMon.DetailsWindow
                         }
 
                         // Creates the subitems
-                        for (int i = 0; i < Columns.Count; i++)
+                        for (var i = 0; i < Columns.Count; i++)
                         {
                             SetColumn(contractItem, lvItem.SubItems[i], Columns[i]);
                         }
@@ -1386,14 +1386,14 @@ namespace EVEMon.DetailsWindow
                     const int Pad = 4;
 
                     // Calculate column header text width with padding
-                    int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                    var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                     // If there is an image assigned to the header, add its width with padding
                     if (SmallImageList != null && column.ImageIndex > -1)
                         columnHeaderWidth += SmallImageList.ImageSize.Width + Pad;
 
                     // Calculate the width of the header and the items of the column
-                    int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                    var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                         item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                             new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -1418,7 +1418,7 @@ namespace EVEMon.DetailsWindow
             /// </summary>
             private void UpdateSortVisualFeedback()
             {
-                foreach (ColumnHeader columnHeader in Columns.Cast<ColumnHeader>())
+                foreach (var columnHeader in Columns.Cast<ColumnHeader>())
                 {
                     if (m_sortCriteria == columnHeader)
                         columnHeader.ImageIndex = m_sortAscending ? 0 : 1;
@@ -1462,8 +1462,8 @@ namespace EVEMon.DetailsWindow
             /// <param name="e"></param>
             private void ContractItemsListView_ColumnClick(object sender, ColumnClickEventArgs e)
             {
-                ListView lvItems = (ListView)sender;
-                ColumnHeader column = lvItems.Columns[e.Column];
+                var lvItems = (ListView)sender;
+                var column = lvItems.Columns[e.Column];
                 if (m_sortCriteria == column)
                     m_sortAscending = !m_sortAscending;
                 else

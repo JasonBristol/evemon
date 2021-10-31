@@ -64,7 +64,7 @@ namespace EVEMon.ApiCredentialsManagement
                 key.ID.ToString(CultureConstants.DefaultCulture))).ToArray());
 
             // Checks whether there will be no characters left after this deletion and hide/display the relevant labels
-            bool noCharactersLeft = m_esiKeys.Any() && m_character is CCPCharacter;
+            var noCharactersLeft = m_esiKeys.Any() && m_character is CCPCharacter;
             noCharactersLabel.Text = string.Format(CultureConstants.DefaultCulture,
                 noCharactersLabel.Text, m_esiKeys.Count.S());
 

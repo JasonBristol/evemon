@@ -93,19 +93,19 @@ namespace EVEMon.SettingsUI
         {
             get
             {
-                List<Character> characters = EveMonClient.MonitoredCharacters.ToList();
+                var characters = EveMonClient.MonitoredCharacters.ToList();
 
                 // Filter characters not in training ?
                 if (!Settings.UI.SystemTrayPopup.ShowCharNotTraining)
                     characters = characters.Where(x => x.IsTraining).ToList();
 
                 // Sort
-                List<Character> charactersList = characters.ToList();
+                var charactersList = characters.ToList();
                 charactersList.StableSort(new CharacterComparer(Settings.UI.SystemTrayPopup.SecondarySortOrder));
                 charactersList.StableSort(new CharacterComparer(Settings.UI.SystemTrayPopup.PrimarySortOrder));
 
                 // Grouping
-                List<Character> newCharacters = new List<Character>();
+                var newCharacters = new List<Character>();
                 switch (Settings.UI.SystemTrayPopup.GroupBy)
                 {
                     case TrayPopupGrouping.None:
@@ -144,22 +144,22 @@ namespace EVEMon.SettingsUI
             // Remove controls and dispose them
             IEnumerable<Control> oldControls = MainFlowLayoutPanel.Controls.Cast<Control>().ToList();
             MainFlowLayoutPanel.Controls.Clear();
-            foreach (Control ctl in oldControls)
+            foreach (var ctl in oldControls)
             {
                 ctl.Dispose();
             }
 
-            IEnumerable<Character> characters = GetCharacters;
+            var characters = GetCharacters;
 
             // Add controls for characters
             if (Settings.UI.SystemTrayPopup.GroupBy == TrayPopupGrouping.Account &&
                 Settings.UI.SystemTrayPopup.IndentGroupedAccounts)
             {
-                List<ESIKey> prevAPIKeys = new List<ESIKey>();
-                foreach (Character character in characters)
+                var prevAPIKeys = new List<ESIKey>();
+                foreach (var character in characters)
                 {
-                    OverviewItem charPanel = GetOverviewItem(character);
-                    List<ESIKey> apiKeys = character.Identity.ESIKeys.ToList();
+                    var charPanel = GetOverviewItem(character);
+                    var apiKeys = character.Identity.ESIKeys.ToList();
 
                     if (!apiKeys.Exists(apiKey => prevAPIKeys.Contains(apiKey)))
                     {
@@ -180,7 +180,7 @@ namespace EVEMon.SettingsUI
 
                             tempAccountGroupPanel.CreateControl();
 
-                            FlowLayoutPanel accountGroupPanel = tempAccountGroupPanel;
+                            var accountGroupPanel = tempAccountGroupPanel;
                             tempAccountGroupPanel = null;
 
                             MainFlowLayoutPanel.Controls.Add(accountGroupPanel);
@@ -358,9 +358,9 @@ namespace EVEMon.SettingsUI
             // Fix the panel widths to the largest
             // We let the framework determine the appropriate widths, then fix them so that
             // updates to training time remaining don't cause the form to resize
-            int pnlWidth = MainFlowLayoutPanel.Controls.Cast<Control>().Select(control => control.Width).Concat(new[] { 0 }).Max();
+            var pnlWidth = MainFlowLayoutPanel.Controls.Cast<Control>().Select(control => control.Width).Concat(new[] { 0 }).Max();
 
-            foreach (FlowLayoutPanel flowPanel in MainFlowLayoutPanel.Controls.OfType<FlowLayoutPanel>())
+            foreach (var flowPanel in MainFlowLayoutPanel.Controls.OfType<FlowLayoutPanel>())
             {
                 flowPanel.AutoSize = false;
                 flowPanel.Width = pnlWidth;

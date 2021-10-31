@@ -89,7 +89,7 @@ namespace EVEMon.Common.MarketPricer.EveMarketer
             else
                 SelectedProviderName = Name;
 
-            string file = LocalXmlCache.GetFileInfo(Filename).FullName;
+            var file = LocalXmlCache.GetFileInfo(Filename).FullName;
 
             // Exit if we have already imported the list
             if (Loaded)
@@ -127,7 +127,7 @@ namespace EVEMon.Common.MarketPricer.EveMarketer
         /// <param name="itemPrices">The item prices.</param>
         private static void Import(IEnumerable<SerializableECItemPriceListItem> itemPrices)
         {
-            foreach (SerializableECItemPriceListItem item in itemPrices)
+            foreach (var item in itemPrices)
             {
                 PriceByItemID[item.ID] = item.Prices.Average;
             }
@@ -151,7 +151,7 @@ namespace EVEMon.Common.MarketPricer.EveMarketer
                     if (s_queue.Count == 0)
                         return;
                     idsToQuery.Clear();
-                    for (int i = 0; i < MAX_QUERY && s_queue.Count > 0; i++)
+                    for (var i = 0; i < MAX_QUERY && s_queue.Count > 0; i++)
                         idsToQuery.Add(s_queue.Dequeue());
                 }
 
@@ -172,7 +172,7 @@ namespace EVEMon.Common.MarketPricer.EveMarketer
         private static string GetQueryString(IReadOnlyCollection<int> idsToQuery)
         {
             var sb = new StringBuilder(256);
-            foreach (int i in idsToQuery)
+            foreach (var i in idsToQuery)
             {
                 sb.Append($"typeid={i}");
 
@@ -267,7 +267,7 @@ namespace EVEMon.Common.MarketPricer.EveMarketer
         /// <returns></returns>
         private static SerializableECItemPrices Export()
         {
-            IEnumerable<SerializableECItemPriceListItem> entitiesList = PriceByItemID
+            var entitiesList = PriceByItemID
                 .OrderBy(x => x.Key)
                 .Select(
                     item =>
@@ -277,7 +277,7 @@ namespace EVEMon.Common.MarketPricer.EveMarketer
                             Prices = new SerializableECItemPriceItem { Average = item.Value }
                         });
 
-            SerializableECItemPrices serial = new SerializableECItemPrices();
+            var serial = new SerializableECItemPrices();
             serial.ItemPrices.AddRange(entitiesList);
 
             return serial;

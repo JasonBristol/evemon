@@ -146,10 +146,10 @@ namespace EVEMon.CharacterMonitoring
             get
             {
                 // Add the visible columns; matching the display order
-                List<EveNotificationColumnSettings> newColumns = new List<EveNotificationColumnSettings>();
-                foreach (ColumnHeader header in lvNotifications.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
+                var newColumns = new List<EveNotificationColumnSettings>();
+                foreach (var header in lvNotifications.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
                 {
-                    EveNotificationColumnSettings columnSetting =
+                    var columnSetting =
                         m_columns.First(x => x.Column == (EveNotificationColumn)header.Tag);
                     if (columnSetting.Width > -1)
                         columnSetting.Width = header.Width;
@@ -278,9 +278,9 @@ namespace EVEMon.CharacterMonitoring
                 lvNotifications.Groups.Clear();
                 lvNotifications.Items.Clear();
 
-                foreach (EveNotificationColumnSettings column in m_columns.Where(x => x.Visible))
+                foreach (var column in m_columns.Where(x => x.Visible))
                 {
-                    ColumnHeader header = lvNotifications.Columns.Add(column.Column.GetHeader(), column.Width);
+                    var header = lvNotifications.Columns.Add(column.Column.GetHeader(), column.Width);
                     header.Tag = column.Column;
                 }
 
@@ -303,18 +303,18 @@ namespace EVEMon.CharacterMonitoring
             if (!Visible)
                 return;
 
-            int scrollBarPosition = lvNotifications.GetVerticalScrollBarPosition();
+            var scrollBarPosition = lvNotifications.GetVerticalScrollBarPosition();
 
             // Store the selected item (if any) to restore it after the update
-            int selectedItem = lvNotifications.SelectedItems.Count > 0 ? lvNotifications.
+            var selectedItem = lvNotifications.SelectedItems.Count > 0 ? lvNotifications.
                 SelectedItems[0].Tag.GetHashCode() : 0;
 
             lvNotifications.BeginUpdate();
             splitContainerNotifications.Visible = false;
             try
             {
-                IEnumerable<EveNotification> eveNotifications = m_list .Where(x => x.SentDate
-                    != DateTime.MinValue).Where(x => IsTextMatching(x, m_textFilter));
+                var eveNotifications = m_list .Where(x => x.SentDate
+                                                          != DateTime.MinValue).Where(x => IsTextMatching(x, m_textFilter));
 
                 UpdateSort();
 
@@ -323,7 +323,7 @@ namespace EVEMon.CharacterMonitoring
                 // Restore the selected item (if any)
                 if (selectedItem > 0)
                 {
-                    foreach (ListViewItem lvItem in lvNotifications.Items.Cast<ListViewItem>()
+                    foreach (var lvItem in lvNotifications.Items.Cast<ListViewItem>()
                         .Where(lvItem => lvItem.Tag.GetHashCode() == selectedItem))
                     {
                         lvItem.Selected = true;
@@ -364,32 +364,32 @@ namespace EVEMon.CharacterMonitoring
             switch (m_grouping)
             {
                 case EVENotificationsGrouping.Type:
-                    IOrderedEnumerable<IGrouping<string, EveNotification>> groups0 =
+                    var groups0 =
                         eveNotifications.GroupBy(x => x.TypeName).OrderBy(x => x.Key);
                     UpdateContent(groups0);
                     break;
                 case EVENotificationsGrouping.TypeDesc:
-                    IOrderedEnumerable<IGrouping<string, EveNotification>> groups1 =
+                    var groups1 =
                         eveNotifications.GroupBy(x => x.TypeName).OrderByDescending(x => x.Key);
                     UpdateContent(groups1);
                     break;
                 case EVENotificationsGrouping.SentDate:
-                    IOrderedEnumerable<IGrouping<DateTime, EveNotification>> groups2 =
+                    var groups2 =
                         eveNotifications.GroupBy(x => x.SentDate.ToLocalTime().Date).OrderBy(x => x.Key);
                     UpdateContent(groups2);
                     break;
                 case EVENotificationsGrouping.SentDateDesc:
-                    IOrderedEnumerable<IGrouping<DateTime, EveNotification>> groups3 =
+                    var groups3 =
                         eveNotifications.GroupBy(x => x.SentDate.ToLocalTime().Date).OrderByDescending(x => x.Key);
                     UpdateContent(groups3);
                     break;
                 case EVENotificationsGrouping.Sender:
-                    IOrderedEnumerable<IGrouping<string, EveNotification>> groups4 =
+                    var groups4 =
                         eveNotifications.GroupBy(x => x.SenderName).OrderBy(x => x.Key);
                     UpdateContent(groups4);
                     break;
                 case EVENotificationsGrouping.SenderDesc:
-                    IOrderedEnumerable<IGrouping<string, EveNotification>> groups5 =
+                    var groups5 =
                         eveNotifications.GroupBy(x => x.SenderName).OrderByDescending(x => x.Key);
                     UpdateContent(groups5);
                     break;
@@ -407,7 +407,7 @@ namespace EVEMon.CharacterMonitoring
             lvNotifications.Groups.Clear();
 
             // Add the groups
-            foreach (IGrouping<TKey, EveNotification> group in groups)
+            foreach (var group in groups)
             {
                 string groupText;
                 if (group.Key is EveMailState)
@@ -417,7 +417,7 @@ namespace EVEMon.CharacterMonitoring
                 else
                     groupText = group.Key.ToString();
 
-                ListViewGroup listGroup = new ListViewGroup(groupText);
+                var listGroup = new ListViewGroup(groupText);
                 lvNotifications.Groups.Add(listGroup);
 
                 // Add the items in every group
@@ -448,7 +448,7 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Creates the subitems
-            for (int i = 0; i < lvNotifications.Columns.Count; i++)
+            for (var i = 0; i < lvNotifications.Columns.Count; i++)
             {
                 SetColumn(eveNotification, item.SubItems[i], (EveNotificationColumn)lvNotifications.Columns[i].Tag);
             }
@@ -477,14 +477,14 @@ namespace EVEMon.CharacterMonitoring
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (lvNotifications.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += lvNotifications.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -509,9 +509,9 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void UpdateSortVisualFeedback()
         {
-            foreach (ColumnHeader columnHeader in lvNotifications.Columns.Cast<ColumnHeader>())
+            foreach (var columnHeader in lvNotifications.Columns.Cast<ColumnHeader>())
             {
-                EveNotificationColumn column = (EveNotificationColumn)columnHeader.Tag;
+                var column = (EveNotificationColumn)columnHeader.Tag;
                 if (m_sortCriteria == column)
                     columnHeader.ImageIndex = m_sortAscending ? 0 : 1;
                 else
@@ -537,7 +537,7 @@ namespace EVEMon.CharacterMonitoring
                     item.Text = eveNotification.Title;
                     break;
                 case EveNotificationColumn.SentDate:
-                    DateTime sentDateTime = eveNotification.SentDate.ToLocalTime();
+                    var sentDateTime = eveNotification.SentDate.ToLocalTime();
                     item.Text = $"{sentDateTime:ddd} {sentDateTime:G}";
                     break;
                 default:
@@ -597,7 +597,7 @@ namespace EVEMon.CharacterMonitoring
                 return;
             }
 
-            EveNotification selectedObject = lvNotifications.SelectedItems[0].Tag as EveNotification;
+            var selectedObject = lvNotifications.SelectedItems[0].Tag as EveNotification;
             if (selectedObject == null)
             {
                 eveNotificationReadingPane.HidePane();

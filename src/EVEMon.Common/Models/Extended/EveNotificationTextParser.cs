@@ -48,7 +48,7 @@ namespace EVEMon.Common.Models.Extended
             if (s_queryPending)
                 return;
 
-            Uri url = new Uri(NetworkConstants.BitBucketWikiBase + NetworkConstants.
+            var url = new Uri(NetworkConstants.BitBucketWikiBase + NetworkConstants.
                 ExternalEveNotificationTextParser);
 
             s_queryPending = true;

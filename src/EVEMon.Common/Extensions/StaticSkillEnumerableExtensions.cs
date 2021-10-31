@@ -25,17 +25,17 @@ namespace EVEMon.Common.Extensions
         /// <remarks>Please note they may be redundancies.</remarks>
         public static IEnumerable<StaticSkillLevel> GetAllPrerequisites(this IEnumerable<StaticSkill> src)
         {
-            long[] highestLevels = new long[StaticSkills.ArrayIndicesCount];
-            List<StaticSkillLevel> list = new List<StaticSkillLevel>();
+            var highestLevels = new long[StaticSkills.ArrayIndicesCount];
+            var list = new List<StaticSkillLevel>();
 
             // Fill the array
-            foreach (StaticSkillLevel prereq in src.SelectMany(skill => skill.Prerequisites))
+            foreach (var prereq in src.SelectMany(skill => skill.Prerequisites))
             {
                 FillPrerequisites(highestLevels, list, prereq, true);
             }
 
             // Return the result
-            foreach (StaticSkillLevel newSkill in list.Where(newSkill => highestLevels[newSkill.Skill.ArrayIndex] != 0))
+            foreach (var newSkill in list.Where(newSkill => highestLevels[newSkill.Skill.ArrayIndex] != 0))
             {
                 yield return new StaticSkillLevel(newSkill.Skill, highestLevels[newSkill.Skill.ArrayIndex]);
                 highestLevels[newSkill.Skill.ArrayIndex] = 0;
@@ -55,7 +55,7 @@ namespace EVEMon.Common.Extensions
             // Prerequisites
             if (highestLevels[item.Skill.ArrayIndex] == 0)
             {
-                foreach (StaticSkillLevel prereq in item.Skill.Prerequisites.Where(prereq => prereq.Skill != item.Skill))
+                foreach (var prereq in item.Skill.Prerequisites.Where(prereq => prereq.Skill != item.Skill))
                 {
                     FillPrerequisites(highestLevels, list, prereq, true);
                 }

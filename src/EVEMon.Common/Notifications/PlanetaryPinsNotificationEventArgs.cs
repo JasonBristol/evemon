@@ -22,7 +22,7 @@ namespace EVEMon.Common.Notifications
             pins.ThrowIfNull(nameof(pins));
 
             PlanetaryPins = new Collection<PlanetaryPin>();
-            foreach (PlanetaryPin pin in pins)
+            foreach (var pin in pins)
             {
                 PlanetaryPins.Add(pin);
             }
@@ -45,7 +45,7 @@ namespace EVEMon.Common.Notifications
         /// <param name="other"></param>
         public override void Append(NotificationEventArgs other)
         {
-            foreach (PlanetaryPin pin in ((PlanetaryPinsNotificationEventArgs)other).PlanetaryPins)
+            foreach (var pin in ((PlanetaryPinsNotificationEventArgs)other).PlanetaryPins)
             {
                 PlanetaryPins.Add(pin);
             }

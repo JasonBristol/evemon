@@ -40,7 +40,7 @@ namespace EVEMon.CharacterMonitoring
         {
             get
             {
-                MarketOrderSettings settings = new MarketOrderSettings();
+                var settings = new MarketOrderSettings();
                 return settings.DefaultColumns;
             }
         }

@@ -30,7 +30,7 @@ namespace EVEMon.XmlGenerator.Datafiles
 		/// </summary>
 		internal static void GenerateDatafile()
 		{
-			Stopwatch stopwatch = Stopwatch.StartNew();
+			var stopwatch = Stopwatch.StartNew();
 			Util.ResetCounters();
 
 			Console.WriteLine();
@@ -57,7 +57,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             CreateMarketGroups(groups);
 
 			// Create the parent-children groups relations
-			foreach (SerializableMarketGroup group in groups.Values)
+			foreach (var group in groups.Values)
 			{
 				var children = Database.InvMarketGroupsTable.Concat(s_injectedMarketGroups).
                     Where(x => x.ParentID.GetValueOrDefault() == group.ID).Select(x =>
@@ -86,7 +86,7 @@ namespace EVEMon.XmlGenerator.Datafiles
 			s_nullMarketItems.ForEach(srcItem => srcItem.MarketGroupID = null);
 
 			// Serialize
-			ItemsDatafile datafile = new ItemsDatafile();
+			var datafile = new ItemsDatafile();
 			datafile.MarketGroups.AddRange(rootGroups);
 
 			Util.DisplayEndTime(stopwatch);
@@ -110,7 +110,7 @@ namespace EVEMon.XmlGenerator.Datafiles
 		/// <param name="groups">The groups.</param>
 		private static void CreateMarketGroups(IDictionary<int, SerializableMarketGroup> groups)
 		{
-            foreach (InvMarketGroups marketGroup in Database.InvMarketGroupsTable.Concat(
+            foreach (var marketGroup in Database.InvMarketGroupsTable.Concat(
                 s_injectedMarketGroups))
 			{
 				var group = new SerializableMarketGroup
@@ -123,7 +123,7 @@ namespace EVEMon.XmlGenerator.Datafiles
 				var items = new List<SerializableItem>();
                 if (s_invTypesPerMarketGroup.ContainsKey(marketGroup.ID))
                 {
-                    bool validGroup = marketGroup.ParentID != DBConstants.RootNonMarketGroupID;
+                    var validGroup = marketGroup.ParentID != DBConstants.RootNonMarketGroupID;
                     foreach (var srcItem in s_invTypesPerMarketGroup[marketGroup.ID])
                     {
                         if (!srcItem.Generated && (validGroup || Database.InvGroupsTable[
@@ -167,7 +167,7 @@ namespace EVEMon.XmlGenerator.Datafiles
 			s_nullMarketItems = Database.InvTypesTable.Where(x => x.MarketGroupID == null).ToList();
 
 			// Set some attributes to items because their MarketGroupID is NULL
-			foreach (InvTypes srcItem in s_nullMarketItems)
+			foreach (var srcItem in s_nullMarketItems)
 			{
 				// Set all items to market groups manually
 				srcItem.MarketGroupID = DBConstants.RootNonMarketGroupID;
@@ -209,12 +209,12 @@ namespace EVEMon.XmlGenerator.Datafiles
 
 			srcItem.Generated = true;
 
-			InvGroups itemGroup = Database.InvGroupsTable[srcItem.GroupID];
+			var itemGroup = Database.InvGroupsTable[srcItem.GroupID];
 
             // Creates the item with base information
             var categories = Database.InvCategoriesTable;
-            int cID = itemGroup.CategoryID;
-            SerializableItem item = new SerializableItem
+            var cID = itemGroup.CategoryID;
+            var item = new SerializableItem
 			{
 				ID = srcItem.ID,
 				Name = srcItem.Name,
@@ -290,8 +290,8 @@ namespace EVEMon.XmlGenerator.Datafiles
         /// <returns>The number of bonuses added in this way.</returns>
         private static int AddBonuses(IEnumerable<InvTraits> bonuses, StringBuilder buffer)
         {
-            int count = 0;
-            foreach (InvTraits bonus in bonuses)
+            var count = 0;
+            foreach (var bonus in bonuses)
             {
                 // 5
                 if (bonus.bonus.HasValue)
@@ -327,7 +327,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             foreach (var bonuses in Database.InvTraitsTable.Where(x => x.typeID ==
                 srcItem.ID && x.skillID > 0).GroupBy(x => x.skillID))
             {
-                int skillID = bonuses.Key ?? 0;
+                var skillID = bonuses.Key ?? 0;
                 skillBonusesText.Append(Database.InvTypesTable[skillID].Name);
                 skillBonusesText.AppendLine(" bonuses (per skill level):");
 
@@ -455,7 +455,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             foreach (var srcReaction in Database.InvTypeReactionsTable)
                 if (srcReaction.ID == srcItem.ID)
                 {
-                    int reactionTypeID = srcReaction.TypeID;
+                    var reactionTypeID = srcReaction.TypeID;
                     long multiplier = (Database.DgmTypeAttributesTable.FirstOrDefault(x =>
                         x.ItemID == reactionTypeID && x.AttributeID == DBConstants.
                         MoonMiningAmountPropertyID)?.GetInt64Value) ?? 1L, qty = srcReaction.
@@ -476,7 +476,7 @@ namespace EVEMon.XmlGenerator.Datafiles
 		/// <param name="item">The serializable item.</param>
 		private static void AddMetaGroup(IHasID srcItem, SerializableItem item)
 		{
-			foreach (InvMetaTypes relation in Database.InvMetaTypesTable.Where(x => x.ItemID == srcItem.ID))
+			foreach (var relation in Database.InvMetaTypesTable.Where(x => x.ItemID == srcItem.ID))
 				switch (relation.MetaGroupID)
 				{
 					case DBConstants.TechIMetaGroupID:
@@ -524,7 +524,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             if (index >= 0)
             {
                 // Index was found in the list of known IDs
-                long propInt64Value = attrib.GetInt64Value;
+                var propInt64Value = attrib.GetInt64Value;
                 var invGroups = Database.InvGroupsTable;
                 props.Add(new SerializablePropertyValue
                 {
@@ -544,17 +544,17 @@ namespace EVEMon.XmlGenerator.Datafiles
 		/// <returns></returns>
 		private static void AddItemPropsAndPrereq(InvTypes srcItem, SerializableItem item)
 		{
-            long[] prereqSkills = new long[DBConstants.RequiredSkillPropertyIDs.Count];
-            long[] prereqLevels = new long[DBConstants.RequiredSkillPropertyIDs.Count];
+            var prereqSkills = new long[DBConstants.RequiredSkillPropertyIDs.Count];
+            var prereqLevels = new long[DBConstants.RequiredSkillPropertyIDs.Count];
 			var props = new List<SerializablePropertyValue>();
-			double warpSpeedMultiplier = 1.0;
+			var warpSpeedMultiplier = 1.0;
             if (s_dgmTypeAttributesPerItem.ContainsKey(srcItem.ID))
-                foreach (DgmTypeAttributes srcProp in s_dgmTypeAttributesPerItem[srcItem.ID])
+                foreach (var srcProp in s_dgmTypeAttributesPerItem[srcItem.ID])
                 {
-                    long propValue = srcProp.GetInt64Value;
-                    int id = srcProp.AttributeID;
+                    var propValue = srcProp.GetInt64Value;
+                    var id = srcProp.AttributeID;
                     // Is it a prereq skill?
-                    int prereqIndex = DBConstants.RequiredSkillPropertyIDs.IndexOf(id);
+                    var prereqIndex = DBConstants.RequiredSkillPropertyIDs.IndexOf(id);
                     if (prereqIndex > -1)
                     {
                         prereqSkills[prereqIndex] = propValue;
@@ -606,7 +606,7 @@ namespace EVEMon.XmlGenerator.Datafiles
 
 			// Prerequisites completion
 			var prereqs = new List<SerializablePrerequisiteSkill>();
-			for (int i = 0; i < prereqSkills.Length; i++)
+			for (var i = 0; i < prereqSkills.Length; i++)
 			{
 				if (prereqSkills[i] != 0)
 					prereqs.Add(new SerializablePrerequisiteSkill { ID = prereqSkills[i], Level = prereqLevels[i] });
@@ -787,10 +787,10 @@ namespace EVEMon.XmlGenerator.Datafiles
 		/// <param name="itemFamily"></param>
 		private static void SetItemFamilyByMarketGroup(SerializableMarketGroup group, ItemFamily itemFamily)
 		{
-			foreach (SerializableItem item in group.Items)
+			foreach (var item in group.Items)
 				item.Family = itemFamily;
 
-			foreach (SerializableMarketGroup childGroup in group.SubGroups)
+			foreach (var childGroup in group.SubGroups)
 				SetItemFamilyByMarketGroup(childGroup, itemFamily);
 		}
 	}

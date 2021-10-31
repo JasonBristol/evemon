@@ -20,7 +20,7 @@ namespace EVEMon.Common.Data
         {
             StaticData = src;
 
-            foreach (CertificateClass certClass in src
+            foreach (var certClass in src
                 .Select(srcClass => new CertificateClass(character, srcClass, this)))
             {
                 Items[certClass.Name] = certClass;

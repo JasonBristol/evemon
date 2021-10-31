@@ -61,12 +61,12 @@ namespace EVEMon.Common.Data
         {
             get
             {
-                foreach (Blueprint blueprint in Blueprints)
+                foreach (var blueprint in Blueprints)
                 {
                     yield return blueprint;
                 }
 
-                foreach (Blueprint subBlueprint in SubGroups.SelectMany(cat => cat.AllBlueprints))
+                foreach (var subBlueprint in SubGroups.SelectMany(cat => cat.AllBlueprints))
                 {
                     yield return subBlueprint;
                 }

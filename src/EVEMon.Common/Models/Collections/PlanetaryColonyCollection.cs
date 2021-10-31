@@ -47,7 +47,7 @@ namespace EVEMon.Common.Models.Collections
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void EveMonClient_TimerTick(object sender, EventArgs e)
         {
-            IQueryMonitor charPlanetaryColoniesMonitor = m_ccpCharacter.QueryMonitors[ESIAPICharacterMethods.PlanetaryColonies];
+            var charPlanetaryColoniesMonitor = m_ccpCharacter.QueryMonitors[ESIAPICharacterMethods.PlanetaryColonies];
 
             if (charPlanetaryColoniesMonitor == null || !charPlanetaryColoniesMonitor.Enabled)
                 return;
@@ -69,7 +69,7 @@ namespace EVEMon.Common.Models.Collections
             Items.Clear();
 
             // Import the palnetary colony from the API
-            foreach (EsiPlanetaryColonyListItem srcColony in src)
+            foreach (var srcColony in src)
             {
                 Items.Add(new PlanetaryColony(m_ccpCharacter, srcColony));
             }

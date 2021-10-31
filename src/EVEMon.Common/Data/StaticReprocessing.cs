@@ -17,12 +17,12 @@ namespace EVEMon.Common.Data
         /// </summary>
         internal static void Load()
         {
-            ReprocessingDatafile datafile = Util.DeserializeDatafile<ReprocessingDatafile>(
+            var datafile = Util.DeserializeDatafile<ReprocessingDatafile>(
                 DatafileConstants.ReprocessingDatafile, Util.LoadXslt(Properties.Resources.DatafilesXSLT));
 
-            foreach (SerializableItemMaterials item in datafile.Items)
+            foreach (var item in datafile.Items)
             {
-                MaterialCollection materials = new MaterialCollection(item.Materials.Select(itemMaterial => new Material(itemMaterial)).ToList());
+                var materials = new MaterialCollection(item.Materials.Select(itemMaterial => new Material(itemMaterial)).ToList());
                 s_itemMaterialsByID[item.ID] = materials;
             }
 

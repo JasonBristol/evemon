@@ -73,7 +73,7 @@ namespace EVEMon.Common.Models
             Certificates = new CertificateCollection(this);
             MasteryShips = new MasteryShipCollection(this);
 
-            for (int i = 0; i < m_attributes.Length; i++)
+            for (var i = 0; i < m_attributes.Length; i++)
             {
                 m_attributes[i] = new CharacterAttribute(this, (EveAttribute)i);
             }
@@ -97,7 +97,7 @@ namespace EVEMon.Common.Models
             }
             else
             {
-                bool likelyAlpha = false;
+                var likelyAlpha = false;
                 foreach (var sk in Skills)
                 {
                     // Is the skill level being limited by alpha status?
@@ -132,7 +132,7 @@ namespace EVEMon.Common.Models
                         {
                             // spPerHour must be greater than zero since numerator and denominator are
                             var spPerHour = spToTrain / hoursToTrain;
-                            double rate = GetOmegaSPPerHour(skill.Skill) / spPerHour;
+                            var rate = GetOmegaSPPerHour(skill.Skill) / spPerHour;
                             // Allow for small margin of error, important on skills nearing completion.
                             if (rate < 1.2 && rate > 0.8)
                                 status = AccountStatus.Omega;
@@ -403,7 +403,7 @@ namespace EVEMon.Common.Models
                 var loc = LastKnownLocation;
                 if (loc == null)
                     return null;
-                int id = loc.StationID;
+                var id = loc.StationID;
                 // If this is a CCP character, allow usage of ESI key to find citadel info
                 return EveIDToStation.GetIDToStation(id != 0 ? id : loc.StructureID, this as
                     CCPCharacter);
@@ -605,7 +605,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         public string GetActiveShipText()
         {
-            string shipText = !string.IsNullOrEmpty(ShipTypeName) && !string.IsNullOrEmpty(ShipName)
+            var shipText = !string.IsNullOrEmpty(ShipTypeName) && !string.IsNullOrEmpty(ShipName)
                 ? $"{ShipTypeName} [{ShipName}]" : EveMonConstants.UnknownText;
             return $"Active Ship: {shipText}";
         }
@@ -620,7 +620,7 @@ namespace EVEMon.Common.Models
                 return EveMonConstants.UnknownText;
 
             // Show the tooltip on when the user provides api key
-            ESIKey apiKey = Identity.FindAPIKeyWithAccess(ESIAPICharacterMethods.Location);
+            var apiKey = Identity.FindAPIKeyWithAccess(ESIAPICharacterMethods.Location);
             if (apiKey == null)
                 return EveMonConstants.UnknownText;
 
@@ -642,11 +642,11 @@ namespace EVEMon.Common.Models
                 return EveMonConstants.UnknownText;
             
             // Show the tooltip on when the user provides api key
-            ESIKey apiKey = Identity.FindAPIKeyWithAccess(ESIAPICharacterMethods.Location);
+            var apiKey = Identity.FindAPIKeyWithAccess(ESIAPICharacterMethods.Location);
             if (apiKey == null)
                 return EveMonConstants.UnknownText;
 
-            Station station = LastKnownStation;
+            var station = LastKnownStation;
             
             // Not in any station ?
             if (station == null)
@@ -877,7 +877,7 @@ namespace EVEMon.Common.Models
         internal void Import(EsiAPISkills skills, EsiAPISkillQueue queue)
         {
             var newSkills = new LinkedList<SerializableCharacterSkill>();
-            DateTime uselessDate = DateTime.UtcNow;
+            var uselessDate = DateTime.UtcNow;
             FreeSkillPoints = skills.UnallocatedSP;
 
             // Keep track of the current skill queue's completed skills, as ESI does not
@@ -939,7 +939,7 @@ namespace EVEMon.Common.Models
         {
             // Implants
             var newImplants = new LinkedList<SerializableNewImplant>();
-            foreach (int implant in implants)
+            foreach (var implant in implants)
                 newImplants.AddLast(new SerializableNewImplant()
                 {
                     ID = implant,

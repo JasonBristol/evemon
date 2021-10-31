@@ -216,8 +216,8 @@ namespace EVEMon.PieChart
             m_shadowStyle = shadowStyle;
             m_edgeColorType = edgeColorType;
             // create pens for rendering
-            Color edgeLineColor = EdgeColor.GetRenderingColor(edgeColorType, surfaceColor);
-            using (Pen pen = new Pen(edgeLineColor))
+            var edgeLineColor = EdgeColor.GetRenderingColor(edgeColorType, surfaceColor);
+            using (var pen = new Pen(edgeLineColor))
             {
                 pen.LineJoin = LineJoin.Round;
                 m_pen = (Pen)pen.Clone();
@@ -468,9 +468,9 @@ namespace EVEMon.PieChart
                         GetActualAngle(StartAngle) + SweepAngle / 2);
                 }
 
-                float x = (m_pointStart.X + m_pointEnd.X) / 2;
-                float y = (m_pointStart.Y + m_pointEnd.Y) / 2;
-                float angle = (float)(Math.Atan2(y - m_center.Y, x - m_center.X) * 180 / Math.PI);
+                var x = (m_pointStart.X + m_pointEnd.X) / 2;
+                var y = (m_pointStart.Y + m_pointEnd.Y) / 2;
+                var angle = (float)(Math.Atan2(y - m_center.Y, x - m_center.X) * 180 / Math.PI);
                 return PeripheralPoint(m_center.X, m_center.Y, BoundingRectangle.Width / 3, BoundingRectangle.Height / 3,
                     GetActualAngle(angle));
             }
@@ -490,9 +490,9 @@ namespace EVEMon.PieChart
                     GetActualAngle(StartAngle) + SweepAngle / 2);
             }
 
-            float x = (m_pointStart.X + m_pointEnd.X) / 2;
-            float y = (m_pointStart.Y + m_pointEnd.Y) / 2;
-            float angle = (float)(Math.Atan2(y - m_center.Y, x - m_center.X) * 180 / Math.PI);
+            var x = (m_pointStart.X + m_pointEnd.X) / 2;
+            var y = (m_pointStart.Y + m_pointEnd.Y) / 2;
+            var angle = (float)(Math.Atan2(y - m_center.Y, x - m_center.X) * 180 / Math.PI);
             return PeripheralPoint(m_center.X, m_center.Y, BoundingRectangle.Width / div, BoundingRectangle.Height / div,
                 GetActualAngle(angle));
         }
@@ -535,15 +535,15 @@ namespace EVEMon.PieChart
             if (Math.Abs(StartAngle - splitAngle) < float.Epsilon || Math.Abs(EndAngle - splitAngle) < float.Epsilon)
                 return new[] { (PieSlice)Clone() };
 
-            float actualStartAngle = GetActualAngle(StartAngle);
-            float newSweepAngle = (splitAngle - actualStartAngle + 360) % 360;
-            using (PieSlice pieSlice1 = new PieSlice(BoundingRectangle, SliceHeight, actualStartAngle,
+            var actualStartAngle = GetActualAngle(StartAngle);
+            var newSweepAngle = (splitAngle - actualStartAngle + 360) % 360;
+            using (var pieSlice1 = new PieSlice(BoundingRectangle, SliceHeight, actualStartAngle,
                 newSweepAngle, m_surfaceColor, m_shadowStyle, m_edgeColorType))
             {
                 pieSlice1.InitializeSides(true, false);
 
                 newSweepAngle = GetActualAngle(EndAngle) - splitAngle;
-                using (PieSlice pieSlice2 = new PieSlice(BoundingRectangle, SliceHeight, splitAngle, newSweepAngle,
+                using (var pieSlice2 = new PieSlice(BoundingRectangle, SliceHeight, splitAngle, newSweepAngle,
                     m_surfaceColor, m_shadowStyle, m_edgeColorType))
                 {
                     pieSlice2.InitializeSides(false);
@@ -624,8 +624,8 @@ namespace EVEMon.PieChart
         /// </param>
         private void DrawVisiblePeriphery(Graphics graphics)
         {
-            IEnumerable<PeripherySurfaceBounds> peripherySurfaceBounds = GetVisiblePeripherySurfaceBounds();
-            foreach (PeripherySurfaceBounds surfaceBounds in peripherySurfaceBounds)
+            var peripherySurfaceBounds = GetVisiblePeripherySurfaceBounds();
+            foreach (var surfaceBounds in peripherySurfaceBounds)
             {
                 DrawCylinderSurfaceSection(graphics, m_pen, m_brushPeripherySurface, surfaceBounds.StartAngle,
                     surfaceBounds.EndAngle, surfaceBounds.StartPoint, surfaceBounds.EndPoint);
@@ -640,8 +640,8 @@ namespace EVEMon.PieChart
         /// </param>
         private void DrawHiddenPeriphery(Graphics graphics)
         {
-            IEnumerable<PeripherySurfaceBounds> peripherySurfaceBounds = GetHiddenPeripherySurfaceBounds();
-            foreach (PeripherySurfaceBounds surfaceBounds in peripherySurfaceBounds)
+            var peripherySurfaceBounds = GetHiddenPeripherySurfaceBounds();
+            foreach (var surfaceBounds in peripherySurfaceBounds)
             {
                 DrawCylinderSurfaceSection(graphics, m_pen, m_brushSurface, surfaceBounds.StartAngle, surfaceBounds.EndAngle,
                     surfaceBounds.StartPoint, surfaceBounds.EndPoint);
@@ -683,7 +683,7 @@ namespace EVEMon.PieChart
         /// </returns>
         internal RectangleF GetFittingRectangle()
         {
-            RectangleF boundingRectangle = new RectangleF(m_pointStart.X, m_pointStart.Y, 0, 0);
+            var boundingRectangle = new RectangleF(m_pointStart.X, m_pointStart.Y, 0, 0);
             if ((Math.Abs(StartAngle) < float.Epsilon) || (StartAngle + SweepAngle >= 360))
                 boundingRectangle = GraphicsUtil.IncludePointX(boundingRectangle, BoundingRectangle.Right);
 
@@ -730,7 +730,7 @@ namespace EVEMon.PieChart
         /// </returns>
         internal bool PeripheryContainsPoint(PointF point)
         {
-            IEnumerable<PeripherySurfaceBounds> peripherySurfaceBounds = GetVisiblePeripherySurfaceBounds();
+            var peripherySurfaceBounds = GetVisiblePeripherySurfaceBounds();
             return
                 peripherySurfaceBounds.Any(
                     surfaceBounds => CylinderSurfaceSectionContainsPoint(point, surfaceBounds.StartPoint, surfaceBounds.EndPoint));
@@ -867,7 +867,7 @@ namespace EVEMon.PieChart
         /// </returns>
         private Brush CreateBrushForPeriphery(Color color)
         {
-            ColorBlend colorBlend = new ColorBlend
+            var colorBlend = new ColorBlend
             {
                 Colors = new[]
                 {
@@ -883,7 +883,7 @@ namespace EVEMon.PieChart
                 Positions = new[] { 0F, 0.1F, 1.0F }
             };
 
-            using (LinearGradientBrush brush = new LinearGradientBrush(BoundingRectangle, Color.Blue, Color.White,
+            using (var brush = new LinearGradientBrush(BoundingRectangle, Color.Blue, Color.White,
                 LinearGradientMode.Horizontal))
             {
                 brush.InterpolationColors = colorBlend;
@@ -918,7 +918,7 @@ namespace EVEMon.PieChart
         private void DrawCylinderSurfaceSection(Graphics graphics, Pen pen, Brush brush, float startAngle, float endAngle,
             PointF pointStart, PointF pointEnd)
         {
-            GraphicsPath path = CreatePathForCylinderSurfaceSection(startAngle, endAngle, pointStart, pointEnd);
+            var path = CreatePathForCylinderSurfaceSection(startAngle, endAngle, pointStart, pointEnd);
             graphics.FillPath(brush, path);
             graphics.DrawPath(pen, path);
         }
@@ -935,9 +935,9 @@ namespace EVEMon.PieChart
         /// </returns>
         private float TransformAngle(float angle)
         {
-            double x = BoundingRectangle.Width * Math.Cos(angle * Math.PI / 180);
-            double y = BoundingRectangle.Height * Math.Sin(angle * Math.PI / 180);
-            float result = (float)(Math.Atan2(y, x) * 180 / Math.PI);
+            var x = BoundingRectangle.Width * Math.Cos(angle * Math.PI / 180);
+            var y = BoundingRectangle.Height * Math.Sin(angle * Math.PI / 180);
+            var result = (float)(Math.Atan2(y, x) * 180 / Math.PI);
             if (result < 0)
                 return result + 360;
             return result;
@@ -954,9 +954,9 @@ namespace EVEMon.PieChart
         /// </returns>
         private float GetActualAngle(float transformedAngle)
         {
-            double x = BoundingRectangle.Height * Math.Cos(transformedAngle * Math.PI / 180);
-            double y = BoundingRectangle.Width * Math.Sin(transformedAngle * Math.PI / 180);
-            float result = (float)(Math.Atan2(y, x) * 180 / Math.PI);
+            var x = BoundingRectangle.Height * Math.Cos(transformedAngle * Math.PI / 180);
+            var y = BoundingRectangle.Width * Math.Sin(transformedAngle * Math.PI / 180);
+            var result = (float)(Math.Atan2(y, x) * 180 / Math.PI);
             if (result < 0)
                 return result + 360;
             return result;
@@ -986,7 +986,7 @@ namespace EVEMon.PieChart
         /// </returns>
         private static PointF PeripheralPoint(float xCenter, float yCenter, float semiMajor, float semiMinor, float angleDegrees)
         {
-            double angleRadians = angleDegrees * Math.PI / 180;
+            var angleRadians = angleDegrees * Math.PI / 180;
             return new PointF(xCenter + (float)(semiMajor * Math.Cos(angleRadians)),
                 yCenter + (float)(semiMinor * Math.Sin(angleRadians)));
         }
@@ -1030,8 +1030,8 @@ namespace EVEMon.PieChart
             // creates brushes
             CreateSurfaceBrushes(m_surfaceColor, m_shadowStyle);
             // calculates center and end points on periphery
-            float xCenter = boundingRectX + boundingRectWidth / 2;
-            float yCenter = boundingRectY + boundingRectHeight / 2;
+            var xCenter = boundingRectX + boundingRectWidth / 2;
+            var yCenter = boundingRectY + boundingRectHeight / 2;
             m_center = new PointF(xCenter, yCenter);
             m_centerBelow = new PointF(xCenter, yCenter + sliceHeight);
             m_pointStart = PeripheralPoint(xCenter, yCenter, boundingRectWidth / 2, boundingRectHeight / 2, m_actualStartAngle);
@@ -1071,7 +1071,7 @@ namespace EVEMon.PieChart
         /// </returns>
         private IEnumerable<PeripherySurfaceBounds> GetVisiblePeripherySurfaceBounds()
         {
-            ArrayList peripherySurfaceBounds = new ArrayList();
+            var peripherySurfaceBounds = new ArrayList();
             // outer periphery side is visible only when startAngle or endAngle 
             // is between 0 and 180 degrees
             if (Math.Abs(SweepAngle) < float.Epsilon || (StartAngle >= 180 && StartAngle + SweepAngle <= 360))
@@ -1079,9 +1079,9 @@ namespace EVEMon.PieChart
 
             // draws the periphery from start angle to the end angle or left
             // edge, whichever comes first
-            PointF x1 = new PointF(m_pointStart.X, m_pointStart.Y);
-            float fi2 = EndAngle;
-            PointF x2 = new PointF(m_pointEnd.X, m_pointEnd.Y);
+            var x1 = new PointF(m_pointStart.X, m_pointStart.Y);
+            var fi2 = EndAngle;
+            var x2 = new PointF(m_pointEnd.X, m_pointEnd.Y);
             if (StartAngle < 180)
             {
                 if (StartAngle + SweepAngle > 180)
@@ -1118,7 +1118,7 @@ namespace EVEMon.PieChart
         /// </returns>
         private IEnumerable<PeripherySurfaceBounds> GetHiddenPeripherySurfaceBounds()
         {
-            ArrayList peripherySurfaceBounds = new ArrayList();
+            var peripherySurfaceBounds = new ArrayList();
             // outer periphery side is not visible when startAngle or endAngle 
             // is between 180 and 360 degrees
             if (Math.Abs(SweepAngle) < float.Epsilon || (StartAngle >= 0 && StartAngle + SweepAngle <= 180))
@@ -1129,10 +1129,10 @@ namespace EVEMon.PieChart
             if (!(StartAngle + SweepAngle > 180))
                 return (PeripherySurfaceBounds[])peripherySurfaceBounds.ToArray(typeof(PeripherySurfaceBounds));
 
-            float fi1 = StartAngle;
-            PointF x1 = new PointF(m_pointStart.X, m_pointStart.Y);
-            float fi2 = StartAngle + SweepAngle;
-            PointF x2 = new PointF(m_pointEnd.X, m_pointEnd.Y);
+            var fi1 = StartAngle;
+            var x1 = new PointF(m_pointStart.X, m_pointStart.Y);
+            var fi2 = StartAngle + SweepAngle;
+            var x2 = new PointF(m_pointEnd.X, m_pointEnd.Y);
             if (fi1 < 180)
             {
                 fi1 = 180;
@@ -1182,7 +1182,7 @@ namespace EVEMon.PieChart
         private GraphicsPath CreatePathForCylinderSurfaceSection(float startAngle, float endAngle, PointF pointStart,
             PointF pointEnd)
         {
-            using (GraphicsPath path = new GraphicsPath())
+            using (var path = new GraphicsPath())
             {
                 path.AddArc(BoundingRectangle, startAngle, endAngle - startAngle);
                 path.AddLine(pointEnd.X, pointEnd.Y, pointEnd.X, pointEnd.Y + SliceHeight);
@@ -1260,17 +1260,17 @@ namespace EVEMon.PieChart
         {
             double x = point.X - boundingRectXangle - boundingRectWidthangle / 2;
             double y = point.Y - boundingRectYangle - boundingRectHeightangle / 2;
-            double angle = Math.Atan2(y, x);
+            var angle = Math.Atan2(y, x);
             if (angle < 0)
                 angle += 2 * Math.PI;
-            double angleDegrees = angle * 180 / Math.PI;
+            var angleDegrees = angle * 180 / Math.PI;
             // point is inside the pie slice only if between start and end angle
             if ((!(angleDegrees >= startAngle) || !(angleDegrees <= startAngle + sweepAngle)) &&
                 (!(startAngle + sweepAngle > 360) || !(angleDegrees + 360 <= startAngle + sweepAngle)))
                 return false;
 
             // distance of the point from the ellipse centre
-            double r = Math.Sqrt(y * y + x * x);
+            var r = Math.Sqrt(y * y + x * x);
             return GetEllipseRadius(angle) > r;
         }
 
@@ -1288,10 +1288,10 @@ namespace EVEMon.PieChart
         {
             double a = BoundingRectangle.Width / 2;
             double b = BoundingRectangle.Height / 2;
-            double a2 = a * a;
-            double b2 = b * b;
-            double cosFi = Math.Cos(angle);
-            double sinFi = Math.Sin(angle);
+            var a2 = a * a;
+            var b2 = b * b;
+            var cosFi = Math.Cos(angle);
+            var sinFi = Math.Sin(angle);
             // distance of the ellipse perimeter point
             return a * b / Math.Sqrt(b2 * cosFi * cosFi + a2 * sinFi * sinFi);
         }

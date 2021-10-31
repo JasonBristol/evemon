@@ -21,7 +21,7 @@ namespace EVEMon.XmlGenerator.Extensions
             if (string.IsNullOrEmpty(input))
                 return string.Empty;
 
-            string output = input.TrimWhitespace();
+            var output = input.TrimWhitespace();
             output = output.ReplaceTabs();
             output = output.ReplaceHtmlLineBreaks();
             output = output.CleanXmlTags();
@@ -74,7 +74,7 @@ namespace EVEMon.XmlGenerator.Extensions
         private static string TrimWhitespace(this string input)
         {
             // Fix space before a dot (yes, there are those in descriptions)
-            string output = input.Replace(" .", ".");
+            var output = input.Replace(" .", ".");
 
             // Remove whitespace from the beginning and end of a string
             return output.Trim();

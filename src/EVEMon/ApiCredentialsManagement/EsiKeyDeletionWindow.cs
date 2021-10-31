@@ -54,7 +54,7 @@ namespace EVEMon.ApiCredentialsManagement
             // Add characters
             charactersListView.Items.Clear();
 
-            foreach (ListViewItem item in m_apiKey.CharacterIdentities.Select(
+            foreach (var item in m_apiKey.CharacterIdentities.Select(
                 id => new ListViewItem(id.CharacterName)
                           {
                               Tag = id.CCPCharacter,
@@ -92,7 +92,7 @@ namespace EVEMon.ApiCredentialsManagement
         /// <param name="e">The <see cref="System.Windows.Forms.ItemCheckEventArgs"/> instance containing the event data.</param>
         private void charactersListView_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            CCPCharacter ccpCharacter = charactersListView.Items[e.Index].Tag as CCPCharacter;
+            var ccpCharacter = charactersListView.Items[e.Index].Tag as CCPCharacter;
             if (ccpCharacter == null)
                 e.NewValue = CheckState.Checked;
 
@@ -111,7 +111,7 @@ namespace EVEMon.ApiCredentialsManagement
             EveMonClient.ESIKeys.Remove(m_apiKey);
 
             // Remove the characters from the collection
-            foreach (CCPCharacter ccpCharacter in charactersListView.Items.Cast<ListViewItem>().Where(
+            foreach (var ccpCharacter in charactersListView.Items.Cast<ListViewItem>().Where(
                 item => item.Checked).Select(item => item.Tag as CCPCharacter).Where(
                     ccpCharacter => ccpCharacter != null).Where(
                         ccpCharacter => !ccpCharacter.Identity.ESIKeys.Any()))

@@ -88,7 +88,7 @@ namespace EVEMon.Common.Service
                 throw new ArgumentNullException("scopes");
             m_clientID = clientID;
             var rnd = new RNGCryptoServiceProvider();
-            byte[] cc = new byte[32];
+            var cc = new byte[32];
             rnd.GetBytes(cc);
             m_codeChallenge = Util.URLSafeBase64(cc);
             m_scopes = scopes;
@@ -145,7 +145,7 @@ namespace EVEMon.Common.Service
         /// <returns>The URL to be passed to a browser for login.</returns>
         public Uri GetAuthenticationURL(string state, int port)
         {
-            string redirect = string.Format(NetworkConstants.SSORedirect, port);
+            var redirect = string.Format(NetworkConstants.SSORedirect, port);
             string url;
             if (string.IsNullOrEmpty(m_secret))
                 // PKCE
@@ -195,7 +195,7 @@ namespace EVEMon.Common.Service
         public void VerifyAuthCode(string authCode, Action<AccessResponse> callback)
         {
             authCode.ThrowIfNull(nameof(authCode));
-            bool isPKCE = string.IsNullOrEmpty(m_secret);
+            var isPKCE = string.IsNullOrEmpty(m_secret);
             string data;
             if (isPKCE)
                 // PKCE
@@ -246,7 +246,7 @@ namespace EVEMon.Common.Service
                 if (token != null)
                 {
                     var intendedURI = new Uri(NetworkConstants.SSOBaseV2);
-                    string issuer = token.Issuer;
+                    var issuer = token.Issuer;
                     // Validate ISSuer
                     if (issuer == intendedURI.Host || issuer == intendedURI.GetLeftPart(
                             UriPartial.Authority))

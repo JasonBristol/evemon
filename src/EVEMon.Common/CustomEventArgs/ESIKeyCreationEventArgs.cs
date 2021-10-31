@@ -36,14 +36,14 @@ namespace EVEMon.Common.CustomEventArgs
                 };
             else
             {
-                EsiAPITokenInfo result = charInfo.Result;
+                var result = charInfo.Result;
                 CCPError = null;
-                long charId = result.CharacterID;
-                string name = result.CharacterName;
+                var charId = result.CharacterID;
+                var name = result.CharacterName;
 
                 // Only one character per ESI key
                 // Look for an existing character ID and update its name
-                CharacterIdentity identity = EveMonClient.CharacterIdentities[charId];
+                var identity = EveMonClient.CharacterIdentities[charId];
                 if (identity != null)
                     identity.CharacterName = name;
                 else
@@ -106,7 +106,7 @@ namespace EVEMon.Common.CustomEventArgs
         public ESIKey CreateOrUpdate()
         {
             // Checks whether this ESI key already exists to update it
-            ESIKey esiKey = EveMonClient.ESIKeys[ID];
+            var esiKey = EveMonClient.ESIKeys[ID];
             if (esiKey != null)
             {
                 esiKey.Update(this);

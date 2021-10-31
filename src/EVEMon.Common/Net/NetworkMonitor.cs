@@ -51,13 +51,13 @@ namespace EVEMon.Common.Net
         private static bool IsNetworkAvailableManual()
         {
             // Send a ping to www.google.com
-            using (Ping pingSender = new Ping())
+            using (var pingSender = new Ping())
             {
-                PingOptions options = new PingOptions(50, false);
-                byte[] buffer = Encoding.ASCII.GetBytes("EVEMon Network Status Ping");
+                var options = new PingOptions(50, false);
+                var buffer = Encoding.ASCII.GetBytes("EVEMon Network Status Ping");
                 const int Timeout = 120;
                 const string Host = "www.google.com";
-                PingReply reply = pingSender.Send(Host, Timeout, buffer, options);
+                var reply = pingSender.Send(Host, Timeout, buffer, options);
 
                 return reply != null && (reply.Status == IPStatus.Success);
             }
@@ -103,7 +103,7 @@ namespace EVEMon.Common.Net
                     return;
 
                 // Scroll through the monitors and remove them when they're no longer available
-                int index = 0;
+                var index = 0;
                 while (index < s_subscribers.Count)
                 {
                     INetworkChangeSubscriber target;

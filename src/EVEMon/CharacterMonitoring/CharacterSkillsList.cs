@@ -157,14 +157,14 @@ namespace EVEMon.CharacterMonitoring
                 return;
             }
 
-            int scrollBarPosition = lbSkills.TopIndex;
+            var scrollBarPosition = lbSkills.TopIndex;
 
             // Update the skills list
             lbSkills.BeginUpdate();
             try
             {
                 IList<Skill> skills = GetCharacterSkills().ToList();
-                IOrderedEnumerable<IGrouping<SkillGroup, Skill>> groups =
+                var groups =
                     skills.GroupBy(x => x.Group).OrderBy(x => x.Key.Name);
 
                 m_maxGroupNameWidth = groups.Select(
@@ -173,7 +173,7 @@ namespace EVEMon.CharacterMonitoring
 
                 // Scroll through groups
                 lbSkills.Items.Clear();
-                foreach (IGrouping<SkillGroup, Skill> group in groups)
+                foreach (var group in groups)
                 {
                     lbSkills.Items.Add(group.Key);
 
@@ -181,7 +181,7 @@ namespace EVEMon.CharacterMonitoring
                     if (Character.UISettings.CollapsedGroups.Contains(group.Key.Name))
                         continue;
 
-                    foreach (Skill skill in group.OrderBy(x => x.Name))
+                    foreach (var skill in group.OrderBy(x => x.Name))
                     {
                         lbSkills.Items.Add(skill);
                     }
@@ -235,8 +235,8 @@ namespace EVEMon.CharacterMonitoring
             if (e.Index < 0 || e.Index >= lbSkills.Items.Count)
                 return;
 
-            object item = lbSkills.Items[e.Index];
-            SkillGroup skillGroup = item as SkillGroup;
+            var item = lbSkills.Items[e.Index];
+            var skillGroup = item as SkillGroup;
             if (skillGroup != null)
                 DrawItem(skillGroup, e);
             else
@@ -275,28 +275,28 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void DrawItem(Skill skill, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // Draw background
             DrawBackground(skill, e);
 
             // Measure texts
-            long skillPointsToNextLevel = skill.StaticData.GetPointsRequiredForLevel(Math.Min(skill.Level + 1, 5));
+            var skillPointsToNextLevel = skill.StaticData.GetPointsRequiredForLevel(Math.Min(skill.Level + 1, 5));
 
-            string rankText = $" (Rank {skill.Rank})";
-            string spText = $"SP: {skill.SkillPoints:N0}/{skillPointsToNextLevel:N0}";
-            string levelText = $"Level {skill.Level}";
-            string pctText = $"{Math.Floor(skill.PercentCompleted)}% Done";
+            var rankText = $" (Rank {skill.Rank})";
+            var spText = $"SP: {skill.SkillPoints:N0}/{skillPointsToNextLevel:N0}";
+            var levelText = $"Level {skill.Level}";
+            var pctText = $"{Math.Floor(skill.PercentCompleted)}% Done";
 
-            Size skillNameSize = TextRenderer.MeasureText(g, skill.Name, m_boldSkillsFont, Size.Empty, Format);
-            Size rankTextSize = TextRenderer.MeasureText(g, rankText, m_skillsFont, Size.Empty, Format);
-            Size levelTextSize = TextRenderer.MeasureText(g, levelText, m_skillsFont, Size.Empty, Format);
-            Size spTextSize = TextRenderer.MeasureText(g, spText, m_skillsFont, Size.Empty, Format);
-            Size pctTextSize = TextRenderer.MeasureText(g, pctText, m_skillsFont, Size.Empty, Format);
+            var skillNameSize = TextRenderer.MeasureText(g, skill.Name, m_boldSkillsFont, Size.Empty, Format);
+            var rankTextSize = TextRenderer.MeasureText(g, rankText, m_skillsFont, Size.Empty, Format);
+            var levelTextSize = TextRenderer.MeasureText(g, levelText, m_skillsFont, Size.Empty, Format);
+            var spTextSize = TextRenderer.MeasureText(g, spText, m_skillsFont, Size.Empty, Format);
+            var pctTextSize = TextRenderer.MeasureText(g, pctText, m_skillsFont, Size.Empty, Format);
 
 
             // Draw texts
-            Color highlightColor = Color.Black;
+            var highlightColor = Color.Black;
             if (!skill.IsKnown)
                 highlightColor = Color.Red;
 
@@ -361,7 +361,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.Windows.Forms.DrawItemEventArgs"/> instance containing the event data.</param>
         private static void DrawBackground(Skill skill, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             if (skill.IsTraining)
             {
@@ -387,22 +387,22 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.Windows.Forms.DrawItemEventArgs"/> instance containing the event data.</param>
         private static void DrawProgressionBar(Skill skill, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             g.DrawRectangle(Pens.Black, new Rectangle(e.Bounds.Right - BoxWidth - PadRight,
                                                       e.Bounds.Top + PadTop + BoxHeight + BoxVPad,
                                                       BoxWidth, LowerBoxHeight));
 
-            Rectangle pctBarRect = new Rectangle(e.Bounds.Right - BoxWidth - PadRight + 2,
+            var pctBarRect = new Rectangle(e.Bounds.Right - BoxWidth - PadRight + 2,
                                                  e.Bounds.Top + PadTop + BoxHeight + BoxVPad + 2,
                                                  BoxWidth - 3, LowerBoxHeight - 3);
 
             g.FillRectangle(Brushes.DarkGray, pctBarRect);
-            int fillWidth = (int)(pctBarRect.Width * skill.FractionCompleted);
+            var fillWidth = (int)(pctBarRect.Width * skill.FractionCompleted);
             if (fillWidth <= 0)
                 return;
 
-            Rectangle fillRect = new Rectangle(pctBarRect.X, pctBarRect.Y, fillWidth, pctBarRect.Height);
+            var fillRect = new Rectangle(pctBarRect.X, pctBarRect.Y, fillWidth, pctBarRect.Height);
             g.FillRectangle(Brushes.Black, fillRect);
         }
 
@@ -413,17 +413,17 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.Windows.Forms.DrawItemEventArgs"/> instance containing the event data.</param>
         private void DrawBoxes(Skill skill, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
-            bool isAlpha = skill.Character.EffectiveCharacterStatus.IsAlpha();
+            var g = e.Graphics;
+            var isAlpha = skill.Character.EffectiveCharacterStatus.IsAlpha();
 
             g.DrawRectangle(Pens.Black, new Rectangle(e.Bounds.Right - BoxWidth - PadRight,
                 e.Bounds.Top + PadTop, BoxWidth, BoxHeight));
 
             const int levelBoxWidth = (BoxWidth - 4 - 3) / 5, levelBoxHeight = BoxHeight - 3;
-            int square = Math.Min(levelBoxWidth, levelBoxHeight);
-            for (int level = 1; level <= 5; level++)
+            var square = Math.Min(levelBoxWidth, levelBoxHeight);
+            for (var level = 1; level <= 5; level++)
             {
-                Brush fillBrush = Brushes.DarkGray;
+                var fillBrush = Brushes.DarkGray;
                 int alphaPad = 0, w, h;
                 if (isAlpha && level > skill.StaticData.AlphaLimit)
                 {
@@ -488,10 +488,10 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.Windows.Forms.DrawItemEventArgs"/> instance containing the event data.</param>
         private void DrawItem(SkillGroup group, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // Draws the background
-            using (Brush brush = Settings.UI.SafeForWork
+            using (var brush = Settings.UI.SafeForWork
                                      ? new SolidBrush(Color.FromArgb(75, 75, 75))
                                      : (Brush)new LinearGradientBrush(new PointF(0F, 0F), new PointF(0F, SkillHeaderHeight),
                                                                       Color.FromArgb(75, 75, 75), Color.FromArgb(25, 25, 25)))
@@ -499,16 +499,16 @@ namespace EVEMon.CharacterMonitoring
                 g.FillRectangle(brush, e.Bounds);
             }
 
-            using (Pen pen = new Pen(Color.FromArgb(100, 100, 100)))
+            using (var pen = new Pen(Color.FromArgb(100, 100, 100)))
             {
                 g.DrawLine(pen, e.Bounds.Left, e.Bounds.Top, e.Bounds.Right + 1, e.Bounds.Top);
             }
 
             // Measure Texts
-            string skillInTrainingSuffix = string.Empty;
-            string skillsInQueueSuffix = string.Empty;
-            bool hasTrainingSkill = group.Any(x => x.IsTraining);
-            bool hasQueuedSkill = group.Any(x => x.IsQueued && !x.IsTraining);
+            var skillInTrainingSuffix = string.Empty;
+            var skillsInQueueSuffix = string.Empty;
+            var hasTrainingSkill = group.Any(x => x.IsTraining);
+            var hasQueuedSkill = group.Any(x => x.IsQueued && !x.IsTraining);
             if (hasTrainingSkill)
                 skillInTrainingSuffix = "( 1 in training )";
             if (hasQueuedSkill)
@@ -516,32 +516,32 @@ namespace EVEMon.CharacterMonitoring
                 skillsInQueueSuffix = $"( {group.Count(x => x.IsQueued && !x.IsTraining)} in queue )";
             }
 
-            string skillsSummaryText = $"{group.Count(x => x.IsKnown)} of {group.Count(x => x.IsPublic)} skills";
+            var skillsSummaryText = $"{group.Count(x => x.IsKnown)} of {group.Count(x => x.IsPublic)} skills";
 
-            string skillsTotalSPText = $"{group.TotalSP:N0} Points";
+            var skillsTotalSPText = $"{group.TotalSP:N0} Points";
 
-            Rectangle skillGroupNameTextRect = new Rectangle(e.Bounds.Left + PadLeft,
+            var skillGroupNameTextRect = new Rectangle(e.Bounds.Left + PadLeft,
                                                              e.Bounds.Top + e.Bounds.Height / 2 - lbSkills.ItemHeight / 2,
                                                              m_maxGroupNameWidth + PadLeft / 2,
                                                              lbSkills.ItemHeight);
 
-            int skillsSummaryTextWidth = (int)(SkillsSummaryTextWidth * (g.DpiX / EveMonConstants.DefaultDpi));
-            Rectangle skillsSummaryTextRect = new Rectangle(
+            var skillsSummaryTextWidth = (int)(SkillsSummaryTextWidth * (g.DpiX / EveMonConstants.DefaultDpi));
+            var skillsSummaryTextRect = new Rectangle(
                 skillGroupNameTextRect.X + m_maxGroupNameWidth + PadLeft / 2, skillGroupNameTextRect.Y,
                 skillsSummaryTextWidth + PadLeft / 2, lbSkills.ItemHeight);
 
-            int skillGroupTotalSPTextWidth = (int)(SkillGroupTotalSPTextWidth * (g.DpiX / EveMonConstants.DefaultDpi));
-            Rectangle skillsTotalSPTextRect = new Rectangle(
+            var skillGroupTotalSPTextWidth = (int)(SkillGroupTotalSPTextWidth * (g.DpiX / EveMonConstants.DefaultDpi));
+            var skillsTotalSPTextRect = new Rectangle(
                 skillsSummaryTextRect.X + skillsSummaryTextWidth + PadLeft / 2, skillGroupNameTextRect.Y,
                 skillGroupTotalSPTextWidth + PadLeft / 2, lbSkills.ItemHeight);
 
-            Size skillInTrainingSuffixSize = TextRenderer.MeasureText(g, skillInTrainingSuffix, m_skillsFont, Size.Empty);
-            Rectangle skillInTrainingSuffixRect = new Rectangle(
+            var skillInTrainingSuffixSize = TextRenderer.MeasureText(g, skillInTrainingSuffix, m_skillsFont, Size.Empty);
+            var skillInTrainingSuffixRect = new Rectangle(
                 skillsTotalSPTextRect.X + skillGroupTotalSPTextWidth + PadLeft / 2, skillGroupNameTextRect.Y,
                 skillInTrainingSuffixSize.Width, lbSkills.ItemHeight);
 
-            Size skillQueueTextSize = TextRenderer.MeasureText(g, skillsInQueueSuffix, m_skillsFont, Size.Empty);
-            Rectangle skillQueueRect = new Rectangle(
+            var skillQueueTextSize = TextRenderer.MeasureText(g, skillsInQueueSuffix, m_skillsFont, Size.Empty);
+            var skillQueueRect = new Rectangle(
                 skillInTrainingSuffixRect.X + skillInTrainingSuffixSize.Width, skillInTrainingSuffixRect.Y,
                 skillQueueTextSize.Width, lbSkills.ItemHeight);
 
@@ -559,7 +559,7 @@ namespace EVEMon.CharacterMonitoring
                                   Format | TextFormatFlags.Right);
 
             // Draws the collapsing arrows
-            bool isCollapsed = Character.UISettings.CollapsedGroups.Contains(group.Name);
+            var isCollapsed = Character.UISettings.CollapsedGroups.Contains(group.Name);
             Image image = isCollapsed ? Resources.Expand : Resources.Collapse;
 
             g.DrawImageUnscaled(image, new Point(e.Bounds.Right - image.Width - CollapserPadRight,
@@ -589,7 +589,7 @@ namespace EVEMon.CharacterMonitoring
                 // When none collapsed, collapse all
             else
             {
-                foreach (SkillGroup group in Character.SkillGroups)
+                foreach (var group in Character.SkillGroups)
                 {
                     Character.UISettings.CollapsedGroups.Add(group.Name);
                 }
@@ -649,8 +649,8 @@ namespace EVEMon.CharacterMonitoring
                 return;
 
             // Update the drawing based upon the mouse wheel scrolling
-            int numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
-            int lines = numberOfItemLinesToMove;
+            var numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
+            var lines = numberOfItemLinesToMove;
             if (lines == 0)
                 return;
 
@@ -659,9 +659,9 @@ namespace EVEMon.CharacterMonitoring
                 return;
 
             // Compute the number of lines to move
-            int direction = lines / Math.Abs(lines);
-            int[] numberOfPixelsToMove = new int[lines * direction];
-            for (int i = 1; i <= Math.Abs(lines); i++)
+            var direction = lines / Math.Abs(lines);
+            var numberOfPixelsToMove = new int[lines * direction];
+            for (var i = 1; i <= Math.Abs(lines); i++)
             {
                 object item = null;
 
@@ -676,8 +676,8 @@ namespace EVEMon.CharacterMonitoring
                 else
                 {
                     // Compute the height of the items from current the topindex (included)
-                    int height = 0;
-                    for (int j = lbSkills.TopIndex + i - 1; j < lbSkills.Items.Count; j++)
+                    var height = 0;
+                    for (var j = lbSkills.TopIndex + i - 1; j < lbSkills.Items.Count; j++)
                     {
                         height += GetItemHeight(lbSkills.Items[j]);
                     }
@@ -707,7 +707,7 @@ namespace EVEMon.CharacterMonitoring
         private void lbSkills_MouseDown(object sender, MouseEventArgs e)
         {
             // Retrieve the item at the given point and quit if none
-            int index = lbSkills.IndexFromPoint(e.Location);
+            var index = lbSkills.IndexFromPoint(e.Location);
             if (index < 0 || index >= lbSkills.Items.Count)
                 return;
 
@@ -715,14 +715,14 @@ namespace EVEMon.CharacterMonitoring
             // Let's deal with this special case
             if (index == lbSkills.Items.Count - 1)
             {
-                Rectangle itemRect = lbSkills.GetItemRectangle(index);
+                var itemRect = lbSkills.GetItemRectangle(index);
                 if (!itemRect.Contains(e.Location))
                     return;
             }
 
             // For a skill group, we have to handle the collapse/expand mechanism and the tooltip
-            object item = lbSkills.Items[index];
-            SkillGroup skillGroup = item as SkillGroup;
+            var item = lbSkills.Items[index];
+            var skillGroup = item as SkillGroup;
             if (skillGroup != null)
             {
                 // Left button : expand/collapse
@@ -733,8 +733,8 @@ namespace EVEMon.CharacterMonitoring
                 }
 
                 // If right click on the button, still expand/collapse
-                Rectangle itemRect = lbSkills.GetItemRectangle(lbSkills.Items.IndexOf(item));
-                Rectangle buttonRect = GetButtonRectangle(skillGroup, itemRect);
+                var itemRect = lbSkills.GetItemRectangle(lbSkills.Items.IndexOf(item));
+                var buttonRect = GetButtonRectangle(skillGroup, itemRect);
                 if (buttonRect.Contains(e.Location))
                 {
                     ToggleGroupExpandCollapse(skillGroup);
@@ -744,7 +744,7 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Right click for skills below lv5 : we display a context menu to plan higher levels
-            Skill skill = (Skill)item;
+            var skill = (Skill)item;
             if (e.Button == MouseButtons.Right)
             {
                 lbSkills.Cursor = Cursors.Default;
@@ -764,14 +764,14 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void lbSkills_MouseMove(object sender, MouseEventArgs e)
         {
-            for (int i = 0; i < lbSkills.Items.Count; i++)
+            for (var i = 0; i < lbSkills.Items.Count; i++)
             {
                 // Skip until we found the mouse location
-                Rectangle rect = lbSkills.GetItemRectangle(i);
+                var rect = lbSkills.GetItemRectangle(i);
                 if (!rect.Contains(e.Location))
                     continue;
 
-                object item = lbSkills.Items[i];
+                var item = lbSkills.Items[i];
                 lbSkills.Cursor = item is Skill ? CustomCursors.ContextMenu : Cursors.Default;
 
                 // Updates the tooltip
@@ -822,7 +822,7 @@ namespace EVEMon.CharacterMonitoring
             tsmiAddSkill.Text = $"Add {skill.Name}";
 
             // Build the level options
-            for (long level = skill.Level + 1; level <= 5; level++)
+            for (var level = skill.Level + 1; level <= 5; level++)
             {
                 ToolStripMenuItem tempMenuLevel = null;
                 try
@@ -836,7 +836,7 @@ namespace EVEMon.CharacterMonitoring
                             menuPlanItem.Tag = new KeyValuePair<Plan, SkillLevel>(plan, new SkillLevel(skill, level));
                         });
 
-                    ToolStripMenuItem menuLevel = tempMenuLevel;
+                    var menuLevel = tempMenuLevel;
                     tempMenuLevel = null;
 
                     tsmiAddSkill.DropDownItems.Add(menuLevel);
@@ -860,7 +860,7 @@ namespace EVEMon.CharacterMonitoring
             m_lastTooltipItem = item;
 
             ttToolTip.Active = false;
-            SkillGroup skillGroup = item as SkillGroup;
+            var skillGroup = item as SkillGroup;
             ttToolTip.SetToolTip(lbSkills, skillGroup != null ? GetTooltip(skillGroup) : GetTooltip((Skill)item));
             ttToolTip.Active = true;
         }
@@ -871,17 +871,17 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="skill"></param>
         private static string GetTooltip(Skill skill)
         {
-            long sp = skill.SkillPoints;
-            long nextLevel = Math.Min(5, skill.Level + 1);
-            long nextLevelSP = skill.StaticData.GetPointsRequiredForLevel(nextLevel);
-            long pointsLeft = skill.GetLeftPointsRequiredToLevel(nextLevel);
-            string remainingTimeText = skill.GetLeftTrainingTimeToLevel(nextLevel)
+            var sp = skill.SkillPoints;
+            var nextLevel = Math.Min(5, skill.Level + 1);
+            var nextLevelSP = skill.StaticData.GetPointsRequiredForLevel(nextLevel);
+            var pointsLeft = skill.GetLeftPointsRequiredToLevel(nextLevel);
+            var remainingTimeText = skill.GetLeftTrainingTimeToLevel(nextLevel)
                 .ToDescriptiveText(DescriptiveTextOptions.IncludeCommas | DescriptiveTextOptions.UppercaseText);
 
             if (sp < skill.StaticData.GetPointsRequiredForLevel(1))
             {
                 // Training hasn't got past level 1 yet
-                StringBuilder untrainedToolTip = new StringBuilder();
+                var untrainedToolTip = new StringBuilder();
                 untrainedToolTip
                     .Append($"Not yet trained to Level I ({Math.Floor(skill.PercentCompleted)}%)")
                     .AppendLine()
@@ -899,7 +899,7 @@ namespace EVEMon.CharacterMonitoring
             // Partially trained skill ?
             if (skill.IsPartiallyTrained)
             {
-                StringBuilder partiallyTrainedToolTip = new StringBuilder();
+                var partiallyTrainedToolTip = new StringBuilder();
                 partiallyTrainedToolTip
                     .Append($"Partially Completed ({Math.Floor(skill.PercentCompleted)}%)")
                     .AppendLine()
@@ -918,7 +918,7 @@ namespace EVEMon.CharacterMonitoring
             {
                 if (skill.Level != 5)
                 {
-                    StringBuilder levelCompleteToolTip = new StringBuilder();
+                    var levelCompleteToolTip = new StringBuilder();
                     levelCompleteToolTip
                         .Append($"Completed Level {Skill.GetRomanFromInt(skill.Level)}: {sp:N0}/{nextLevelSP:N0}")
                         .AppendLine()
@@ -933,7 +933,7 @@ namespace EVEMon.CharacterMonitoring
                 }
 
                 // Lv 5 completed
-                StringBuilder lv5ToolTip = new StringBuilder();
+                var lv5ToolTip = new StringBuilder();
                 lv5ToolTip
                     .Append($"Level V Complete: {sp:N0}/{nextLevelSP:N0}")
                     .AppendLine()
@@ -945,7 +945,7 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Error in calculating SkillPoints
-            StringBuilder calculationErrorToolTip = new StringBuilder();
+            var calculationErrorToolTip = new StringBuilder();
             calculationErrorToolTip
                 .AppendLine("Partially Trained (Could not cacluate all skill details)")
                 .Append($"Next level {nextLevel}: {pointsLeft:N0} skill points remaining")
@@ -981,13 +981,13 @@ namespace EVEMon.CharacterMonitoring
         private static string GetTooltip(SkillGroup group)
         {
             // Maximas are computed on public skills only
-            long totalValidSP = group.Where(x => x.IsPublic).Sum(x => x.SkillPoints);
-            long maxSP = group.Where(x => x.IsPublic).Sum(x => x.StaticData.GetPointsRequiredForLevel(5));
-            int maxKnown = group.Count(x => x.IsPublic);
+            var totalValidSP = group.Where(x => x.IsPublic).Sum(x => x.SkillPoints);
+            var maxSP = group.Where(x => x.IsPublic).Sum(x => x.StaticData.GetPointsRequiredForLevel(5));
+            var maxKnown = group.Count(x => x.IsPublic);
 
             // Current achievements are computed on every skill, including non-public
-            long totalSP = group.Sum(x => x.SkillPoints);
-            int known = group.Count(x => x.IsKnown);
+            var totalSP = group.Sum(x => x.SkillPoints);
+            var known = group.Count(x => x.IsKnown);
 
             // The group has been completed !
             if (totalValidSP >= maxSP)
@@ -997,8 +997,8 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // If the group is not completed yet
-            double percentDonePoints = 1.0 * Math.Min(totalSP, maxSP) / maxSP;
-            double percentDoneSkills = 1.0 * Math.Min(known, maxKnown) / maxKnown;
+            var percentDonePoints = 1.0 * Math.Min(totalSP, maxSP) / maxSP;
+            var percentDoneSkills = 1.0 * Math.Min(known, maxKnown) / maxKnown;
 
             return $"Points Completed: {totalSP:N0} of {maxSP:N0} ({percentDonePoints:P1}){Environment.NewLine}" +
                    $"Skills Known: {known} of {maxKnown} ({percentDoneSkills:P0})";
@@ -1013,13 +1013,13 @@ namespace EVEMon.CharacterMonitoring
         private Rectangle GetButtonRectangle(SkillGroup group, Rectangle itemRect)
         {
             // Checks whether this group is collapsed
-            bool isCollapsed = Character.UISettings.CollapsedGroups.Contains(group.Name);
+            var isCollapsed = Character.UISettings.CollapsedGroups.Contains(group.Name);
 
             // Get the image for this state
             Image btnImage = isCollapsed ? Resources.Expand : Resources.Collapse;
 
             // Compute the top left point
-            Point btnPoint = new Point(itemRect.Right - btnImage.Width - CollapserPadRight,
+            var btnPoint = new Point(itemRect.Right - btnImage.Width - CollapserPadRight,
                                        SkillHeaderHeight / 2 - btnImage.Height / 2 + itemRect.Top);
 
             return new Rectangle(btnPoint, btnImage.Size);
@@ -1033,14 +1033,14 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private static void menuPlanItem_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem planItem = (ToolStripMenuItem)sender;
-            KeyValuePair<Plan, SkillLevel> tag = (KeyValuePair<Plan, SkillLevel>)planItem.Tag;
+            var planItem = (ToolStripMenuItem)sender;
+            var tag = (KeyValuePair<Plan, SkillLevel>)planItem.Tag;
 
-            IPlanOperation operation = tag.Key.TryPlanTo(tag.Value.Skill, tag.Value.Level);
+            var operation = tag.Key.TryPlanTo(tag.Value.Skill, tag.Value.Level);
             if (operation == null)
                 return;
 
-            PlanWindow planWindow = PlanWindow.ShowPlanWindow(plan: operation.Plan);
+            var planWindow = PlanWindow.ShowPlanWindow(plan: operation.Plan);
             if (planWindow == null)
                 return;
 

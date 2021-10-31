@@ -26,7 +26,7 @@ namespace EVEMon.Common.Models.Collections
             Items.Clear();
 
             // Import the contacts from the API
-            foreach (EsiContactListItem srcContact in src)
+            foreach (var srcContact in src)
                 Items.Add(new Contact(srcContact));
         }
     }

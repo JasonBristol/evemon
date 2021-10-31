@@ -14,7 +14,7 @@ namespace EVEMon.PatchXmlCreator
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Action action = Helper.SelectAction();
+            var action = Helper.SelectAction();
 
             // Ensure that the prerequisites for a release are met
             if (!Helper.ExitRequested && action != Action.DatafilesOnly)

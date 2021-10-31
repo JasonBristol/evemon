@@ -44,7 +44,7 @@ namespace EVEMon.CharacterMonitoring
             Font = FontFactory.GetFont("Tahoma");
             lblScheduleWarning.Font = FontFactory.GetFont("Tahoma", FontStyle.Bold);
 
-            CCPCharacter ccpCharacter = m_character as CCPCharacter;
+            var ccpCharacter = m_character as CCPCharacter;
 
             if (ccpCharacter != null)
                 skillQueueControl.SkillQueue = ccpCharacter.SkillQueue;
@@ -150,8 +150,8 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void UpdateTrainingSkillInfo()
         {
-            QueuedSkill training = m_character.CurrentlyTrainingSkill;
-            DateTime completionTime = training.EndTime.ToLocalTime();
+            var training = m_character.CurrentlyTrainingSkill;
+            var completionTime = training.EndTime.ToLocalTime();
 
             lblTrainingSkill.Text = training.ToString();
             lblSPPerHour.Text = training.Skill == null
@@ -163,8 +163,8 @@ namespace EVEMon.CharacterMonitoring
 
             string conflictMessage;
             bool isAutoBlocking;
-            bool isBlocking = Scheduler.SkillIsBlockedAt(training.EndTime.ToLocalTime(), out conflictMessage, out isAutoBlocking);
-            CCPCharacter ccpCharacter = m_character as CCPCharacter;
+            var isBlocking = Scheduler.SkillIsBlockedAt(training.EndTime.ToLocalTime(), out conflictMessage, out isAutoBlocking);
+            var ccpCharacter = m_character as CCPCharacter;
 
             // Do not show the "DOWNTIME" warning if character's skill queue has more than one skills
             if (ccpCharacter != null && ccpCharacter.SkillQueue.Count > 1 &&
@@ -185,11 +185,11 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void UpdateSkillQueueInfo()
         {
-            CCPCharacter ccpCharacter = m_character as CCPCharacter;
+            var ccpCharacter = m_character as CCPCharacter;
             if (ccpCharacter == null)
                 return;
 
-            DateTime queueCompletionTime = ccpCharacter.SkillQueue.EndTime.ToLocalTime();
+            var queueCompletionTime = ccpCharacter.SkillQueue.EndTime.ToLocalTime();
             lblQueueCompletionTime.Text = $"{queueCompletionTime:ddd} {queueCompletionTime:G}";
 
             // Skill queue time panel
@@ -197,11 +197,11 @@ namespace EVEMon.CharacterMonitoring
                                           (ccpCharacter.SkillQueue.Count == 1 && Settings.UI.MainWindow.AlwaysShowSkillQueueTime);
 
             // Update the remaining training time label
-            QueuedSkill training = m_character.CurrentlyTrainingSkill;
+            var training = m_character.CurrentlyTrainingSkill;
             lblTrainingRemain.Text = training.EndTime.ToRemainingTimeDescription(DateTimeKind.Utc);
 
             // Update the remaining queue time label
-            DateTime queueEndTime = ccpCharacter.SkillQueue.EndTime;
+            var queueEndTime = ccpCharacter.SkillQueue.EndTime;
             lblQueueRemaining.Text = queueEndTime.ToRemainingTimeDescription(DateTimeKind.Utc);
         }
 
@@ -211,11 +211,11 @@ namespace EVEMon.CharacterMonitoring
         /// <returns></returns>
         private bool SkillQueueIsPaused()
         {
-            CCPCharacter ccpCharacter = m_character as CCPCharacter;
+            var ccpCharacter = m_character as CCPCharacter;
             if (ccpCharacter == null || !ccpCharacter.SkillQueue.IsPaused)
                 return false;
 
-            QueuedSkill training = ccpCharacter.SkillQueue.CurrentlyTraining;
+            var training = ccpCharacter.SkillQueue.CurrentlyTraining;
             lblTrainingSkill.Text = training.ToString();
             lblSPPerHour.Text = training.Skill == null
                 ? "???"

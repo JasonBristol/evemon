@@ -12,12 +12,12 @@ namespace EVEMon.XmlGenerator.Xmlfiles
     {
         internal static void GenerateXmlfile()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
 
             Console.WriteLine();
             Console.Write(@"Generating Flags Xml file");
 
-            SerializableRoot<SerializableInvFlagsRow> flags = new SerializableRoot<SerializableInvFlagsRow>
+            var flags = new SerializableRoot<SerializableInvFlagsRow>
             {
                 Rowset = new SerialiazableRowset<SerializableInvFlagsRow>
                 {

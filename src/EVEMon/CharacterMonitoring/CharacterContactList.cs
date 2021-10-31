@@ -151,7 +151,7 @@ namespace EVEMon.CharacterMonitoring
                 return;
             }
 
-            int scrollBarPosition = lbContacts.TopIndex;
+            var scrollBarPosition = lbContacts.TopIndex;
 
             // Update the standings list
             lbContacts.BeginUpdate();
@@ -169,16 +169,16 @@ namespace EVEMon.CharacterMonitoring
 
                 // Scroll through groups
                 lbContacts.Items.Clear();
-                foreach (IGrouping<ContactGroup, Contact> group in groups)
+                foreach (var group in groups)
                 {
-                    string groupHeaderText = $"{@group.Key.GetDescription()} ({@group.Count()})";
+                    var groupHeaderText = $"{@group.Key.GetDescription()} ({@group.Count()})";
                     lbContacts.Items.Add(groupHeaderText);
 
                     // Add items in the group when it's not collapsed
                     if (m_collapsedGroups.Contains(groupHeaderText))
                         continue;
 
-                    foreach (Contact contact in group.OrderBy(contact => contact.Name))
+                    foreach (var contact in group.OrderBy(contact => contact.Name))
                     {
                         contact.ContactImageUpdated += contact_ContactImageUpdated;
                         lbContacts.Items.Add(contact);
@@ -214,8 +214,8 @@ namespace EVEMon.CharacterMonitoring
             if (e.Index < 0 || e.Index >= lbContacts.Items.Count)
                 return;
 
-            object item = lbContacts.Items[e.Index];
-            Contact contact = item as Contact;
+            var item = lbContacts.Items[e.Index];
+            var contact = item as Contact;
             if (contact != null)
                 DrawItem(contact, e);
             else
@@ -253,11 +253,11 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void DrawItem(Contact contact, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
             // Draw background
             g.FillRectangle(e.Index % 2 == 0 ? Brushes.White : Brushes.LightGray, e.Bounds);
             // Measure and draw contact name
-            Size contactTextSize = TextRenderer.MeasureText(g, contact.Name,
+            var contactTextSize = TextRenderer.MeasureText(g, contact.Name,
                 m_contactsBoldFont, Size.Empty, Format);
             TextRenderer.DrawText(g, contact.Name, m_contactsBoldFont, new Rectangle(
                 e.Bounds.Left + contact.EntityImage.Width + 4, e.Bounds.Top + (contact.Group ==
@@ -267,21 +267,21 @@ namespace EVEMon.CharacterMonitoring
             // Draw text for agents
             if (contact.Group == ContactGroup.Agent)
             {
-                Agent agent = StaticGeography.GetAgentByName(contact.Name);
+                var agent = StaticGeography.GetAgentByName(contact.Name);
                 if (agent != null)
                 {
-                    Station agentStation = agent.Station;
-                    string agentLocationText = agentStation != null ? agentStation.Name :
+                    var agentStation = agent.Station;
+                    var agentLocationText = agentStation != null ? agentStation.Name :
                         agent.Station.Name;
                     // Determine the agent level and division
-                    string agentLevelText = (agent.AgentType != AgentType.BasicAgent &&
-                        agent.AgentType != AgentType.ResearchAgent) ? agent.AgentType.
+                    var agentLevelText = (agent.AgentType != AgentType.BasicAgent &&
+                                          agent.AgentType != AgentType.ResearchAgent) ? agent.AgentType.
                         GetDescription() : $"Level {Skill.GetRomanFromInt(agent.Level)}";
-                    string agentLevelDivisionText = $"( {agentLevelText} - {agent.Division} )";
+                    var agentLevelDivisionText = $"( {agentLevelText} - {agent.Division} )";
                     // Calculate text size
-                    Size agentLocationTextSize = TextRenderer.MeasureText(g, agentLocationText,
+                    var agentLocationTextSize = TextRenderer.MeasureText(g, agentLocationText,
                         m_contactsFont, Size.Empty, Format);
-                    Size agentLevelDivisionTextSize = TextRenderer.MeasureText(g,
+                    var agentLevelDivisionTextSize = TextRenderer.MeasureText(g,
                         agentLevelDivisionText, m_contactsFont, Size.Empty, Format);
                     // Draw agent level and division text
                     TextRenderer.DrawText(g, agentLevelDivisionText, m_contactsFont,
@@ -299,9 +299,9 @@ namespace EVEMon.CharacterMonitoring
             }
             else if (Settings.UI.SafeForWork)
             {
-                string contactStandingStatusText = $"({Standing.Status(contact.Standing)})";
+                var contactStandingStatusText = $"({Standing.Status(contact.Standing)})";
                 // Measure and draw standing text
-                Size contactStandingStatusTextSize = TextRenderer.MeasureText(g,
+                var contactStandingStatusTextSize = TextRenderer.MeasureText(g,
                     contactStandingStatusText, m_contactsFont, Size.Empty, Format);
                 TextRenderer.DrawText(g, contactStandingStatusText, m_contactsFont,
                     new Rectangle(e.Bounds.Left + contact.EntityImage.Width + 4 +
@@ -312,7 +312,7 @@ namespace EVEMon.CharacterMonitoring
                 if (contact.IsInWatchlist)
                 {
                     const string ContactInWatchListText = " - Watching";
-                    Size contactInWatchListTextSize = TextRenderer.MeasureText(g,
+                    var contactInWatchListTextSize = TextRenderer.MeasureText(g,
                         ContactInWatchListText, m_contactsFont, Size.Empty, Format);
                     TextRenderer.DrawText(g, ContactInWatchListText, m_contactsFont,
                         new Rectangle(e.Bounds.Left + contact.EntityImage.Width + 4 +
@@ -326,7 +326,7 @@ namespace EVEMon.CharacterMonitoring
             else
             {
                 // Draw standing image
-                Image standingImage = Standing.GetStandingImage((int)contact.Standing);
+                var standingImage = Standing.GetStandingImage((int)contact.Standing);
                 g.DrawImage(standingImage, new Rectangle(e.Bounds.Left + contact.EntityImage.
                     Width + 4 + contactTextSize.Width + PadRight * 2, e.Bounds.Top + (e.Bounds.
                     Height - standingImage.Size.Height) / 2, standingImage.Width,
@@ -353,16 +353,16 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void DrawItem(string group, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // Draws the background
-            using (LinearGradientBrush lgb = new LinearGradientBrush(new PointF(0F, 0F), new PointF(0F, 21F),
+            using (var lgb = new LinearGradientBrush(new PointF(0F, 0F), new PointF(0F, 21F),
                                                                      Color.FromArgb(75, 75, 75), Color.FromArgb(25, 25, 25)))
             {
                 g.FillRectangle(lgb, e.Bounds);
             }
 
-            using (Pen p = new Pen(Color.FromArgb(100, 100, 100)))
+            using (var p = new Pen(Color.FromArgb(100, 100, 100)))
             {
                 g.DrawLine(p, e.Bounds.Left, e.Bounds.Top, e.Bounds.Right + 1, e.Bounds.Top);
             }
@@ -371,9 +371,9 @@ namespace EVEMon.CharacterMonitoring
             NativeMethods.SetTextCharacterSpacing(g, 4);
 
             // Measure texts
-            Size standingGroupTextSize = TextRenderer.MeasureText(g, group.ToUpper(CultureConstants.DefaultCulture),
+            var standingGroupTextSize = TextRenderer.MeasureText(g, group.ToUpper(CultureConstants.DefaultCulture),
                                                                   m_contactsBoldFont, Size.Empty, Format);
-            Rectangle standingGroupTextRect = new Rectangle(e.Bounds.Left + PadLeft,
+            var standingGroupTextRect = new Rectangle(e.Bounds.Left + PadLeft,
                                                             e.Bounds.Top +
                                                             (e.Bounds.Height / 2 - standingGroupTextSize.Height / 2),
                                                             standingGroupTextSize.Width + PadRight,
@@ -384,7 +384,7 @@ namespace EVEMon.CharacterMonitoring
                                   Color.White, Color.Transparent, Format);
 
             // Draws the collapsing arrows
-            bool isCollapsed = m_collapsedGroups.Contains(group);
+            var isCollapsed = m_collapsedGroups.Contains(group);
             Image img = isCollapsed ? Resources.Expand : Resources.Collapse;
 
             g.DrawImageUnscaled(img, new Rectangle(e.Bounds.Right - img.Width - CollapserPadRight,
@@ -426,15 +426,15 @@ namespace EVEMon.CharacterMonitoring
                 return;
 
             // Update the drawing based upon the mouse wheel scrolling
-            int numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
-            int lines = numberOfItemLinesToMove;
+            var numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
+            var lines = numberOfItemLinesToMove;
             if (lines == 0)
                 return;
 
             // Compute the number of lines to move
-            int direction = lines / Math.Abs(lines);
-            int[] numberOfPixelsToMove = new int[lines * direction];
-            for (int i = 1; i <= Math.Abs(lines); i++)
+            var direction = lines / Math.Abs(lines);
+            var numberOfPixelsToMove = new int[lines * direction];
+            for (var i = 1; i <= Math.Abs(lines); i++)
             {
                 object item = null;
 
@@ -449,8 +449,8 @@ namespace EVEMon.CharacterMonitoring
                 else
                 {
                     // Compute the height of the items from current the topindex (included)
-                    int height = 0;
-                    for (int j = lbContacts.TopIndex + i - 1; j < lbContacts.Items.Count; j++)
+                    var height = 0;
+                    for (var j = lbContacts.TopIndex + i - 1; j < lbContacts.Items.Count; j++)
                     {
                         height += GetItemHeight(lbContacts.Items[j]);
                     }
@@ -479,7 +479,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.Windows.Forms.MouseEventArgs"/> instance containing the event data.</param>
         private void lbContacts_MouseDown(object sender, MouseEventArgs e)
         {
-            int index = lbContacts.IndexFromPoint(e.Location);
+            var index = lbContacts.IndexFromPoint(e.Location);
             if (index < 0 || index >= lbContacts.Items.Count)
                 return;
 
@@ -495,8 +495,8 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // For a standings group, we have to handle the collapse/expand mechanism
-            object item = lbContacts.Items[index];
-            string contactsGroup = item as string;
+            var item = lbContacts.Items[index];
+            var contactsGroup = item as string;
             if (contactsGroup == null)
                 return;
 
@@ -509,7 +509,7 @@ namespace EVEMon.CharacterMonitoring
 
             // If right click on the button, still expand/collapse
             itemRect = lbContacts.GetItemRectangle(lbContacts.Items.IndexOf(item));
-            Rectangle buttonRect = GetButtonRectangle(contactsGroup, itemRect);
+            var buttonRect = GetButtonRectangle(contactsGroup, itemRect);
             if (buttonRect.Contains(e.Location))
                 ToggleGroupExpandCollapse(contactsGroup);
         }
@@ -546,13 +546,13 @@ namespace EVEMon.CharacterMonitoring
         private Rectangle GetButtonRectangle(string group, Rectangle itemRect)
         {
             // Checks whether this group is collapsed
-            bool isCollapsed = m_collapsedGroups.Contains(group);
+            var isCollapsed = m_collapsedGroups.Contains(group);
 
             // Get the image for this state
             Image btnImage = isCollapsed ? Resources.Expand : Resources.Collapse;
 
             // Compute the top left point
-            Point btnPoint = new Point(itemRect.Right - btnImage.Width - CollapserPadRight,
+            var btnPoint = new Point(itemRect.Right - btnImage.Width - CollapserPadRight,
                                        ContactGroupHeaderHeight / 2 - btnImage.Height / 2 + itemRect.Top);
 
             return new Rectangle(btnPoint, btnImage.Size);

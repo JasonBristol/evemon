@@ -104,7 +104,7 @@ namespace EVEMon.Common.Models
         /// <param name="id"></param>
         private void GetAgentInfoByID(int id)
         {
-            Agent agent = StaticGeography.AllAgents.FirstOrDefault(x => x.ID == id);
+            var agent = StaticGeography.AllAgents.FirstOrDefault(x => x.ID == id);
             if (agent == null)
                 return;
 

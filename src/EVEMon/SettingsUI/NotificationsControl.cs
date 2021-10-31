@@ -48,16 +48,16 @@ namespace EVEMon.SettingsUI
 
                 m_settings = value;
 
-                foreach (ComboBox combo in m_combos)
+                foreach (var combo in m_combos)
                 {
-                    NotificationCategory cat = (NotificationCategory)combo.Tag;
-                    int index = (int)m_settings.Categories[cat].ToolTipBehaviour;
+                    var cat = (NotificationCategory)combo.Tag;
+                    var index = (int)m_settings.Categories[cat].ToolTipBehaviour;
                     combo.SelectedIndex = index;
                 }
 
-                foreach (CheckBox checkbox in m_checkboxes)
+                foreach (var checkbox in m_checkboxes)
                 {
-                    NotificationCategory cat = (NotificationCategory)checkbox.Tag;
+                    var cat = (NotificationCategory)checkbox.Tag;
                     checkbox.Checked = m_settings.Categories[cat].ShowOnMainWindow;
                 }
             }
@@ -79,8 +79,8 @@ namespace EVEMon.SettingsUI
         /// <param name="e"></param>
         private void combo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ComboBox combo = (ComboBox)sender;
-            NotificationCategory cat = (NotificationCategory)combo.Tag;
+            var combo = (ComboBox)sender;
+            var cat = (NotificationCategory)combo.Tag;
             m_settings.Categories[cat].ToolTipBehaviour = (ToolTipNotificationBehaviour)combo.SelectedIndex;
         }
 
@@ -91,8 +91,8 @@ namespace EVEMon.SettingsUI
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void checkbox_CheckedChanged(object sender, EventArgs e)
         {
-            CheckBox checkbox = (CheckBox)sender;
-            NotificationCategory cat = (NotificationCategory)checkbox.Tag;
+            var checkbox = (CheckBox)sender;
+            var cat = (NotificationCategory)checkbox.Tag;
             m_settings.Categories[cat].ShowOnMainWindow = checkbox.Checked;
         }
 
@@ -101,10 +101,10 @@ namespace EVEMon.SettingsUI
         /// </summary>
         private void PopulateControl()
         {
-            int height = RowHeight;
+            var height = RowHeight;
 
             // Add the controls for every member of the enumeration
-            foreach (NotificationCategory cat in Categories)
+            foreach (var cat in Categories)
             {
                 // Add the label
                 AddLabel(height, cat);
@@ -141,7 +141,7 @@ namespace EVEMon.SettingsUI
                 tempCheckbox.Width = labelMainWindow.Width;
                 tempCheckbox.Location = new Point(labelMainWindow.Location.X + 15, height + 2);
 
-                CheckBox checkbox = tempCheckbox;
+                var checkbox = tempCheckbox;
                 tempCheckbox = null;
 
                 Controls.Add(checkbox);
@@ -174,7 +174,7 @@ namespace EVEMon.SettingsUI
                 tempCombo.Location = new Point(labelBehaviour.Location.X, height + 2);
                 tempCombo.SelectedIndexChanged += combo_SelectedIndexChanged;
 
-                ComboBox combo = tempCombo;
+                var combo = tempCombo;
                 tempCombo = null;
 
                 Controls.Add(combo);
@@ -204,7 +204,7 @@ namespace EVEMon.SettingsUI
                 tempLabel.Width = labelBehaviour.Location.X - 3;
                 tempLabel.Height = RowHeight;
 
-                Label label = tempLabel;
+                var label = tempLabel;
                 tempLabel = null;
 
                 Controls.Add(label);

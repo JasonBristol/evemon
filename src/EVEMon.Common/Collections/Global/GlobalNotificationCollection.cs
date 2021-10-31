@@ -62,8 +62,8 @@ namespace EVEMon.Common.Collections.Global
 
             case NotificationBehaviour.Merge:
                 // Merge the notifications with the same key
-                long key = notification.InvalidationKey;
-                foreach (NotificationEventArgs other in Items.Where(x => x.InvalidationKey == key))
+                var key = notification.InvalidationKey;
+                foreach (var other in Items.Where(x => x.InvalidationKey == key))
                 {
                     notification.Append(other);
                 }
@@ -93,8 +93,8 @@ namespace EVEMon.Common.Collections.Global
         /// <param name="key"></param>
         private bool InvalidateCore(long key)
         {
-            int index = 0;
-            bool foundAny = false;
+            var index = 0;
+            var foundAny = false;
 
             // Removes all the notifications with the given key
             while (index < Items.Count)
@@ -146,7 +146,7 @@ namespace EVEMon.Common.Collections.Global
         /// <param name="result">The result.</param>
         internal void NotifyCharacterListError(ESIKey key, JsonResult<EsiAPITokenInfo> result)
         {
-            string charName = string.Format("token {0:D}", key.ID);
+            var charName = string.Format("token {0:D}", key.ID);
             // Attempt to match the ESI key to a character name
             var id = EveMonClient.CharacterIdentities.FirstOrDefault((charID) => charID.
                 ESIKeys.Contains(key));
@@ -1199,7 +1199,7 @@ namespace EVEMon.Common.Collections.Global
         /// <param name="status">The status.</param>
         internal void NotifyServerStatusChanged(string serverName, ServerStatus status)
         {
-            string text = string.Empty;
+            var text = string.Empty;
             switch (status)
             {
             case ServerStatus.Offline:

@@ -41,7 +41,7 @@ namespace EVEMon.Common.SettingsObjects
         {
             get
             {
-                ResearchColumn[] defaultColumns = new[]
+                var defaultColumns = new[]
                                                       {
                                                           ResearchColumn.Agent,
                                                           ResearchColumn.Field,

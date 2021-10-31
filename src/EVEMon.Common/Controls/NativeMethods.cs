@@ -97,8 +97,8 @@ namespace EVEMon.Common.Controls
 
             // We store the 'left' and 'top' position because for some reason
             // on first execution of 'ShowWindow' the form position gets reset
-            int left = form.Left;
-            int top = form.Top;
+            var left = form.Left;
+            var top = form.Top;
 
             SetWindowPos(form.Handle, HWND_TOPMOST, left, top, form.Width, form.Height, SWP_NOACTIVATE | uFlags);
             ShowWindow(form.Handle, SW_SHOWNOACTIVATE);
@@ -136,7 +136,7 @@ namespace EVEMon.Common.Controls
         {
             graphics.ThrowIfNull(nameof(graphics));
 
-            IntPtr hdc = graphics.GetHdc();
+            var hdc = graphics.GetHdc();
             SetTextCharacterExtra(hdc, spacing);
             graphics.ReleaseHdc();
         }
@@ -156,7 +156,7 @@ namespace EVEMon.Common.Controls
         /// <returns></returns>
         public static bool VerticalScrollBarVisible(this Control control)
         {
-            uint wndStyle = GetWindowLong(control.Handle, GWL_STYLE);
+            var wndStyle = GetWindowLong(control.Handle, GWL_STYLE);
             return (wndStyle & WS_VSCROLL) == WS_VSCROLL;
         }
 
@@ -167,7 +167,7 @@ namespace EVEMon.Common.Controls
         /// <returns></returns>
         public static bool HorizontalScrollBarVisible(this Control control)
         {
-            uint wndStyle = GetWindowLong(control.Handle, GWL_STYLE);
+            var wndStyle = GetWindowLong(control.Handle, GWL_STYLE);
             return (wndStyle & WS_HSCROLL) == WS_HSCROLL;
         }
 
@@ -186,7 +186,7 @@ namespace EVEMon.Common.Controls
         {
             control.ThrowIfNull(nameof(control));
 
-            Scrollinfo currentInfo = new Scrollinfo();
+            var currentInfo = new Scrollinfo();
             currentInfo.cbSize = Marshal.SizeOf(currentInfo);
             currentInfo.fMask = (int)ScrollInfoMask.SIF_ALL;
 
@@ -280,7 +280,7 @@ namespace EVEMon.Common.Controls
 
             public static AppBarData Create()
             {
-                AppBarData appBarData = new AppBarData { cbSize = Marshal.SizeOf(typeof(AppBarData)) };
+                var appBarData = new AppBarData { cbSize = Marshal.SizeOf(typeof(AppBarData)) };
                 return appBarData;
             }
         }

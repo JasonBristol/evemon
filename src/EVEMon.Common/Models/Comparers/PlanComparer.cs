@@ -39,7 +39,7 @@ namespace EVEMon.Common.Models.Comparers
             // Swap variables for descending order
             if (Order == SortOrder.Descending)
             {
-                Plan tmp = y;
+                var tmp = y;
                 y = x;
                 x = tmp;
             }
@@ -59,8 +59,8 @@ namespace EVEMon.Common.Models.Comparers
                 case PlanSort.Time:
                     if (x != null && y != null)
                     {
-                        TimeSpan xtime = x.TotalTrainingTime;
-                        TimeSpan ytime = y.TotalTrainingTime;
+                        var xtime = x.TotalTrainingTime;
+                        var ytime = y.TotalTrainingTime;
                         return TimeSpan.Compare(xtime, ytime);
                     }
                     break;

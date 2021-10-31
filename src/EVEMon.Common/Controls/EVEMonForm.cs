@@ -91,7 +91,7 @@ namespace EVEMon.Common.Controls
             if (string.IsNullOrEmpty(RememberPositionKey))
                 return;
 
-            Rectangle r = new Rectangle(Location, Size);
+            var r = new Rectangle(Location, Size);
             if (WindowState == FormWindowState.Normal && VerifyValidWindowLocation(r) == r)
                 Settings.UI.WindowLocations[RememberPositionKey] = (WindowLocationSettings)new Rectangle(Location, Size);
         }
@@ -104,15 +104,15 @@ namespace EVEMon.Common.Controls
             if (string.IsNullOrEmpty(RememberPositionKey))
                 return;
 
-            List<Form> formList = Application.OpenForms.Cast<Form>().Where(form => form.GetType() == GetType()).ToList();
+            var formList = Application.OpenForms.Cast<Form>().Where(form => form.GetType() == GetType()).ToList();
 
             if (!Settings.UI.WindowLocations.ContainsKey(RememberPositionKey))
                 return;
 
-            Rectangle r = (Rectangle)Settings.UI.WindowLocations[RememberPositionKey];
+            var r = (Rectangle)Settings.UI.WindowLocations[RememberPositionKey];
             if (formList.Count > 1)
             {
-                Point pfl = formList[formList.Count - 2].Location;
+                var pfl = formList[formList.Count - 2].Location;
                 r.Location = new Point(pfl.X + 20, pfl.Y + 20);
             }
 
@@ -127,12 +127,12 @@ namespace EVEMon.Common.Controls
         /// <returns>The corrected rectangle.</returns>
         private Rectangle VerifyValidWindowLocation(Rectangle inRect)
         {
-            Point p = inRect.Location;
-            Size s = inRect.Size;
+            var p = inRect.Location;
+            var s = inRect.Size;
             s.Width = Math.Max(s.Width, MinimumSize.Width);
             s.Height = Math.Max(s.Height, MinimumSize.Height);
 
-            foreach (Screen ts in Screen.AllScreens)
+            foreach (var ts in Screen.AllScreens)
             {
                 if (ts.WorkingArea.Contains(inRect))
                     return inRect;

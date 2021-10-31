@@ -49,10 +49,10 @@ namespace EVEMon.SettingsUI
 
                 m_settings = value;
 
-                foreach (ComboBox combo in m_combos)
+                foreach (var combo in m_combos)
                 {
-                    Enum method = (Enum)combo.Tag;
-                    List<UpdatePeriod> periods = GetUpdatePeriods(method);
+                    var method = (Enum)combo.Tag;
+                    var periods = GetUpdatePeriods(method);
                     combo.SelectedIndex = Math.Max(0, periods.IndexOf(m_settings.Periods[method.ToString()]));
                 }
             }
@@ -66,10 +66,10 @@ namespace EVEMon.SettingsUI
         {
             get
             {
-                List<Enum> apiMethods = ESIMethods.Methods.Where(x => x.HasHeader()).ToList();
+                var apiMethods = ESIMethods.Methods.Where(x => x.HasHeader()).ToList();
 
                 // Group the methods by usage
-                List<Enum> methods = apiMethods.Where(method => method is ESIAPIGenericMethods).ToList();
+                var methods = apiMethods.Where(method => method is ESIAPIGenericMethods).ToList();
 
                 methods.AddRange(apiMethods.OfType<ESIAPICharacterMethods>().Where(
                     method => (long)method == ((long)method & (long)CCPAPIMethodsEnum.BasicCharacterFeatures)).Cast<Enum>());
@@ -89,9 +89,9 @@ namespace EVEMon.SettingsUI
         /// <param name="e"></param>
         private void combo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ComboBox combo = (ComboBox)sender;
-            Enum method = (Enum)combo.Tag;
-            List<UpdatePeriod> periods = GetUpdatePeriods(method);
+            var combo = (ComboBox)sender;
+            var method = (Enum)combo.Tag;
+            var periods = GetUpdatePeriods(method);
 
             if (combo.SelectedIndex < 0 || combo.SelectedIndex >= periods.Count)
                 return;
@@ -116,10 +116,10 @@ namespace EVEMon.SettingsUI
         /// </summary>
         private void PopulateControl()
         {
-            int height = RowHeight;
+            var height = RowHeight;
 
             // Add the controls for every member of the enumeration
-            foreach (Enum method in Methods)
+            foreach (var method in Methods)
             {
                 // Add the icon
                 AddIcon(method, height);
@@ -148,9 +148,9 @@ namespace EVEMon.SettingsUI
             try
             {
                 tempCombo = new ComboBox();
-                foreach (UpdatePeriod period in GetUpdatePeriods(method))
+                foreach (var period in GetUpdatePeriods(method))
                 {
-                    string header = period.GetHeader();
+                    var header = period.GetHeader();
                     if (period == UpdatePeriod.Never && method.HasForcedOnStartup())
                         header = "On Startup";
 
@@ -165,7 +165,7 @@ namespace EVEMon.SettingsUI
                 tempCombo.Location = new Point(labelPeriod.Location.X, height + 2);
                 tempCombo.SelectedIndexChanged += combo_SelectedIndexChanged;
 
-                ComboBox combo = tempCombo;
+                var combo = tempCombo;
                 tempCombo = null;
 
                 Controls.Add(combo);
@@ -196,7 +196,7 @@ namespace EVEMon.SettingsUI
                 tempLabel.Width = labelMethod.Width;
                 tempLabel.Height = RowHeight;
 
-                Label label = tempLabel;
+                var label = tempLabel;
                 tempLabel = null;
 
                 Controls.Add(label);
@@ -214,11 +214,11 @@ namespace EVEMon.SettingsUI
         /// <param name="height">The height.</param>
         private void AddIcon(Enum method, int height)
         {
-            Bitmap icon = Resources.KeyGrey16;
-            string iconToolTip = "This is a basic feature query.";
+            var icon = Resources.KeyGrey16;
+            var iconToolTip = "This is a basic feature query.";
             if (method is ESIAPICharacterMethods)
             {
-                ESIAPICharacterMethods apiMethod = (ESIAPICharacterMethods)method;
+                var apiMethod = (ESIAPICharacterMethods)method;
                 if ((long)apiMethod == ((long)apiMethod & (long)CCPAPIMethodsEnum.AdvancedCharacterFeatures))
                 {
                     icon = Resources.KeyGold16;
@@ -235,7 +235,7 @@ namespace EVEMon.SettingsUI
                 tempPicture.Image = icon;
                 tempPicture.Size = icon.Size;
 
-                PictureBox picture = tempPicture;
+                var picture = tempPicture;
                 tempPicture = null;
 
                 Controls.Add(picture);
@@ -253,10 +253,10 @@ namespace EVEMon.SettingsUI
         /// <returns></returns>
         private static List<UpdatePeriod> GetUpdatePeriods(Enum method)
         {
-            List<UpdatePeriod> periods = new List<UpdatePeriod> { UpdatePeriod.Never };
+            var periods = new List<UpdatePeriod> { UpdatePeriod.Never };
 
-            int min = (int)method.GetUpdatePeriod().Minimum;
-            int max = (int)method.GetUpdatePeriod().Maximum;
+            var min = (int)method.GetUpdatePeriod().Minimum;
+            var max = (int)method.GetUpdatePeriod().Maximum;
 
             periods.AddRange(Enum.GetValues(typeof(UpdatePeriod)).Cast<UpdatePeriod>().Where(
                 period => period != UpdatePeriod.Never).Select(period => new { period, index = (int)period }).Where(

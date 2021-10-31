@@ -43,12 +43,12 @@ namespace EVEMon.Controls
         {
             //base.OnPaint(e);
 
-            using (StringFormat format = new StringFormat())
+            using (var format = new StringFormat())
             {
                 if (AutoEllipsis)
                     format.Trimming = StringTrimming.EllipsisCharacter;
 
-                using (SolidBrush foreground = new SolidBrush(ForeColor))
+                using (var foreground = new SolidBrush(ForeColor))
                 {
                     e.Graphics.DrawString(Text, Font, foreground, Padding.Left, Padding.Right, format);
                 }

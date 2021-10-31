@@ -115,7 +115,7 @@ namespace EVEMon.Common.QueryMonitor
                     return LastResult.CachedUntil;
                 // No error ? Then we compute the next update according to the settings
                 var period = UpdatePeriod.Never;
-                string method = Method.ToString();
+                var method = Method.ToString();
                 if (Settings.Updates.Periods.ContainsKey(method))
                     period = Settings.Updates.Periods[method];
                 if (period == UpdatePeriod.Never)

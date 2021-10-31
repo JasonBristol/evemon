@@ -49,14 +49,14 @@ namespace EVEMon.Common.Data
         /// <returns></returns>
         internal static IEnumerable<SolarSystemRange> GetSystemRangesFrom(SolarSystem system, int maxInclusiveNumberOfJumps)
         {
-            Dictionary<long, SolarSystem> collectedSystems = new Dictionary<long, SolarSystem>();
-            List<SolarSystemRange> ranges = new List<SolarSystemRange>();
-            SolarSystemRange lastRange = new SolarSystemRange(system, 0);
+            var collectedSystems = new Dictionary<long, SolarSystem>();
+            var ranges = new List<SolarSystemRange>();
+            var lastRange = new SolarSystemRange(system, 0);
 
             collectedSystems.Add(system.ID, system);
             lastRange.Items.Add(system);
 
-            for (int i = 1; i <= maxInclusiveNumberOfJumps; i++)
+            for (var i = 1; i <= maxInclusiveNumberOfJumps; i++)
             {
                 lastRange = lastRange.GetNextRange(collectedSystems);
                 ranges.Add(lastRange);
@@ -71,9 +71,9 @@ namespace EVEMon.Common.Data
         /// <returns></returns>
         private SolarSystemRange GetNextRange(IDictionary<long, SolarSystem> collectedSystems)
         {
-            SolarSystemRange nextRange = new SolarSystemRange(Source, Range + 1);
+            var nextRange = new SolarSystemRange(Source, Range + 1);
 
-            foreach (SolarSystem child in Items.SelectMany(system => system.Neighbors.Where(
+            foreach (var child in Items.SelectMany(system => system.Neighbors.Where(
                 child => !collectedSystems.ContainsKey(child.ID))))
             {
                 collectedSystems.Add(child.ID, child);

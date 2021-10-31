@@ -15,7 +15,7 @@ namespace EVEMon.Common.Data
             if (materials == null)
                 return;
 
-            foreach (Material material in materials)
+            foreach (var material in materials)
             {
                 Items.Add(material);
             }

@@ -124,7 +124,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder().
+            var builder = new StringBuilder().
                 Append("i").Append(BestScratchpad.Intelligence.Base.ToString(CultureConstants.DefaultCulture)).
                 Append(" p").Append(BestScratchpad.Perception.Base.ToString(CultureConstants.DefaultCulture)).
                 Append(" c").Append(BestScratchpad.Charisma.Base.ToString(CultureConstants.DefaultCulture)).

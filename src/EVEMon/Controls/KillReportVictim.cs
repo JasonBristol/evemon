@@ -79,7 +79,7 @@ namespace EVEMon.Controls
             CharacterNameLabel.Text = m_killLog.Victim.Name;
             CorpNameLabel.Text = m_killLog.Victim.CorporationName;
 
-            Item ship = StaticItems.GetItemByID(m_killLog.Victim.ShipTypeID);
+            var ship = StaticItems.GetItemByID(m_killLog.Victim.ShipTypeID);
             ShipNameLabel.Text = ship.Name;
             ShipGroupLabel.Text = string.Format(CultureConstants.DefaultCulture, ShipGroupLabel.Text, ship.GroupName);
 
@@ -97,7 +97,7 @@ namespace EVEMon.Controls
         /// <param name="pictureBox">The picture box.</param>
         private async Task GetImageForAsync(PictureBox pictureBox)
         {
-            Image img = await ImageService.GetImageAsync(GetImageUrl(pictureBox)).ConfigureAwait(false);
+            var img = await ImageService.GetImageAsync(GetImageUrl(pictureBox)).ConfigureAwait(false);
             if (img != null)
                 pictureBox.Image = img;
         }
@@ -149,7 +149,7 @@ namespace EVEMon.Controls
             if (e.Button != MouseButtons.Right)
                 return;
 
-            PictureBox pictureBox = sender as PictureBox;
+            var pictureBox = sender as PictureBox;
 
             if (pictureBox == null)
                 return;
@@ -168,7 +168,7 @@ namespace EVEMon.Controls
         /// <param name="e">The <see cref="MouseEventArgs"/> instance containing the event data.</param>
         private void ShipPictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            PictureBox pictureBox = sender as PictureBox;
+            var pictureBox = sender as PictureBox;
 
             if (pictureBox == null)
                 return;
@@ -189,7 +189,7 @@ namespace EVEMon.Controls
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void showInShipBrowserMenuItem_Click(object sender, EventArgs e)
         {
-            Item item = StaticItems.GetItemByID(m_killLog.Victim.ShipTypeID);
+            var item = StaticItems.GetItemByID(m_killLog.Victim.ShipTypeID);
 
             if (item != null)
                 PlanWindow.ShowPlanWindow(m_killLog.Character).ShowShipInBrowser(item);

@@ -40,7 +40,7 @@ namespace EVEMon.CharacterMonitoring
         {
             get
             {
-                IndustryJobSettings settings = new IndustryJobSettings();
+                var settings = new IndustryJobSettings();
                 return settings.DefaultColumns;
             }
         }

@@ -21,7 +21,7 @@ namespace EVEMon.Common.Notifications
             contracts.ThrowIfNull(nameof(contracts));
 
             Contracts = new Collection<Contract>();
-            foreach (Contract contract in contracts)
+            foreach (var contract in contracts)
             {
                 Contracts.Add(contract);
             }
@@ -44,7 +44,7 @@ namespace EVEMon.Common.Notifications
         /// <param name="other"></param>
         public override void Append(NotificationEventArgs other)
         {
-            foreach (Contract contract in ((ContractsNotificationEventArgs)other).Contracts.Where(x => !x.NotificationSend))
+            foreach (var contract in ((ContractsNotificationEventArgs)other).Contracts.Where(x => !x.NotificationSend))
             {
                 Contracts.Add(contract);
             }

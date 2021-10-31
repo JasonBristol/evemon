@@ -39,9 +39,9 @@ namespace EVEMon.Common.Models.Collections
         public void ExportToCacheFile()
         {
             // Save the file to the cache
-            string filename = m_ccpCharacter.Name + "-" + ESIAPICharacterMethods.KillLog;
+            var filename = m_ccpCharacter.Name + "-" + ESIAPICharacterMethods.KillLog;
             var exported = new SerializableAPIKillLog();
-            foreach (KillLog killMail in Items)
+            foreach (var killMail in Items)
                 exported.Kills.Add(killMail.Export());
             LocalXmlCache.SaveAsync(filename, Util.SerializeToXmlDocument(exported)).
                 ConfigureAwait(false);
@@ -56,7 +56,7 @@ namespace EVEMon.Common.Models.Collections
         internal void Import(IEnumerable<SerializableKillLogListItem> src)
         {
             Items.Clear();
-            foreach (SerializableKillLogListItem srcKillLog in src)
+            foreach (var srcKillLog in src)
                 Items.Add(new KillLog(m_ccpCharacter, srcKillLog));
         }
 
@@ -66,7 +66,7 @@ namespace EVEMon.Common.Models.Collections
         /// <param name="kills">The enumeration of serializable kill data from ESI.</param>
         internal void Import(EsiAPIKillLog kills)
         {
-            bool startRequest = false;
+            var startRequest = false;
             lock (m_pendingItems)
             {
                 // If no request currently running, start a new one
@@ -81,13 +81,13 @@ namespace EVEMon.Common.Models.Collections
             if (startRequest)
             {
                 EveMonClient.Notifications.InvalidateAPIError();
-                foreach (EsiKillLogListItem srcKillLog in kills)
+                foreach (var srcKillLog in kills)
                 {
                     if (EsiErrors.IsErrorCountExceeded)
                         break;
                     // Query each individual mail; while the etag would be nice storing it in
                     // the legacy XML architecture is not really worth the trouble
-                    string hash = srcKillLog.Hash;
+                    var hash = srcKillLog.Hash;
                     EveMonClient.APIProviders.CurrentProvider.QueryEsi<EsiAPIKillMail>(
                         ESIAPIGenericMethods.KillMail, OnKillMailDownloaded, new ESIParams()
                         {
@@ -101,7 +101,7 @@ namespace EVEMon.Common.Models.Collections
         private void OnKillMailDownloaded(EsiResult<EsiAPIKillMail> result, object hashValue)
         {
             var target = m_ccpCharacter;
-            string hash = hashValue?.ToString() ?? EveMonConstants.UnknownText;
+            var hash = hashValue?.ToString() ?? EveMonConstants.UnknownText;
             // Synchronization is required here since multiple requests can finish at once
             lock (m_pendingItems)
             {

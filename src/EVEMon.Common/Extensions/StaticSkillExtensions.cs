@@ -52,7 +52,7 @@ namespace EVEMon.Common.Extensions
         {
             long thisID = thisSkill.ID;
 
-            foreach (StaticSkillLevel prereq in thisSkill.Prerequisites)
+            foreach (var prereq in thisSkill.Prerequisites)
             {
                 if (prereq.Skill == skill)
                     neededLevel = Math.Max(prereq.Level, neededLevel);

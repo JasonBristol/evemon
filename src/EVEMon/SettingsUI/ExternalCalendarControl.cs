@@ -146,7 +146,7 @@ namespace EVEMon.SettingsUI
             throbber.State = ThrobberState.Rotating;
             throbber.Visible = true;
 
-            SerializableAPIResult<SerializableAPICredentials> result = await GoogleCalendarEvent.RequestAuth(checkAuth);
+            var result = await GoogleCalendarEvent.RequestAuth(checkAuth);
 
             throbber.State = ThrobberState.Stopped;
             throbber.Visible = false;
@@ -258,7 +258,7 @@ namespace EVEMon.SettingsUI
             throbber.State = ThrobberState.Stopped;
             throbber.Visible = false;
 
-            bool error = result.HasError;
+            var error = result.HasError;
             btnRequestAuth.Enabled = !error;
             btnRevokeAuth.Enabled = tbGoogleCalendarName.Enabled = cbGoogleReminder.Enabled =
                 error;

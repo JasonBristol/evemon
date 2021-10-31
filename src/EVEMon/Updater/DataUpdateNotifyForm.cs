@@ -45,10 +45,10 @@ namespace EVEMon.Updater
         {
             base.OnLoad(e);
 
-            StringBuilder changedFiles = new StringBuilder();
-            StringBuilder notes = new StringBuilder();
+            var changedFiles = new StringBuilder();
+            var notes = new StringBuilder();
 
-            foreach (SerializableDatafile versionDatafile in m_args.ChangedFiles)
+            foreach (var versionDatafile in m_args.ChangedFiles)
             {
                 changedFiles
                     .AppendLine($"Filename: {versionDatafile.Name.PadRight(35)}\tReleased: {versionDatafile.Date}");
@@ -86,7 +86,7 @@ namespace EVEMon.Updater
         /// <param name="e"></param>
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            DialogResult result = DialogResult.Yes;
+            var result = DialogResult.Yes;
             int changedFilesCount = m_args.ChangedFiles.Count, newCount = changedFilesCount;
 
             // Delete the EVE Flags xml file from cache to force a refetch on next startup
@@ -104,8 +104,8 @@ namespace EVEMon.Updater
                     break;
 
                 // One or more files failed
-                string message = newCount +
-                    $" file{(newCount.S())} failed to download, do you wish to try again?";
+                var message = newCount +
+                              $" file{(newCount.S())} failed to download, do you wish to try again?";
 
                 result = MessageBox.Show(message, @"Failed Download", MessageBoxButtons.YesNo);
             }
@@ -119,23 +119,23 @@ namespace EVEMon.Updater
         /// </summary>
         private void DownloadUpdates()
         {
-            List<SerializableDatafile> datafiles = new List<SerializableDatafile>();
+            var datafiles = new List<SerializableDatafile>();
 
             // Copy the new datafiles to a new list
             datafiles.AddRange(m_args.ChangedFiles);
 
             // Show the download dialog, which will download the files
-            using (DataUpdateDownloadForm form = new DataUpdateDownloadForm(datafiles))
+            using (var form = new DataUpdateDownloadForm(datafiles))
             {
                 form.ShowDialog();
             }
 
-            foreach (SerializableDatafile versionDatafile in datafiles.Where(datafile => datafile.IsDownloaded))
+            foreach (var versionDatafile in datafiles.Where(datafile => datafile.IsDownloaded))
             {
-                string oldFilename = Path.Combine(EveMonClient.EVEMonDataDir, versionDatafile.Name);
-                string tempFilename = $"{oldFilename}.tmp";
+                var oldFilename = Path.Combine(EveMonClient.EVEMonDataDir, versionDatafile.Name);
+                var tempFilename = $"{oldFilename}.tmp";
 
-                Datafile downloadedDatafile = new Datafile(Path.GetFileName(tempFilename));
+                var downloadedDatafile = new Datafile(Path.GetFileName(tempFilename));
 
                 if (versionDatafile.MD5Sum != null && versionDatafile.MD5Sum != downloadedDatafile.MD5Sum)
                 {

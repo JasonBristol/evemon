@@ -60,7 +60,7 @@ namespace EVEMon.LogitechG15
         /// <param name="offset">The offset.</param>
         private void RenderTextLine(Graphics canvas, float offset)
         {
-            RectangleF lineRect = new RectangleF(new PointF(0f, offset), canvas.MeasureString(m_text, m_font));
+            var lineRect = new RectangleF(new PointF(0f, offset), canvas.MeasureString(m_text, m_font));
             using (Brush brush = new SolidBrush(Color.Black))
             {
                 canvas.DrawString(m_text, m_font, brush, lineRect);
@@ -79,15 +79,15 @@ namespace EVEMon.LogitechG15
         /// <param name="percentage">The percentage.</param>
         private void RenderProgressLine(Graphics canvas, Graphics overlay, float offset, float defaultOffset, double percentage)
         {
-            int left = 0;
-            int width = LcdDisplay.G15Width - 1;
+            var left = 0;
+            var width = LcdDisplay.G15Width - 1;
             const int Pad = 2;
 
             if (Settings.G15.ShowEVETime)
             {
-                string eveTime = EveMonClient.EVEServer.ServerDateTime.ToShortTimeString();
-                SizeF eveTimeSize = canvas.MeasureString(eveTime, m_font);
-                RectangleF eveTimeRect = new RectangleF(new PointF(left, offset), eveTimeSize);
+                var eveTime = EveMonClient.EVEServer.ServerDateTime.ToShortTimeString();
+                var eveTimeSize = canvas.MeasureString(eveTime, m_font);
+                var eveTimeRect = new RectangleF(new PointF(left, offset), eveTimeSize);
                 left = (int)eveTimeSize.Width + Pad;
                 width -= left;
                 using (Brush brush = new SolidBrush(Color.Black))
@@ -98,9 +98,9 @@ namespace EVEMon.LogitechG15
 
             if (Settings.G15.ShowSystemTime)
             {
-                string systemTime = DateTime.Now.ToShortTimeString();
-                SizeF systemTimeSize = canvas.MeasureString(systemTime, m_font);
-                RectangleF systemTimeRect = new RectangleF(new PointF(LcdDisplay.G15Width + 1 - systemTimeSize.Width, offset),
+                var systemTime = DateTime.Now.ToShortTimeString();
+                var systemTimeSize = canvas.MeasureString(systemTime, m_font);
+                var systemTimeRect = new RectangleF(new PointF(LcdDisplay.G15Width + 1 - systemTimeSize.Width, offset),
                     systemTimeSize);
                 width -= (int)systemTimeSize.Width + Pad;
                 using (Brush brush = new SolidBrush(Color.Black))
@@ -109,16 +109,16 @@ namespace EVEMon.LogitechG15
                 }
             }
 
-            string text = $"{percentage:P2}";
-            SizeF textSize = canvas.MeasureString(text, m_font);
-            RectangleF barRect = new RectangleF(left, offset - defaultOffset - (Environment.Is64BitProcess ? 0 : 1),
+            var text = $"{percentage:P2}";
+            var textSize = canvas.MeasureString(text, m_font);
+            var barRect = new RectangleF(left, offset - defaultOffset - (Environment.Is64BitProcess ? 0 : 1),
                 width, textSize.Height - 1);
-            float textLeft = (barRect.Width - textSize.Width) / 2;
-            RectangleF textRect = new RectangleF(new PointF(left + textLeft, offset), textSize);
+            var textLeft = (barRect.Width - textSize.Width) / 2;
+            var textRect = new RectangleF(new PointF(left + textLeft, offset), textSize);
 
             int barFill = Convert.ToInt16(percentage * width - Pad);
 
-            using (Pen pen = new Pen(Color.Black))
+            using (var pen = new Pen(Color.Black))
             {
                 canvas.DrawRectangle(pen, barRect.Left, barRect.Top, barRect.Width, barRect.Height);
             }

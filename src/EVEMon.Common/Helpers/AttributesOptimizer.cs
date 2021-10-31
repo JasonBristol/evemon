@@ -23,32 +23,32 @@ namespace EVEMon.Common.Helpers
                                                        TimeSpan maxDuration)
             where T : ISkillLevel
         {
-            CharacterScratchpad bestScratchpad = new CharacterScratchpad(baseScratchpad);
-            CharacterScratchpad tempScratchpad = new CharacterScratchpad(baseScratchpad);
-            TimeSpan baseTime = baseScratchpad.TrainingTime;
-            TimeSpan bestTime = TimeSpan.MaxValue;
-            int bestSkillCount = 0;
+            var bestScratchpad = new CharacterScratchpad(baseScratchpad);
+            var tempScratchpad = new CharacterScratchpad(baseScratchpad);
+            var baseTime = baseScratchpad.TrainingTime;
+            var bestTime = TimeSpan.MaxValue;
+            var bestSkillCount = 0;
 
             // Now, we have the points to spend, let's perform all the
             // combinations (less than 11^4 = 14,641)
-            for (int per = 0; per <= EveConstants.MaxRemappablePointsPerAttribute; per++)
+            for (var per = 0; per <= EveConstants.MaxRemappablePointsPerAttribute; per++)
             {
                 // WIL
-                int maxWillpower = EveConstants.SpareAttributePointsOnRemap - per;
-                for (int will = 0; will <= maxWillpower && will <= EveConstants.MaxRemappablePointsPerAttribute; will++)
+                var maxWillpower = EveConstants.SpareAttributePointsOnRemap - per;
+                for (var will = 0; will <= maxWillpower && will <= EveConstants.MaxRemappablePointsPerAttribute; will++)
                 {
                     // INT
-                    int maxIntelligence = maxWillpower - will;
-                    for (int intell = 0;
+                    var maxIntelligence = maxWillpower - will;
+                    for (var intell = 0;
                          intell <= maxIntelligence && intell <= EveConstants.MaxRemappablePointsPerAttribute;
                          intell++)
                     {
                         // MEM
-                        int maxMemory = maxIntelligence - intell;
-                        for (int mem = 0; mem <= maxMemory && mem <= EveConstants.MaxRemappablePointsPerAttribute; mem++)
+                        var maxMemory = maxIntelligence - intell;
+                        for (var mem = 0; mem <= maxMemory && mem <= EveConstants.MaxRemappablePointsPerAttribute; mem++)
                         {
                             // CHA
-                            int cha = maxMemory - mem;
+                            var cha = maxMemory - mem;
 
                             // Reject invalid combinations
                             if (cha > EveConstants.MaxRemappablePointsPerAttribute)
@@ -65,8 +65,8 @@ namespace EVEMon.Common.Helpers
                             tempScratchpad.Intelligence.Base = intell + EveConstants.CharacterBaseAttributePoints;
 
                             // Train skills
-                            int tempSkillCount = 0;
-                            foreach (T skill in skills)
+                            var tempSkillCount = 0;
+                            foreach (var skill in skills)
                             {
                                 tempSkillCount++;
                                 tempScratchpad.Train(skill);
@@ -110,8 +110,8 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         public static ICollection<RemappingResult> OptimizeFromPlanAndRemappingPoints(BasePlan plan)
         {
-            Collection<RemappingResult> results = GetResultsFromRemappingPoints(plan);
-            foreach (RemappingResult result in results)
+            var results = GetResultsFromRemappingPoints(plan);
+            foreach (var result in results)
             {
                 result.Optimize(TimeSpan.MaxValue);
             }
@@ -128,18 +128,18 @@ namespace EVEMon.Common.Helpers
         {
             plan.ThrowIfNull(nameof(plan));
 
-            CharacterScratchpad scratchpad = new CharacterScratchpad(plan.Character.After(plan.ChosenImplantSet));
-            Collection<RemappingResult> remappingList = new Collection<RemappingResult>();
-            Collection<ISkillLevel> list = new Collection<ISkillLevel>();
+            var scratchpad = new CharacterScratchpad(plan.Character.After(plan.ChosenImplantSet));
+            var remappingList = new Collection<RemappingResult>();
+            var list = new Collection<ISkillLevel>();
 
             // Scroll through the entries and split it into remappings
-            foreach (PlanEntry entry in plan)
+            foreach (var entry in plan)
             {
                 // Ends the current remapping and start a new one
                 if (entry.Remapping != null)
                 {
                     // Creates a new remapping
-                    RemappingResult remapping = new RemappingResult(entry.Remapping, scratchpad.Clone());
+                    var remapping = new RemappingResult(entry.Remapping, scratchpad.Clone());
                     remappingList.Add(remapping);
                     list = remapping.Skills;
                 }
@@ -163,10 +163,10 @@ namespace EVEMon.Common.Helpers
         {
             plan.ThrowIfNull(nameof(plan));
 
-            RemappingResult remapping = new RemappingResult(new CharacterScratchpad(plan.Character.After(plan.ChosenImplantSet)));
+            var remapping = new RemappingResult(new CharacterScratchpad(plan.Character.After(plan.ChosenImplantSet)));
 
             // Scroll through the entries and split it into remappings
-            foreach (PlanEntry entry in plan)
+            foreach (var entry in plan)
             {
                 remapping.Skills.Add(entry);
             }
@@ -190,23 +190,23 @@ namespace EVEMon.Common.Helpers
             plan.ThrowIfNull(nameof(plan));
 
             // Create a character without any skill
-            CharacterScratchpad scratchpad = new CharacterScratchpad(character.After(plan.ChosenImplantSet));
+            var scratchpad = new CharacterScratchpad(character.After(plan.ChosenImplantSet));
             scratchpad.ClearSkills();
 
             // Create a new plan
-            Plan newPlan = new Plan(scratchpad);
+            var newPlan = new Plan(scratchpad);
 
             // Add all trained skill levels that the character has trained so far
-            foreach (Skill skill in character.Skills)
+            foreach (var skill in character.Skills)
             {
                 newPlan.PlanTo(skill, skill.Level);
             }
 
             // Create a new remapping
-            RemappingResult remapping = new RemappingResult(scratchpad);
+            var remapping = new RemappingResult(scratchpad);
 
             // Add those skills to the remapping
-            foreach (PlanEntry entry in newPlan)
+            foreach (var entry in newPlan)
             {
                 remapping.Skills.Add(entry);
             }

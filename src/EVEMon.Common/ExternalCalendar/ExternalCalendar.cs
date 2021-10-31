@@ -40,12 +40,12 @@ namespace EVEMon.Common.ExternalCalendar
         {
             character.ThrowIfNull(nameof(character));
 
-            SkillQueue skillQueue = character.SkillQueue;
+            var skillQueue = character.SkillQueue;
 
-            foreach (QueuedSkill queuedSkill in skillQueue)
+            foreach (var queuedSkill in skillQueue)
             {
-                bool lastSkillInQueue = queuedSkill == skillQueue.Last();
-                int queuePosition = skillQueue.IndexOf(queuedSkill) + 1;
+                var lastSkillInQueue = queuedSkill == skillQueue.Last();
+                var queuePosition = skillQueue.IndexOf(queuedSkill) + 1;
 
                 // Continue if user has selected 'Last Queued Skill Only'
                 if (Settings.Calendar.LastQueuedSkillOnly && !lastSkillInQueue)
@@ -84,7 +84,7 @@ namespace EVEMon.Common.ExternalCalendar
             }
 
             // Set the subject to the character name and the skill and level in queue for uniqueness sake
-            OutlookCalendarEvent outlookAppointmentFilter = new OutlookCalendarEvent
+            var outlookAppointmentFilter = new OutlookCalendarEvent
             {
                 StartDate = DateTime.Now.AddDays(-40),
                 EndDate = DateTime.Now.AddDays(100),
@@ -101,7 +101,7 @@ namespace EVEMon.Common.ExternalCalendar
             await outlookAppointmentFilter.ReadEventsAsync();
 
             // If there is an appointment, get the first one
-            bool foundAppointment = false;
+            var foundAppointment = false;
             if (outlookAppointmentFilter.ItemCount > 0)
                 foundAppointment = outlookAppointmentFilter.GetEvent();
 
@@ -131,7 +131,7 @@ namespace EVEMon.Common.ExternalCalendar
             try
             {
                 // Set the subject to the character name and the skill and level in queue for uniqueness sakes
-                GoogleCalendarEvent googleAppointmentFilter = new GoogleCalendarEvent
+                var googleAppointmentFilter = new GoogleCalendarEvent
                 {
                     StartDate = DateTime.Now.AddDays(-40),
                     EndDate = DateTime.Now.AddDays(100),
@@ -147,7 +147,7 @@ namespace EVEMon.Common.ExternalCalendar
                 await googleAppointmentFilter.ReadEventsAsync();
 
                 // If there is are appointments, see if any match the subject
-                bool foundAppointment = false;
+                var foundAppointment = false;
                 if (googleAppointmentFilter.ItemCount > 0)
                     foundAppointment = googleAppointmentFilter.GetEvent();
 

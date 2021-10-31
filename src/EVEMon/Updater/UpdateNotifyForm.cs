@@ -43,7 +43,7 @@ namespace EVEMon.Updater
             // Set the basic update information
             labelInfo.Text = string.Format(labelInfo.Text, m_args.CurrentVersion, m_args.NewestVersion);
             // Set the detailed update information (from the XML)
-            string updMessage = m_args.UpdateMessage;
+            var updMessage = m_args.UpdateMessage;
             updMessage = updMessage.Replace("\r", string.Empty);
             updateNotesTextBox.Lines = updMessage.Split('\n');
 
@@ -69,7 +69,7 @@ namespace EVEMon.Updater
         /// <param name="e"></param>
         private void btnIgnore_Click(object sender, EventArgs e)
         {
-            DialogResult dr = MessageBox.Show(Properties.Resources.PromptIgnoreUpdate,
+            var dr = MessageBox.Show(Properties.Resources.PromptIgnoreUpdate,
                 @"Ignore Update?", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                 MessageBoxDefaultButton.Button2);
             if (dr != DialogResult.No)
@@ -89,7 +89,7 @@ namespace EVEMon.Updater
         {
             if (cbAutoInstall.Enabled && cbAutoInstall.Checked)
             {
-                DialogResult result = DialogResult.Yes;
+                var result = DialogResult.Yes;
                 while (result == DialogResult.Yes && !DownloadUpdate())
                 {
                     // File download failed
@@ -109,22 +109,22 @@ namespace EVEMon.Updater
         /// </summary>
         private bool DownloadUpdate()
         {
-            string filename = Path.GetFileName(m_args.InstallerUrl.AbsoluteUri);
+            var filename = Path.GetFileName(m_args.InstallerUrl.AbsoluteUri);
             if (string.IsNullOrWhiteSpace(filename))
                 return false;
 
-            string localFilename = Path.Combine(EveMonClient.EVEMonDataDir, filename);
+            var localFilename = Path.Combine(EveMonClient.EVEMonDataDir, filename);
 
             // If the file already exists delete it
             if (File.Exists(localFilename))
                 UpdateManager.DeleteInstallationFiles();
 
-            using (UpdateDownloadForm form = new UpdateDownloadForm(m_args.InstallerUrl, localFilename))
+            using (var form = new UpdateDownloadForm(m_args.InstallerUrl, localFilename))
             {
                 if (m_formClosing || form.ShowDialog() != DialogResult.OK)
                     return false;
 
-                string downloadedFileMD5Sum = Util.CreateMD5From(localFilename);
+                var downloadedFileMD5Sum = Util.CreateMD5From(localFilename);
                 if (m_args.MD5Sum != null && m_args.MD5Sum != downloadedFileMD5Sum)
                     return false;
 

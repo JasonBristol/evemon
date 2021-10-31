@@ -102,7 +102,7 @@ namespace EVEMon.Common.QueryMonitor
         internal void Dispose()
         {
             // Unsubscribe events in monitors
-            foreach (IQueryMonitorEx monitor in m_corporationQueryMonitors)
+            foreach (var monitor in m_corporationQueryMonitors)
             {
                 monitor.Dispose();
             }

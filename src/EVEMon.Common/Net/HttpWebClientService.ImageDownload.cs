@@ -37,7 +37,7 @@ namespace EVEMon.Common.Net
                     ConfigureAwait(false);
                 using (response)
                 {
-                    Stream stream = await response.Content.ReadAsStreamAsync().
+                    var stream = await response.Content.ReadAsStreamAsync().
                         ConfigureAwait(false);
                     return GetImage(request.BaseUrl, stream, response);
                 }

@@ -23,13 +23,13 @@ namespace EVEMon.Common.Controls
 
             InitializeComponent();
 
-            string curPrinter = doc.PrinterSettings.PrinterName;
+            var curPrinter = doc.PrinterSettings.PrinterName;
 
             m_pto = pto;
 
             foreach (string printer in PrinterSettings.InstalledPrinters)
             {
-                int index = comboPrinters.Items.Add(printer);
+                var index = comboPrinters.Items.Add(printer);
 
                 doc.PrinterSettings.PrinterName = printer;
                 if (doc.PrinterSettings.IsDefaultPrinter)

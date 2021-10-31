@@ -20,7 +20,7 @@ namespace EVEMon.Common.Data
             if (src == null)
                 return;
 
-            foreach (SerializableMarketGroup subCat in src)
+            foreach (var subCat in src)
             {
                 Items.Add(new MarketGroup(group, subCat));
             }

@@ -240,7 +240,7 @@ namespace EVEMon.CharacterMonitoring
                 ToolTip.SetToolTip(LocationInfoLabel, "Home station: " + m_character.
                     HomeStation?.FullLocation ?? EveMonConstants.UnknownText);
 
-                string dockedInfoText = m_character.GetLastKnownDockedText();
+                var dockedInfoText = m_character.GetLastKnownDockedText();
                 DockedInfoLabel.Text = string.IsNullOrWhiteSpace(dockedInfoText) ? " " :
                     "Docked at: " + dockedInfoText;
             }
@@ -258,10 +258,10 @@ namespace EVEMon.CharacterMonitoring
             m_updatingLabels = true;
             try
             {
-                string lbl = m_character.Label;
+                var lbl = m_character.Label;
                 // Update the character labels
                 CustomLabelComboBox.Items.Clear();
-                foreach (string label in allLabels)
+                foreach (var label in allLabels)
                     CustomLabelComboBox.Items.Add(label);
                 CustomLabelComboBox.Text = lbl;
                 // Provide clickable text if the label is blank
@@ -361,12 +361,12 @@ namespace EVEMon.CharacterMonitoring
 
             BalanceLabel.Text = $"Balance: {m_character.Balance:N} ISK";
 
-            CCPCharacter ccpCharacter = m_character as CCPCharacter;
+            var ccpCharacter = m_character as CCPCharacter;
 
             if (ccpCharacter == null)
                 return;
 
-            IQueryMonitor marketMonitor = ccpCharacter.QueryMonitors[ESIAPICharacterMethods.MarketOrders];
+            var marketMonitor = ccpCharacter.QueryMonitors[ESIAPICharacterMethods.MarketOrders];
             if (!Settings.UI.SafeForWork && !ccpCharacter.HasSufficientBalance && marketMonitor != null && marketMonitor.Enabled)
             {
                 BalanceLabel.ForeColor = Color.Orange;
@@ -405,12 +405,12 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void UpdateCountdown()
         {
-            CCPCharacter ccpCharacter = m_character as CCPCharacter;
+            var ccpCharacter = m_character as CCPCharacter;
 
             if (ccpCharacter == null)
                 return;
 
-            IQueryMonitor nextMonitor = ccpCharacter.QueryMonitors.NextMonitorToBeUpdated;
+            var nextMonitor = ccpCharacter.QueryMonitors.NextMonitorToBeUpdated;
 
             if (nextMonitor == null)
             {
@@ -418,7 +418,7 @@ namespace EVEMon.CharacterMonitoring
                 return;
             }
 
-            TimeSpan timeLeft = nextMonitor.NextUpdate.Subtract(DateTime.UtcNow);
+            var timeLeft = nextMonitor.NextUpdate.Subtract(DateTime.UtcNow);
 
             if (timeLeft <= TimeSpan.Zero)
             {
@@ -439,7 +439,7 @@ namespace EVEMon.CharacterMonitoring
         {
             UpdateThrobber.State = ThrobberState.Stopped;
 
-            CCPCharacter ccpCharacter = m_character as CCPCharacter;
+            var ccpCharacter = m_character as CCPCharacter;
 
             if (ccpCharacter == null)
                 return;
@@ -504,15 +504,15 @@ namespace EVEMon.CharacterMonitoring
         /// <returns>Status text to display in the tool tip.</returns>
         private string GetUpdateStatus()
         {
-            CCPCharacter ccpCharacter = m_character as CCPCharacter;
+            var ccpCharacter = m_character as CCPCharacter;
 
             if (ccpCharacter == null)
                 return string.Empty;
 
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             // Skip character's corporation monitors if they are bound with the character's personal monitor
-            foreach (IQueryMonitor monitor in ccpCharacter.QueryMonitors.OrderedByUpdateTime.Where(
+            foreach (var monitor in ccpCharacter.QueryMonitors.OrderedByUpdateTime.Where(
                 monitor => monitor.Method.HasHeader() && monitor.HasAccess).Where(
                 monitor => (monitor.Method.GetType() != typeof(ESIAPICorporationMethods))))
             {
@@ -529,7 +529,7 @@ namespace EVEMon.CharacterMonitoring
         /// <returns>String describing the time until the next update.</returns>
         private static string GenerateTimeToNextUpdateText(IQueryMonitor monitor)
         {
-            TimeSpan timeToNextUpdate = monitor.NextUpdate.Subtract(DateTime.UtcNow);
+            var timeToNextUpdate = monitor.NextUpdate.Subtract(DateTime.UtcNow);
 
             if (monitor.Status == QueryStatus.Disabled)
                 return "(Disabled)";
@@ -552,7 +552,7 @@ namespace EVEMon.CharacterMonitoring
         /// <returns>Status text for the monitor.</returns>
         private static string GetStatusForMonitor(IQueryMonitor monitor)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             output.Append($"{monitor}: ");
 
@@ -576,7 +576,7 @@ namespace EVEMon.CharacterMonitoring
             if (monitor.NextUpdate == DateTime.MaxValue)
                 return "Never";
 
-            TimeSpan remainingTime = monitor.NextUpdate.Subtract(DateTime.UtcNow);
+            var remainingTime = monitor.NextUpdate.Subtract(DateTime.UtcNow);
             if (remainingTime.Minutes < 1)
                 return "Less than a minute";
 
@@ -593,7 +593,7 @@ namespace EVEMon.CharacterMonitoring
         /// <returns>New menu item for a monitor.</returns>
         private static ToolStripMenuItem CreateNewMonitorToolStripMenuItem(IQueryMonitor monitor)
         {
-            string menuText = $"Update {monitor} {GenerateTimeToNextUpdateText(monitor)}";
+            var menuText = $"Update {monitor} {GenerateTimeToNextUpdateText(monitor)}";
 
             ToolStripMenuItem menu;
             ToolStripMenuItem tempMenu = null;
@@ -634,7 +634,7 @@ namespace EVEMon.CharacterMonitoring
         /// <returns>Formatted list of information about a characters skills.</returns>
         private string FormatSkillSummary()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             output
                 .Append($"Known Skills: {m_character.KnownSkillCount}")
@@ -654,9 +654,9 @@ namespace EVEMon.CharacterMonitoring
         /// <returns>Formatted list of information about a characters skills.</returns>
         private string FormatRemapCloneJumpSummary()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
-            string remapAvailableText = m_character.LastReMapTimed.AddYears(1) > DateTime.UtcNow
+            var remapAvailableText = m_character.LastReMapTimed.AddYears(1) > DateTime.UtcNow
                 ? m_character.LastReMapTimed.AddYears(1).ToLocalTime().ToString(CultureConstants.DefaultCulture)
                 : "Now";
 
@@ -836,7 +836,7 @@ namespace EVEMon.CharacterMonitoring
         {
             UpdateThrobber.Cursor = Cursors.Default;
 
-            CCPCharacter ccpCharacter = m_character as CCPCharacter;
+            var ccpCharacter = m_character as CCPCharacter;
 
             // This is not a CCP character, it can't be updated
             if (ccpCharacter == null)
@@ -892,13 +892,13 @@ namespace EVEMon.CharacterMonitoring
             UpdateThrobber.Cursor = Cursors.Default;
 
             // Remove all the items after the separator including the separator
-            int separatorIndex = ThrobberContextMenu.Items.IndexOf(ThrobberSeparator);
+            var separatorIndex = ThrobberContextMenu.Items.IndexOf(ThrobberSeparator);
             while (separatorIndex > -1 && separatorIndex < ThrobberContextMenu.Items.Count)
             {
                 ThrobberContextMenu.Items.RemoveAt(separatorIndex);
             }
 
-            CCPCharacter ccpCharacter = m_character as CCPCharacter;
+            var ccpCharacter = m_character as CCPCharacter;
 
             // Exit for non-CCP characters or no associated API key
             if (ccpCharacter == null || !ccpCharacter.Identity.ESIKeys.Any() || !ccpCharacter.QueryMonitors.Any())
@@ -916,7 +916,7 @@ namespace EVEMon.CharacterMonitoring
 
             // Add monitor items
             // Skip character's corporation monitors if they are bound with the character's personal monitor
-            foreach (ToolStripMenuItem menuItem in ccpCharacter.QueryMonitors
+            foreach (var menuItem in ccpCharacter.QueryMonitors
                 .Where(monitor => monitor.Method.HasHeader() && monitor.HasAccess)
                 .Where(monitor => monitor.Method.GetType() != typeof(ESIAPICorporationMethods))
                 .Select(CreateNewMonitorToolStripMenuItem))
@@ -932,7 +932,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.Windows.Forms.ToolStripItemClickedEventArgs"/> instance containing the event data.</param>
         private void ThrobberContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            CCPCharacter ccpCharacter = m_character as CCPCharacter;
+            var ccpCharacter = m_character as CCPCharacter;
 
             if (ccpCharacter == null)
                 return;
@@ -944,14 +944,14 @@ namespace EVEMon.CharacterMonitoring
                 return;
             }
 
-            Enum method = e.ClickedItem.Tag as Enum;
+            var method = e.ClickedItem.Tag as Enum;
 
             if (method == null)
                 return;
 
             SetThrobberUpdating();
 
-            foreach (IQueryMonitor monitor in ccpCharacter.QueryMonitors.Where(
+            foreach (var monitor in ccpCharacter.QueryMonitors.Where(
                 monitor => monitor.Method.ToString().Contains(method.ToString())))
             {
                 ccpCharacter.QueryMonitors.Query(monitor.Method);
@@ -965,10 +965,10 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void SkillSummaryLabel_MouseHover(object sender, EventArgs e)
         {
-            StringBuilder sb = new StringBuilder();
-            for (int skillLevel = 0; skillLevel <= 5; skillLevel++)
+            var sb = new StringBuilder();
+            for (var skillLevel = 0; skillLevel <= 5; skillLevel++)
             {
-                int count = m_character.GetSkillCountAtLevel(skillLevel);
+                var count = m_character.GetSkillCountAtLevel(skillLevel);
 
                 if (skillLevel > 0)
                     sb.AppendLine();
@@ -988,12 +988,12 @@ namespace EVEMon.CharacterMonitoring
         private void AttributeLabel_MouseHover(object sender, EventArgs e)
         {
             // Retrieve the attribute from the sender
-            Label attributeLabel = (Label)sender;
-            EveAttribute eveAttribute = (EveAttribute)attributeLabel.Tag;
+            var attributeLabel = (Label)sender;
+            var eveAttribute = (EveAttribute)attributeLabel.Tag;
 
             // Format the values for the tooltip
-            ICharacterAttribute attribute = m_character[eveAttribute];
-            string toolTip = attribute.ToString("%e (%B base + %r remap points + %i implants)");
+            var attribute = m_character[eveAttribute];
+            var toolTip = attribute.ToString("%e (%B base + %r remap points + %i implants)");
             ToolTip.SetToolTip(attributeLabel, toolTip);
         }
 
@@ -1018,7 +1018,7 @@ namespace EVEMon.CharacterMonitoring
             // This menu should be enabled only for CCP characters
             // Open the ESI keys management dialog since multiple keys can affect one character
             //WindowsFactory.ShowByTag<EsiKeyUpdateOrAdditionWindow, IEnumerable<ESIKey>>(m_character.Identity.ESIKeys);
-            using (EsiKeysManagementWindow window = new EsiKeysManagementWindow())
+            using (var window = new EsiKeysManagementWindow())
             {
                 window.ShowDialog(this);
             }

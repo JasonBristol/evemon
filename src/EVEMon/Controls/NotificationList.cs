@@ -127,7 +127,7 @@ namespace EVEMon.Controls
                 m_notifications.Clear();
                 if (value != null)
                 {
-                    IEnumerable<NotificationEventArgs> notificationsToAdd = value
+                    var notificationsToAdd = value
                         .Where(x => Settings.Notifications.Categories[x.Category].ShowOnMainWindow);
 
                     m_notifications.AddRange(notificationsToAdd.OrderBy(x => (int)x.Priority));
@@ -159,7 +159,7 @@ namespace EVEMon.Controls
             try
             {
                 listBox.Items.Clear();
-                foreach (NotificationEventArgs notification in m_notifications)
+                foreach (var notification in m_notifications)
                 {
                     listBox.Items.Add(notification);
                 }
@@ -199,9 +199,9 @@ namespace EVEMon.Controls
             if (e.Index < 0 || e.Index >= listBox.Items.Count)
                 return;
 
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
-            NotificationEventArgs notification = listBox.Items[e.Index] as NotificationEventArgs;
+            var notification = listBox.Items[e.Index] as NotificationEventArgs;
             if (notification == null)
                 return;
 
@@ -227,7 +227,7 @@ namespace EVEMon.Controls
             }
 
             // Background
-            using (SolidBrush brush = new SolidBrush(color))
+            using (var brush = new SolidBrush(color))
             {
                 g.FillRectangle(brush, e.Bounds);
             }
@@ -252,18 +252,18 @@ namespace EVEMon.Controls
             }
 
             // Text
-            using (SolidBrush foreBrush = new SolidBrush(ForeColor))
+            using (var foreBrush = new SolidBrush(ForeColor))
             {
-                string text = notification.ToString();
-                Size size = g.MeasureString(text, Font).ToSize();
+                var text = notification.ToString();
+                var size = g.MeasureString(text, Font).ToSize();
                 g.DrawString(text, Font, foreBrush,
                              new Point(e.Bounds.Left + TextLeft, e.Bounds.Top + (listBox.ItemHeight - size.Height) / 2));
             }
 
             // Draw line on top
-            using (SolidBrush lineBrush = new SolidBrush(Color.Gray))
+            using (var lineBrush = new SolidBrush(Color.Gray))
             {
-                using (Pen pen = new Pen(lineBrush, 1.0f))
+                using (var pen = new Pen(lineBrush, 1.0f))
                 {
                     g.DrawLine(pen, new Point(e.Bounds.Left, e.Bounds.Bottom - 1), new Point(e.Bounds.Right, e.Bounds.Bottom - 1));
                 }
@@ -277,12 +277,12 @@ namespace EVEMon.Controls
         /// <param name="e"></param>
         private void listBox_MouseMove(object sender, MouseEventArgs e)
         {
-            int oldHoveredIndex = m_hoveredIndex;
+            var oldHoveredIndex = m_hoveredIndex;
 
             m_hoveredIndex = -1;
-            for (int i = 0; i < listBox.Items.Count; i++)
+            for (var i = 0; i < listBox.Items.Count; i++)
             {
-                Rectangle rect = GetDeleteIconRect(listBox.GetItemRectangle(i));
+                var rect = GetDeleteIconRect(listBox.GetItemRectangle(i));
                 if (!rect.Contains(e.Location))
                     continue;
 
@@ -307,18 +307,18 @@ namespace EVEMon.Controls
         private void listBox_MouseDown(object sender, MouseEventArgs e)
         {
             // First test whether the "delete" or the "magnifier" icons have been clicked
-            for (int i = 0; i < listBox.Items.Count; i++)
+            for (var i = 0; i < listBox.Items.Count; i++)
             {
-                Rectangle rect = listBox.GetItemRectangle(i);
+                var rect = listBox.GetItemRectangle(i);
                 if (!rect.Contains(e.Location))
                     continue;
 
-                NotificationEventArgs notification = listBox.Items[i] as NotificationEventArgs;
+                var notification = listBox.Items[i] as NotificationEventArgs;
 
                 // Did the click on the "magnifier" icon ?
                 if (notification != null && notification.HasDetails)
                 {
-                    Rectangle magnifierRect = GetMagnifierIconRect(rect);
+                    var magnifierRect = GetMagnifierIconRect(rect);
                     if (magnifierRect.Contains(e.Location))
                     {
                         ShowDetails(notification);
@@ -327,7 +327,7 @@ namespace EVEMon.Controls
                 }
 
                 // Did the click on the "delete" icon or did a wheel/right-click?
-                Rectangle deleteRect = GetDeleteIconRect(rect);
+                var deleteRect = GetDeleteIconRect(rect);
                 if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Right ||
                         deleteRect.Contains(e.Location)) {
                     EveMonClient.Notifications.Invalidate(new NotificationInvalidationEventArgs(notification));
@@ -363,9 +363,9 @@ namespace EVEMon.Controls
         /// <returns></returns>
         private int CalculateMaxTextLength(Font font)
         {
-            int maxTextLength = 0;
+            var maxTextLength = 0;
 
-            foreach (Size textSize in listBox.Items.Cast<object>().Select(item => item.ToString()).Select(
+            foreach (var textSize in listBox.Items.Cast<object>().Select(item => item.ToString()).Select(
                 text => TextRenderer.MeasureText(text, font)).Where(textSize => textSize.Width > maxTextLength))
             {
                 maxTextLength = textSize.Width;
@@ -382,15 +382,15 @@ namespace EVEMon.Controls
             if (Width == 0)
                 return;
 
-            Font font = Font;
-            float fontSize = font.Size;
+            var font = Font;
+            var fontSize = font.Size;
 
             // Check for magnifier icon
-            NotificationEventArgs itemWithDetails = listBox.Items.OfType<NotificationEventArgs>().FirstOrDefault(x => x.HasDetails);
-            int magnifierIconSize = itemWithDetails != null ? IconMagnifierPositionFromRight : 0;
+            var itemWithDetails = listBox.Items.OfType<NotificationEventArgs>().FirstOrDefault(x => x.HasDetails);
+            var magnifierIconSize = itemWithDetails != null ? IconMagnifierPositionFromRight : 0;
 
             // Calculates the available text space
-            int availableTextSpace = Width - LeftPadding - TextLeft - magnifierIconSize - IconDeletePositionFromRight -
+            var availableTextSpace = Width - LeftPadding - TextLeft - magnifierIconSize - IconDeletePositionFromRight -
                                      RightPadding;
 
             // If any text length exceeds our bounds we decrease the font size
@@ -417,29 +417,29 @@ namespace EVEMon.Controls
         private static void ShowDetails(NotificationEventArgs notification)
         {
             // API error ?
-            APIErrorNotificationEventArgs errorNotification = notification as APIErrorNotificationEventArgs;
+            var errorNotification = notification as APIErrorNotificationEventArgs;
             if (errorNotification != null)
             {
-                ApiErrorWindow window = WindowsFactory.ShowByTag<ApiErrorWindow, APIErrorNotificationEventArgs>(errorNotification);
+                var window = WindowsFactory.ShowByTag<ApiErrorWindow, APIErrorNotificationEventArgs>(errorNotification);
                 window.Notification = errorNotification;
                 return;
             }
 
             // Skills Completion ?
-            SkillCompletionNotificationEventArgs skillNotifications = notification as SkillCompletionNotificationEventArgs;
+            var skillNotifications = notification as SkillCompletionNotificationEventArgs;
             if (skillNotifications != null)
             {
-                SkillCompletionWindow window =
+                var window =
                     WindowsFactory.ShowByTag<SkillCompletionWindow, SkillCompletionNotificationEventArgs>(skillNotifications);
                 window.Notification = skillNotifications;
                 return;
             }
 
             // Market orders ?
-            MarketOrdersNotificationEventArgs ordersNotification = notification as MarketOrdersNotificationEventArgs;
+            var ordersNotification = notification as MarketOrdersNotificationEventArgs;
             if (ordersNotification != null)
             {
-                MarketOrdersWindow window =
+                var window =
                     WindowsFactory.ShowByTag<MarketOrdersWindow, MarketOrdersNotificationEventArgs>(ordersNotification);
                 window.Orders = ordersNotification.Orders;
                 window.Columns = Settings.UI.MainWindow.MarketOrders.Columns;
@@ -449,10 +449,10 @@ namespace EVEMon.Controls
             }
 
             // Contracts ?
-            ContractsNotificationEventArgs contractsNotification = notification as ContractsNotificationEventArgs;
+            var contractsNotification = notification as ContractsNotificationEventArgs;
             if (contractsNotification != null)
             {
-                ContractsWindow window =
+                var window =
                     WindowsFactory.ShowByTag<ContractsWindow, ContractsNotificationEventArgs>(contractsNotification);
                 window.Contracts = contractsNotification.Contracts;
                 window.Columns = Settings.UI.MainWindow.Contracts.Columns;
@@ -462,10 +462,10 @@ namespace EVEMon.Controls
             }
 
             // Industry jobs ?
-            IndustryJobsNotificationEventArgs jobsNotification = notification as IndustryJobsNotificationEventArgs;
+            var jobsNotification = notification as IndustryJobsNotificationEventArgs;
             if (jobsNotification != null)
             {
-                IndustryJobsWindow window =
+                var window =
                     WindowsFactory.ShowByTag<IndustryJobsWindow, IndustryJobsNotificationEventArgs>(jobsNotification);
                 window.Jobs = jobsNotification.Jobs;
                 window.Columns = Settings.UI.MainWindow.IndustryJobs.Columns;
@@ -475,10 +475,10 @@ namespace EVEMon.Controls
             }
 
             // Planetary pins ?
-            PlanetaryPinsNotificationEventArgs pinsNotification = notification as PlanetaryPinsNotificationEventArgs;
+            var pinsNotification = notification as PlanetaryPinsNotificationEventArgs;
             if (pinsNotification != null)
             {
-                PlanetaryPinsWindow window =
+                var window =
                     WindowsFactory.ShowByTag<PlanetaryPinsWindow, PlanetaryPinsNotificationEventArgs>(pinsNotification);
                 window.PlanetaryPins = pinsNotification.PlanetaryPins;
                 window.Columns = Settings.UI.MainWindow.Planetary.Columns;
@@ -500,7 +500,7 @@ namespace EVEMon.Controls
             }
 
             // API error ?
-            APIErrorNotificationEventArgs errorNotification = notification as APIErrorNotificationEventArgs;
+            var errorNotification = notification as APIErrorNotificationEventArgs;
             if (errorNotification != null)
             {
                 SetToolTip(errorNotification.Result?.ErrorMessage);
@@ -508,7 +508,7 @@ namespace EVEMon.Controls
             }
 
             // Skills Completion ?
-            SkillCompletionNotificationEventArgs skillNotifications = notification as SkillCompletionNotificationEventArgs;
+            var skillNotifications = notification as SkillCompletionNotificationEventArgs;
             if (skillNotifications != null)
             {
                 SetToolTip(SkillCompletionMessage(skillNotifications));
@@ -516,7 +516,7 @@ namespace EVEMon.Controls
             }
 
             // Market orders ?
-            MarketOrdersNotificationEventArgs ordersNotification = notification as MarketOrdersNotificationEventArgs;
+            var ordersNotification = notification as MarketOrdersNotificationEventArgs;
             if (ordersNotification != null)
             {
                 SetToolTip(MarketOrdersEndedMessage(ordersNotification));
@@ -524,7 +524,7 @@ namespace EVEMon.Controls
             }
 
             // Contracts ?
-            ContractsNotificationEventArgs contractsNotification = notification as ContractsNotificationEventArgs;
+            var contractsNotification = notification as ContractsNotificationEventArgs;
             if (contractsNotification != null)
             {
                 SetToolTip(ContractsEndedMessage(contractsNotification));
@@ -532,7 +532,7 @@ namespace EVEMon.Controls
             }
 
             // Industry jobs ?
-            IndustryJobsNotificationEventArgs jobsNotification = notification as IndustryJobsNotificationEventArgs;
+            var jobsNotification = notification as IndustryJobsNotificationEventArgs;
             if (jobsNotification != null)
             {
                 SetToolTip(IndustryJobsCompletedMessage(jobsNotification));
@@ -540,7 +540,7 @@ namespace EVEMon.Controls
             }
 
             // Planetary pins ?
-            PlanetaryPinsNotificationEventArgs pinsNotification = notification as PlanetaryPinsNotificationEventArgs;
+            var pinsNotification = notification as PlanetaryPinsNotificationEventArgs;
             if (pinsNotification != null)
             {
                 SetToolTip(PlanetaryPinsCompletedMessage(pinsNotification));
@@ -568,9 +568,9 @@ namespace EVEMon.Controls
         /// <returns></returns>
         private static Rectangle GetMagnifierIconRect(Rectangle rect)
         {
-            Bitmap icon = Resources.Magnifier;
-            int yOffset = (rect.Height - icon.Height) / 2;
-            Rectangle magnifierIconRect = new Rectangle(rect.Right - IconMagnifierPositionFromRight, rect.Top + yOffset,
+            var icon = Resources.Magnifier;
+            var yOffset = (rect.Height - icon.Height) / 2;
+            var magnifierIconRect = new Rectangle(rect.Right - IconMagnifierPositionFromRight, rect.Top + yOffset,
                                                         icon.Width, icon.Height);
             magnifierIconRect.Inflate(2, 8);
             return magnifierIconRect;
@@ -583,9 +583,9 @@ namespace EVEMon.Controls
         /// <returns></returns>
         private static Rectangle GetDeleteIconRect(Rectangle rect)
         {
-            Bitmap icon = Resources.CrossBlack;
-            int yOffset = (rect.Height - icon.Height) / 2;
-            Rectangle deleteIconRect = new Rectangle(rect.Right - IconDeletePositionFromRight, rect.Top + yOffset, icon.Width,
+            var icon = Resources.CrossBlack;
+            var yOffset = (rect.Height - icon.Height) / 2;
+            var deleteIconRect = new Rectangle(rect.Right - IconDeletePositionFromRight, rect.Top + yOffset, icon.Width,
                                                      icon.Height);
             deleteIconRect.Inflate(2, 8);
             return deleteIconRect;
@@ -604,8 +604,8 @@ namespace EVEMon.Controls
         /// <returns></returns>
         private static string SkillCompletionMessage(SkillCompletionNotificationEventArgs skillNotifications)
         {
-            StringBuilder builder = new StringBuilder();
-            foreach (QueuedSkill skill in skillNotifications.Skills)
+            var builder = new StringBuilder();
+            foreach (var skill in skillNotifications.Skills)
             {
                 builder.Append($"{skill.SkillName} {Skill.GetRomanFromInt(skill.Level)} completed.")
                     .AppendLine();
@@ -620,15 +620,15 @@ namespace EVEMon.Controls
         /// <returns></returns>
         private static string MarketOrdersEndedMessage(MarketOrdersNotificationEventArgs ordersNotification)
         {
-            StringBuilder builder = new StringBuilder();
-            foreach (IGrouping<OrderState, MarketOrder> orderGroup in ordersNotification.Orders.GroupBy(x => x.State))
+            var builder = new StringBuilder();
+            foreach (var orderGroup in ordersNotification.Orders.GroupBy(x => x.State))
             {
                 if (builder.Length != 0)
                     builder.AppendLine();
 
                 builder.AppendLine(orderGroup.Key.GetHeader());
 
-                foreach (MarketOrder order in orderGroup.Where(order => order.Item != null))
+                foreach (var order in orderGroup.Where(order => order.Item != null))
                 {
                     const AbbreviationFormat Format = AbbreviationFormat.AbbreviationSymbols;
                     // Expired :    12k/15k invulnerability fields at Pator V - Tech School
@@ -651,8 +651,8 @@ namespace EVEMon.Controls
         /// <returns></returns>
         private static string ContractsEndedMessage(ContractsNotificationEventArgs contractsNotification)
         {
-            StringBuilder builder = new StringBuilder();
-            foreach (IGrouping<ContractState, Contract> contractGroup in contractsNotification.
+            var builder = new StringBuilder();
+            foreach (var contractGroup in contractsNotification.
                 Contracts.GroupBy(x => x.State))
             {
                 if (builder.Length != 0)
@@ -660,7 +660,7 @@ namespace EVEMon.Controls
 
                 builder.AppendLine(contractGroup.Key.GetHeader());
 
-                foreach (Contract contract in contractGroup)
+                foreach (var contract in contractGroup)
                     if (!contract.Issuer.IsEmptyOrUnknown())
                     {
                         builder.Append(contract.ContractText).Append(" | ").
@@ -682,11 +682,11 @@ namespace EVEMon.Controls
         /// <returns></returns>
         private static string IndustryJobsCompletedMessage(IndustryJobsNotificationEventArgs jobsNotification)
         {
-            StringBuilder builder = new StringBuilder();
-            foreach (IndustryJob job in jobsNotification.Jobs)
+            var builder = new StringBuilder();
+            foreach (var job in jobsNotification.Jobs)
                 if (job.InstalledItem != null)
                 {
-                    string name = job.SolarSystem?.Name ?? EveMonConstants.UnknownText;
+                    var name = job.SolarSystem?.Name ?? EveMonConstants.UnknownText;
                     builder.Append(job.InstalledItem.Name).Append(" at ").Append(
                         $"{name} > {job.Installation}").AppendLine();
                 }
@@ -700,8 +700,8 @@ namespace EVEMon.Controls
         /// <returns></returns>
         private static string PlanetaryPinsCompletedMessage(PlanetaryPinsNotificationEventArgs pinsNotification)
         {
-            StringBuilder builder = new StringBuilder();
-            foreach (PlanetaryPin pin in pinsNotification.PlanetaryPins)
+            var builder = new StringBuilder();
+            foreach (var pin in pinsNotification.PlanetaryPins)
                 builder.Append(pin.TypeName).Append(" at ").Append(
                     $"{pin.Colony.SolarSystem.Name} > {pin.Colony.PlanetName}").AppendLine();
             return builder.ToString();

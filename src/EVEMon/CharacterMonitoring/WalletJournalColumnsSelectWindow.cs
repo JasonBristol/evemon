@@ -40,7 +40,7 @@ namespace EVEMon.CharacterMonitoring
         {
             get
             {
-                WalletJournalSettings settings = new WalletJournalSettings();
+                var settings = new WalletJournalSettings();
                 return settings.DefaultColumns;
             }
         }

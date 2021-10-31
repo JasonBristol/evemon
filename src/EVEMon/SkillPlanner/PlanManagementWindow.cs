@@ -91,7 +91,7 @@ namespace EVEMon.SkillPlanner
             }
 
             // Or are we just opening a plan ?
-            Plan plan = (Plan)lbPlanList.SelectedItems[0].Tag;
+            var plan = (Plan)lbPlanList.SelectedItems[0].Tag;
             PlanWindow.ShowPlanWindow(plan: plan);
             Close();
         }
@@ -126,19 +126,19 @@ namespace EVEMon.SkillPlanner
         private void UpdateContent(bool restoreSelectionAndFocus)
         {
             // Store selection and focus
-            Plan selection = lbPlanList.Items.Cast<ListViewItem>().Where(x => x.Selected)
+            var selection = lbPlanList.Items.Cast<ListViewItem>().Where(x => x.Selected)
                 .Select(x => x.Tag).OfType<Plan>().FirstOrDefault();
-            Plan focused = lbPlanList.FocusedItem?.Tag as Plan;
+            var focused = lbPlanList.FocusedItem?.Tag as Plan;
 
             lbPlanList.BeginUpdate();
             try
             {
                 // Recreate the list from scratch
                 lbPlanList.Items.Clear();
-                foreach (Plan plan in m_character.Plans)
+                foreach (var plan in m_character.Plans)
                 {
                     // Create the item and add it
-                    ListViewItem lvi = new ListViewItem(plan.Name) { Tag = plan };
+                    var lvi = new ListViewItem(plan.Name) { Tag = plan };
                     lvi.SubItems.Add(plan.TotalTrainingTime
                         .ToDescriptiveText(DescriptiveTextOptions.FullText |
                                            DescriptiveTextOptions.IncludeCommas |
@@ -187,14 +187,14 @@ namespace EVEMon.SkillPlanner
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (lbPlanList.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += lbPlanList.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -209,21 +209,21 @@ namespace EVEMon.SkillPlanner
         private void MergePlans()
         {
             // Build the merge plan
-            Plan result = new Plan(m_character);
+            var result = new Plan(m_character);
             using (result.SuspendingEvents())
             {
                 // Merge the plans
                 foreach (ListViewItem item in lbPlanList.SelectedItems)
                 {
-                    Plan plan = (Plan)item.Tag;
-                    foreach (PlanEntry entry in plan)
+                    var plan = (Plan)item.Tag;
+                    foreach (var entry in plan)
                     {
                         // If not planned yet, we add the new entry
                         if (!result.IsPlanned(entry.Skill, entry.Level))
                             result.PlanTo(entry.Skill, entry.Level, entry.Priority, entry.Notes);
 
                         // Then we update the entry's groups
-                        PlanEntry newEntry = result.GetEntry(entry.Skill, entry.Level);
+                        var newEntry = result.GetEntry(entry.Skill, entry.Level);
 
                         // The entry may be null if the character already knows it
                         newEntry?.PlanGroups.Add(plan.Name);
@@ -232,9 +232,9 @@ namespace EVEMon.SkillPlanner
             }
 
             // Request a new name for this plan
-            using (NewPlanWindow npw = new NewPlanWindow())
+            using (var npw = new NewPlanWindow())
             {
-                DialogResult dr = npw.ShowDialog();
+                var dr = npw.ShowDialog();
                 if (dr == DialogResult.Cancel)
                     return;
 
@@ -359,14 +359,14 @@ namespace EVEMon.SkillPlanner
         private void miNewPlan_Click(object sender, EventArgs e)
         {
             // Request a new name for this plan
-            using (NewPlanWindow npw = new NewPlanWindow())
+            using (var npw = new NewPlanWindow())
             {
-                DialogResult dr = npw.ShowDialog();
+                var dr = npw.ShowDialog();
                 if (dr == DialogResult.Cancel)
                     return;
 
                 // Create the plan and add it
-                Plan plan = new Plan(m_character) { Name = npw.PlanName, Description = npw.PlanDescription };
+                var plan = new Plan(m_character) { Name = npw.PlanName, Description = npw.PlanDescription };
                 m_character.Plans.Add(plan);
 
                 // Open a window for this plan
@@ -384,23 +384,23 @@ namespace EVEMon.SkillPlanner
         private void miImportPlanFromFile_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a file
-            DialogResult dr = ofdOpenDialog.ShowDialog();
+            var dr = ofdOpenDialog.ShowDialog();
             if (dr == DialogResult.Cancel)
                 return;
 
             // Load from file and returns if an error occurred (user has already been warned)
-            SerializablePlan serial = PlanIOHelper.ImportFromXML(ofdOpenDialog.FileName);
+            var serial = PlanIOHelper.ImportFromXML(ofdOpenDialog.FileName);
             if (serial == null)
                 return;
 
             // Imports the plan
-            Plan loadedPlan = new Plan(m_character, serial);
+            var loadedPlan = new Plan(m_character, serial);
 
             // Prompt the user for the plan name
-            using (NewPlanWindow npw = new NewPlanWindow())
+            using (var npw = new NewPlanWindow())
             {
                 npw.PlanName = Path.GetFileNameWithoutExtension(ofdOpenDialog.FileName);
-                DialogResult xdr = npw.ShowDialog();
+                var xdr = npw.ShowDialog();
                 if (xdr == DialogResult.Cancel)
                     return;
 
@@ -418,20 +418,20 @@ namespace EVEMon.SkillPlanner
         private void miImportPlanFromCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to choose the source character and plan.
-            using (PlanImportationFromCharacterWindow cps = new PlanImportationFromCharacterWindow(m_character))
+            using (var cps = new PlanImportationFromCharacterWindow(m_character))
             {
-                DialogResult dr = cps.ShowDialog();
+                var dr = cps.ShowDialog();
                 if (dr == DialogResult.Cancel)
                     return;
 
                 // Retrieves the cloned plan
-                Plan plan = cps.TargetPlan;
+                var plan = cps.TargetPlan;
 
                 // Adds and fixes the prerequisites order
                 plan.FixPrerequisites();
 
                 // Prompt the user for the new plan's name
-                using (NewPlanWindow f = new NewPlanWindow())
+                using (var f = new NewPlanWindow())
                 {
                     f.PlanName = $"{m_character.Name}-{plan.Name}";
                     f.Text = @"Save Plan As";
@@ -459,7 +459,7 @@ namespace EVEMon.SkillPlanner
             if (lbPlanList.SelectedItems.Count != 1)
                 return;
 
-            Plan plan = (Plan)lbPlanList.SelectedItems[0].Tag;
+            var plan = (Plan)lbPlanList.SelectedItems[0].Tag;
             await UIHelper.ExportPlanAsync(plan);
         }
 
@@ -481,21 +481,21 @@ namespace EVEMon.SkillPlanner
         private void miRestorePlans_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a file
-            using (OpenFileDialog restorePlansDialog = new OpenFileDialog())
+            using (var restorePlansDialog = new OpenFileDialog())
             {
                 restorePlansDialog.Title = @"Restore from File";
                 restorePlansDialog.Filter = @"EVEMon Plans Backup Format (*.epb)|*.epb";
-                DialogResult dr = restorePlansDialog.ShowDialog();
+                var dr = restorePlansDialog.ShowDialog();
                 if (dr == DialogResult.Cancel)
                     return;
 
                 // Load from file and returns if an error occurred (user has already been warned)
-                IEnumerable<SerializablePlan> serial = PlanIOHelper.ImportPlansFromXML(restorePlansDialog.FileName);
+                var serial = PlanIOHelper.ImportPlansFromXML(restorePlansDialog.FileName);
                 if (serial == null)
                     return;
 
                 // Imports the plans
-                IEnumerable<Plan> loadedPlans = serial.Select(plan => new Plan(m_character, plan));
+                var loadedPlans = serial.Select(plan => new Plan(m_character, plan));
                 m_character.Plans.AddRange(loadedPlans);
             }
         }
@@ -523,13 +523,13 @@ namespace EVEMon.SkillPlanner
                 return;
 
             // Prompts the user for a new name
-            Plan plan = (Plan)lbPlanList.SelectedItems[0].Tag;
-            using (NewPlanWindow f = new NewPlanWindow())
+            var plan = (Plan)lbPlanList.SelectedItems[0].Tag;
+            using (var f = new NewPlanWindow())
             {
                 f.Text = @"Rename Plan or Edit Description";
                 f.PlanName = plan.Name;
                 f.PlanDescription = plan.Description;
-                DialogResult dr = f.ShowDialog();
+                var dr = f.ShowDialog();
                 if (dr == DialogResult.Cancel)
                     return;
 
@@ -553,7 +553,7 @@ namespace EVEMon.SkillPlanner
 
             // Prepare the title and retrieve the plan's name for the incoming message box
             string planName;
-            string title = "Delete Plan";
+            var title = "Delete Plan";
             if (lbPlanList.SelectedItems.Count > 1)
             {
                 planName = "the selected plans";
@@ -561,12 +561,12 @@ namespace EVEMon.SkillPlanner
             }
             else
             {
-                Plan plan = (Plan)lbPlanList.SelectedItems[0].Tag;
+                var plan = (Plan)lbPlanList.SelectedItems[0].Tag;
                 planName = $"\"{plan.Name}\"";
             }
 
             // Prompt the user for confirmation with a message box
-            DialogResult dr = MessageBox.Show($"Are you sure you want to delete {planName}?", title,
+            var dr = MessageBox.Show($"Are you sure you want to delete {planName}?", title,
                                               MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
 
             if (dr != DialogResult.Yes)
@@ -587,13 +587,13 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void tsbMoveUp_Click(object sender, EventArgs e)
         {
-            int idx = lbPlanList.SelectedIndices[0];
+            var idx = lbPlanList.SelectedIndices[0];
             if (idx == 0)
                 return;
 
             // Rebuild a plans array
-            Plan[] plans = lbPlanList.Items.Cast<ListViewItem>().Select(x => x.Tag).OfType<Plan>().ToArray();
-            Plan temp = plans[idx - 1];
+            var plans = lbPlanList.Items.Cast<ListViewItem>().Select(x => x.Tag).OfType<Plan>().ToArray();
+            var temp = plans[idx - 1];
             plans[idx - 1] = plans[idx];
             plans[idx] = temp;
 
@@ -609,13 +609,13 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void tsbMoveDown_Click(object sender, EventArgs e)
         {
-            int idx = lbPlanList.SelectedIndices[0];
+            var idx = lbPlanList.SelectedIndices[0];
             if (idx == lbPlanList.Items.Count - 1)
                 return;
 
             // Rebuild a plans array
-            Plan[] plans = lbPlanList.Items.Cast<ListViewItem>().Select(x => x.Tag).OfType<Plan>().ToArray();
-            Plan temp = plans[idx + 1];
+            var plans = lbPlanList.Items.Cast<ListViewItem>().Select(x => x.Tag).OfType<Plan>().ToArray();
+            var temp = plans[idx + 1];
             plans[idx + 1] = plans[idx];
             plans[idx] = temp;
 

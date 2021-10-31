@@ -66,7 +66,7 @@ namespace EVEMon.Common.Scheduling
             isAutoBlocking = false;
 
             // Checks schedule entries to see if they overlap the input time
-            foreach (ScheduleEntry entry in s_schedule.Where(entry => entry.Blocking(time)))
+            foreach (var entry in s_schedule.Where(entry => entry.Blocking(time)))
             {
                 blockingEntry = entry.Title;
                 return true;
@@ -91,9 +91,9 @@ namespace EVEMon.Common.Scheduling
         internal static void Import(SchedulerSettings serial)
         {
             s_schedule.Clear();
-            foreach (SerializableScheduleEntry serialEntry in serial.Entries)
+            foreach (var serialEntry in serial.Entries)
             {
-                SerializableRecurringScheduleEntry serialReccuringEntry= serialEntry as SerializableRecurringScheduleEntry;
+                var serialReccuringEntry= serialEntry as SerializableRecurringScheduleEntry;
                 if (serialReccuringEntry != null)
                     s_schedule.Add(new RecurringScheduleEntry(serialReccuringEntry));
                 else
@@ -110,8 +110,8 @@ namespace EVEMon.Common.Scheduling
         /// <returns></returns>
         internal static SchedulerSettings Export()
         {
-            SchedulerSettings serial = new SchedulerSettings();
-            foreach (ScheduleEntry entry in s_schedule.Where(entry => !entry.Expired))
+            var serial = new SchedulerSettings();
+            foreach (var entry in s_schedule.Where(entry => !entry.Expired))
             {
                 serial.Entries.Add(entry.Export());
             }
@@ -124,10 +124,10 @@ namespace EVEMon.Common.Scheduling
         public static void ClearExpired()
         {
             // Removed the expired entries
-            int i = 0;
+            var i = 0;
             while (i < s_schedule.Count)
             {
-                ScheduleEntry entry = s_schedule[i];
+                var entry = s_schedule[i];
                 if (entry.Expired)
                     s_schedule.RemoveAt(i);
                 else
@@ -148,8 +148,8 @@ namespace EVEMon.Common.Scheduling
         {
             try
             {
-                DateTimeFormatInfo dtfi = CultureConstants.DefaultCulture.DateTimeFormat;
-                DateTime res = DateTime.ParseExact(text, dtfi.ShortTimePattern, dtfi);
+                var dtfi = CultureConstants.DefaultCulture.DateTimeFormat;
+                var res = DateTime.ParseExact(text, dtfi.ShortTimePattern, dtfi);
                 seconds = Convert.ToInt32(Math.Round(res.Subtract(DateTime.Today).TotalSeconds));
                 return true;
             }

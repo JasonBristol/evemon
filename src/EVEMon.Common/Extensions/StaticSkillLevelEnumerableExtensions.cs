@@ -36,11 +36,11 @@ namespace EVEMon.Common.Extensions
         {
             src.ThrowIfNull(nameof(src));
 
-            SkillLevelSet<StaticSkillLevel> set = new SkillLevelSet<StaticSkillLevel>();
-            List<StaticSkillLevel> list = new List<StaticSkillLevel>();
+            var set = new SkillLevelSet<StaticSkillLevel>();
+            var list = new List<StaticSkillLevel>();
 
             // Fill the set and list
-            foreach (StaticSkillLevel item in src)
+            foreach (var item in src)
             {
                 list.FillDependencies(set, item, includeRoots);
             }
@@ -59,31 +59,31 @@ namespace EVEMon.Common.Extensions
         internal static void FillDependencies(this IList<StaticSkillLevel> list, SkillLevelSet<StaticSkillLevel> set,
             StaticSkillLevel item, bool includeRoots)
         {
-            StaticSkill skill = item.Skill;
+            var skill = item.Skill;
 
             // Add first level and prerequisites
             if (!set.Contains(skill, 1))
             {
                 // Prerequisites
-                foreach (StaticSkillLevel prereq in skill.Prerequisites.Where(prereq => skill != prereq.Skill))
+                foreach (var prereq in skill.Prerequisites.Where(prereq => skill != prereq.Skill))
                 {
                     list.FillDependencies(set, prereq, true);
                 }
 
                 // Include the first level
-                StaticSkillLevel newItem = new StaticSkillLevel(skill, 1);
+                var newItem = new StaticSkillLevel(skill, 1);
                 list.Add(newItem);
                 set.Set(newItem);
             }
 
             // Add greater levels
-            long max = includeRoots ? item.Level : item.Level - 1;
-            for (int i = 2; i <= max; i++)
+            var max = includeRoots ? item.Level : item.Level - 1;
+            for (var i = 2; i <= max; i++)
             {
                 if (set.Contains(skill, i))
                     continue;
 
-                StaticSkillLevel newItem = new StaticSkillLevel(skill, i);
+                var newItem = new StaticSkillLevel(skill, i);
                 list.Add(newItem);
                 set.Set(newItem);
             }

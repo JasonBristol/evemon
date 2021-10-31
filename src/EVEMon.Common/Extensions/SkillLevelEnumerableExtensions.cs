@@ -25,7 +25,7 @@ namespace EVEMon.Common.Extensions
         public static IEnumerable<SkillLevel> GetAllDependencies(this IEnumerable<SkillLevel> src, bool includeRoots)
         {
             var skillLevels = src as IList<SkillLevel> ?? src.ToList();
-            SkillLevel first = skillLevels.FirstOrDefault();
+            var first = skillLevels.FirstOrDefault();
             return first == null || first.Skill == null
                 ? Enumerable.Empty<SkillLevel>()
                 : skillLevels.ToStatic().GetAllDependencies(includeRoots).ToCharacter(first.Skill.Character);
@@ -47,7 +47,7 @@ namespace EVEMon.Common.Extensions
         public static bool Contains(this IEnumerable<SkillLevel> src, Skill skill, out long neededLevel)
         {
             neededLevel = 0;
-            foreach (SkillLevel prereq in src.Where(prereq => prereq.Skill == skill))
+            foreach (var prereq in src.Where(prereq => prereq.Skill == skill))
             {
                 neededLevel = prereq.Level;
                 return true;
@@ -65,7 +65,7 @@ namespace EVEMon.Common.Extensions
         /// <returns></returns>
         public static TimeSpan GetTotalTrainingTime(this IEnumerable<SkillLevel> src)
         {
-            bool junk = false;
+            var junk = false;
             return src.GetTotalTrainingTime(new Dictionary<Skill, long>(), ref junk);
         }
 
@@ -77,7 +77,7 @@ namespace EVEMon.Common.Extensions
         /// <returns></returns>
         public static TimeSpan GetTotalTrainingTime(this IEnumerable<SkillLevel> src, Dictionary<Skill, long> alreadyCountedList)
         {
-            bool junk = false;
+            var junk = false;
             return src.GetTotalTrainingTime(alreadyCountedList, ref junk);
         }
 
@@ -105,19 +105,19 @@ namespace EVEMon.Common.Extensions
 
             alreadyCountedList.ThrowIfNull(nameof(alreadyCountedList));
 
-            TimeSpan result = TimeSpan.Zero;
-            foreach (SkillLevel item in src)
+            var result = TimeSpan.Zero;
+            foreach (var item in src)
             {
-                Skill skill = item.Skill;
+                var skill = item.Skill;
                 isCurrentlyTraining |= skill.IsTraining;
 
                 // Gets the number of points we're starting from
-                long fromPoints = skill.SkillPoints;
+                var fromPoints = skill.SkillPoints;
                 if (alreadyCountedList.ContainsKey(skill))
                     fromPoints = alreadyCountedList[skill];
 
                 // Gets the number of points we're targeting
-                long toPoints = skill.GetLeftPointsRequiredToLevel(item.Level);
+                var toPoints = skill.GetLeftPointsRequiredToLevel(item.Level);
                 if (fromPoints < toPoints)
                     result += skill.GetTimeSpanForPoints(toPoints - fromPoints);
 

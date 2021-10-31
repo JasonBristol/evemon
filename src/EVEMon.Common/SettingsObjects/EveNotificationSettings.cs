@@ -51,7 +51,7 @@ namespace EVEMon.Common.SettingsObjects
         {
             get
             {
-                EveNotificationColumn[] defaultColumns = new[]
+                var defaultColumns = new[]
                                                               {
                                                                   EveNotificationColumn.SenderName,
                                                                   EveNotificationColumn.Type,

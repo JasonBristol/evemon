@@ -35,7 +35,7 @@ namespace EVEMon.Common.Data
         /// </summary>
         internal static void Load()
         {
-            GeoDatafile datafile = LoadGeoData();
+            var datafile = LoadGeoData();
             LoadFactions();
 
             CompleteInitialization(datafile);
@@ -49,16 +49,16 @@ namespace EVEMon.Common.Data
         private static void LoadFactions()
         {
             // This is a workaround until XmlGenerator can be updated
-            foreach (string factionInfo in Properties.Resources.chrFactions.Split('\n'))
+            foreach (var factionInfo in Properties.Resources.chrFactions.Split('\n'))
             {
-                string[] entries = factionInfo.Split(',');
+                var entries = factionInfo.Split(',');
                 NPCCorporation baseCorp = null, militiaCorp = null;
                 if (entries.Length > 9)
                 {
                     // factionID,factionName,description,raceIDs,solarSystemID,corporationID,
                     // sizeFactor,stationCount,stationSystemCount,militiaCorporationID,iconID
                     int id, end = entries.Length, corpID, militiaID;
-                    string factionName = entries[1].Trim();
+                    var factionName = entries[1].Trim();
                     // Find executor and militia corps (also NPC)
                     if (entries[end - 2].TryParseInv(out militiaID))
                         militiaCorp = GetCorporationByID(militiaID);
@@ -81,17 +81,17 @@ namespace EVEMon.Common.Data
                 Util.LoadXslt(Properties.Resources.DatafilesXSLT));
 
             // Generate the nodes
-            foreach (SerializableRegion srcRegion in datafile.Regions)
+            foreach (var srcRegion in datafile.Regions)
             {
-                Region region = new Region(srcRegion);
+                var region = new Region(srcRegion);
                 s_regionsByID[srcRegion.ID] = region;
 
                 // Store the children into their dictionaries
-                foreach (Constellation constellation in region)
+                foreach (var constellation in region)
                 {
                     s_constellationsByID[constellation.ID] = constellation;
 
-                    foreach (SolarSystem solarSystem in constellation)
+                    foreach (var solarSystem in constellation)
                     {
                         s_solarSystemsByID[solarSystem.ID] = solarSystem;
 
@@ -101,13 +101,13 @@ namespace EVEMon.Common.Data
                             foreach (var planet in systemPlanets)
                                 s_planetsByID[planet.ID] = planet;
 
-                        foreach (Station station in solarSystem)
+                        foreach (var station in solarSystem)
                         {
                             s_stationsByID[station.ID] = station;
 
                             s_corporationsByID[station.CorporationID] = new NPCCorporation(station);
 
-                            foreach (Agent agent in station)
+                            foreach (var agent in station)
                                 s_agentsByID[agent.ID] = agent;
                         }
                     }
@@ -124,10 +124,10 @@ namespace EVEMon.Common.Data
         private static void CompleteInitialization(GeoDatafile datafile)
         {
             // Connects the systems
-            foreach (SerializableJump srcJump in datafile.Jumps)
+            foreach (var srcJump in datafile.Jumps)
             {
-                SolarSystem a = GetSolarSystemByID(srcJump.FirstSystemID);
-                SolarSystem b = GetSolarSystemByID(srcJump.SecondSystemID);
+                var a = GetSolarSystemByID(srcJump.FirstSystemID);
+                var b = GetSolarSystemByID(srcJump.SecondSystemID);
 
                 if (a == null || b == null)
                     continue;
@@ -136,7 +136,7 @@ namespace EVEMon.Common.Data
                 b.AddNeighbor(a);
             }
 
-            foreach (SolarSystem system in s_solarSystemsByID.Values)
+            foreach (var system in s_solarSystemsByID.Values)
             {
                 system.TrimNeighbors();
             }

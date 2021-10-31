@@ -116,12 +116,12 @@ namespace EVEMon.SettingsUI
             base.OnPaint(e);
 
             // Create graphics object to work with
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.HighQuality;
 
             // Define the size of the rectangle used for each of the 4 corner arcs.
             const int Radius = 4;
-            Size cornerSize = new Size(Radius * 2, Radius * 2);
+            var cornerSize = new Size(Radius * 2, Radius * 2);
 
             // Draw the background and border line
             DrawBackground(g, cornerSize);
@@ -136,7 +136,7 @@ namespace EVEMon.SettingsUI
         private void DrawBackground(Graphics g, Size cornerSize)
         {
             // Construct a GraphicsPath for the form
-            using (GraphicsPath path = new GraphicsPath())
+            using (var path = new GraphicsPath())
             {
                 path.StartFigure();
 
@@ -175,7 +175,7 @@ namespace EVEMon.SettingsUI
         private void DrawBorder(Graphics g, Size cornerSize)
         {
             // Construct a GraphicsPath for the border line
-            using (GraphicsPath path = new GraphicsPath())
+            using (var path = new GraphicsPath())
             {
                 path.StartFigure();
 

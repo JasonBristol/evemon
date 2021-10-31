@@ -40,7 +40,7 @@
 //			  node becomes selected.
 //			- If in the BeforeSelect event, e.Cancel is set to true, then node 
 //			  will not be selected
-//			- SHIFT selection sometimes didn’t behave correctly. Fixed.
+//			- SHIFT selection sometimes didnâ€™t behave correctly. Fixed.
 //		04/09/2004	
 //			- SelectedNodes is no longer an array of tree nodes, but a 
 //			  SelectedNodesCollection
@@ -291,7 +291,7 @@ namespace EVEMon.Common.Controls
             get
             {
                 // Create a SelectedNodesCollection to return, and add event handlers to catch actions on it
-                NodesCollection selectedNodesCollection = new NodesCollection();
+                var selectedNodesCollection = new NodesCollection();
                 foreach (TreeNode tn in m_listSelectedNodes)
                 {
                     selectedNodesCollection.Add(tn);
@@ -394,8 +394,8 @@ namespace EVEMon.Common.Controls
         private void UnselectAllNodesNotBelongingToLevel(int level, TreeViewAction tva)
         {
             // First, build list of nodes that need to be unselected
-            ArrayList arrNodesToDeselect = new ArrayList();
-            foreach (TreeNode selectedTreeNode in m_listSelectedNodes.Cast<TreeNode>().Where(
+            var arrNodesToDeselect = new ArrayList();
+            foreach (var selectedTreeNode in m_listSelectedNodes.Cast<TreeNode>().Where(
                 selectedTreeNode => GetNodeLevel(selectedTreeNode) != level))
             {
                 arrNodesToDeselect.Add(selectedTreeNode);
@@ -416,8 +416,8 @@ namespace EVEMon.Common.Controls
         private void UnselectAllNodesNotBelongingDirectlyToParent(TreeNode parent, TreeViewAction tva)
         {
             // First, build list of nodes that need to be unselected
-            ArrayList arrNodesToDeselect = new ArrayList();
-            foreach (TreeNode selectedTreeNode in m_listSelectedNodes.Cast<TreeNode>().Where(
+            var arrNodesToDeselect = new ArrayList();
+            foreach (var selectedTreeNode in m_listSelectedNodes.Cast<TreeNode>().Where(
                 selectedTreeNode => selectedTreeNode.Parent != parent))
             {
                 arrNodesToDeselect.Add(selectedTreeNode);
@@ -438,8 +438,8 @@ namespace EVEMon.Common.Controls
         private void UnselectAllNodesNotBelongingToParent(TreeNode parent, TreeViewAction tva)
         {
             // First, build list of nodes that need to be unselected
-            ArrayList arrNodesToDeselect = new ArrayList();
-            foreach (TreeNode selectedTreeNode in m_listSelectedNodes.Cast<TreeNode>().Where(
+            var arrNodesToDeselect = new ArrayList();
+            foreach (var selectedTreeNode in m_listSelectedNodes.Cast<TreeNode>().Where(
                 selectedTreeNode => !IsChildOf(selectedTreeNode, parent)))
             {
                 arrNodesToDeselect.Add(selectedTreeNode);
@@ -460,7 +460,7 @@ namespace EVEMon.Common.Controls
         internal void UnselectAllNodesExceptNode(TreeNode nodeKeepSelected, TreeViewAction tva)
         {
             // First, build list of nodes that need to be unselected
-            ArrayList arrNodesToDeselect = new ArrayList();
+            var arrNodesToDeselect = new ArrayList();
             foreach (TreeNode selectedTreeNode in m_listSelectedNodes)
             {
                 if (nodeKeepSelected == null)
@@ -526,7 +526,7 @@ namespace EVEMon.Common.Controls
                 if (!IsNodeSelected(tn))
                 {
                     // Check if node selection is cancelled
-                    TreeViewCancelEventArgs tvcea = new TreeViewCancelEventArgs(tn, false, tva);
+                    var tvcea = new TreeViewCancelEventArgs(tn, false, tva);
                     base.OnBeforeSelect(tvcea);
 
                     // This node selection was cancelled!						
@@ -554,7 +554,7 @@ namespace EVEMon.Common.Controls
 
                 OnBeforeDeselect(tn);
 
-                Color[] originalColors = (Color[])m_htblSelectedNodesOrigColors[tn.GetHashCode()];
+                var originalColors = (Color[])m_htblSelectedNodesOrigColors[tn.GetHashCode()];
                 if (originalColors != null)
                 {
                     m_listSelectedNodes.Remove(tn);
@@ -597,7 +597,7 @@ namespace EVEMon.Common.Controls
 
             // Select each node in range
             SelectNode(firstNode, true, tva);
-            TreeNode tnTemp = firstNode;
+            var tnTemp = firstNode;
             while (tnTemp != lastNode && tnTemp != null)
             {
                 tnTemp = tnTemp.NextVisibleNode;
@@ -633,7 +633,7 @@ namespace EVEMon.Common.Controls
             }
 
             // Unselect each node outside range
-            TreeNode tnTemp = firstNode;
+            var tnTemp = firstNode;
             while (tnTemp != null)
             {
                 tnTemp = tnTemp.PrevVisibleNode;
@@ -683,7 +683,7 @@ namespace EVEMon.Common.Controls
             // GKM
             // Determine the rightmost position we'll process clicks (so that the click has to be on the node's bounds, 
             // like the .NET treeview
-            int rightMostX = tn.Bounds.X + tn.Bounds.Width;
+            var rightMostX = tn.Bounds.X + tn.Bounds.Width;
             return e.X < rightMostX; // GKM
         }
 
@@ -694,7 +694,7 @@ namespace EVEMon.Common.Controls
         /// <returns>Level of node.</returns>
         private static int GetNodeLevel(TreeNode node)
         {
-            int level = 0;
+            var level = 0;
             while ((node = node.Parent) != null)
             {
                 level++;
@@ -710,9 +710,9 @@ namespace EVEMon.Common.Controls
         /// <returns>True if specified node is a direct or indirect child of parent node, false if not.</returns>
         private static bool IsChildOf(TreeNode child, TreeNode parent)
         {
-            bool blnChild = false;
+            var blnChild = false;
 
-            TreeNode tnTemp = child;
+            var tnTemp = child;
             while (tnTemp != null)
             {
                 if (tnTemp == parent)
@@ -733,7 +733,7 @@ namespace EVEMon.Common.Controls
         /// <returns>Root parent of specified node.</returns>
         private static TreeNode GetRootParent(TreeNode child)
         {
-            TreeNode tnParent = child;
+            var tnParent = child;
 
             while (tnParent.Parent != null)
             {
@@ -749,9 +749,9 @@ namespace EVEMon.Common.Controls
         /// <returns>Number of visible nodes.</returns>
         private int GetNumberOfVisibleNodes()
         {
-            int intCounter = 0;
+            var intCounter = 0;
 
-            TreeNode tnTemp = Nodes[0];
+            var tnTemp = Nodes[0];
 
             while (tnTemp != null)
             {
@@ -770,7 +770,7 @@ namespace EVEMon.Common.Controls
         /// <returns>Last visible node.</returns>
         private TreeNode GetLastVisibleNode()
         {
-            TreeNode tnTemp = Nodes[0];
+            var tnTemp = Nodes[0];
 
             while (tnTemp.NextVisibleNode != null)
             {
@@ -789,8 +789,8 @@ namespace EVEMon.Common.Controls
         /// <returns>Next node.</returns>
         private static TreeNode GetNextTreeNode(TreeNode start, bool down, int intNumber)
         {
-            int intCounter = 0;
-            TreeNode tnTemp = start;
+            var intCounter = 0;
+            var tnTemp = start;
             while (intCounter < intNumber)
             {
                 if (down)
@@ -821,8 +821,8 @@ namespace EVEMon.Common.Controls
         /// <param name="visible">True to make focus rectangle visible, false to hide it.</param>
         private void SetFocusToNode(TreeNode tn, bool visible)
         {
-            Graphics g = CreateGraphics();
-            Rectangle rect = new Rectangle(tn.Bounds.X, tn.Bounds.Y, tn.Bounds.Width, tn.Bounds.Height);
+            var g = CreateGraphics();
+            var rect = new Rectangle(tn.Bounds.X, tn.Bounds.Y, tn.Bounds.Width, tn.Bounds.Height);
             if (visible)
             {
                 Invalidate(rect, false);
@@ -830,8 +830,8 @@ namespace EVEMon.Common.Controls
                 if (tn.BackColor == SelectionBackColor)
                     return;
 
-                using (SolidBrush brush = new SolidBrush(SelectionBackColor))
-                using (Pen pen = new Pen(brush, 1))
+                using (var brush = new SolidBrush(SelectionBackColor))
+                using (var pen = new Pen(brush, 1))
                 {
                     g.DrawRectangle(pen, rect);
                 }
@@ -840,8 +840,8 @@ namespace EVEMon.Common.Controls
             {
                 if (tn.BackColor != SelectionBackColor)
                 {
-                    using (SolidBrush brush = new SolidBrush(BackColor))
-                    using (Pen pen = new Pen(brush, 1))
+                    using (var brush = new SolidBrush(BackColor))
+                    using (var pen = new Pen(brush, 1))
                     {
                         g.DrawRectangle(pen, m_tnMostRecentSelectedNode.Bounds.X, m_tnMostRecentSelectedNode.Bounds.Y,
                             m_tnMostRecentSelectedNode.Bounds.Width, m_tnMostRecentSelectedNode.Bounds.Height);
@@ -901,7 +901,7 @@ namespace EVEMon.Common.Controls
 #endif
             if (!m_blnNodeProcessedOnMouseDown)
             {
-                TreeNode tn = GetNodeAt(e.X, e.Y);
+                var tn = GetNodeAt(e.X, e.Y);
 
                 // Mouse click has not been handled by the mouse down event, so do it here. This is the case when
                 // a selected node was clicked again; in that case we handle that click here because in case the
@@ -949,7 +949,7 @@ namespace EVEMon.Common.Controls
             // in OnMouseUp we seem to get always e.Clicks = 1, also when item is doubleclicked
             m_intMouseClicks = e.Clicks;
 
-            TreeNode tn = GetNodeAt(e.X, e.Y);
+            var tn = GetNodeAt(e.X, e.Y);
 
             if (tn == null)
                 return;
@@ -969,7 +969,7 @@ namespace EVEMon.Common.Controls
                     // Flash node. In case the node selection is cancelled by the user, this gives the effect that it
                     // was selected and unselected again.
                     m_tnToFlash = tn;
-                    Thread t = new Thread(FlashNode);
+                    var t = new Thread(FlashNode);
                     t.Start();
 
                     m_blnNodeProcessedOnMouseDown = true;
@@ -996,7 +996,7 @@ namespace EVEMon.Common.Controls
                 return;
             }
 
-            TreeNode tn = m_tnToFlash;
+            var tn = m_tnToFlash;
             // Only flash node is it's not yet selected
             if (!IsNodeSelected(tn))
             {
@@ -1062,7 +1062,7 @@ namespace EVEMon.Common.Controls
                     {
                         // CTRL and SHIFT not held down							
                         m_tnSelectionMirrorPoint = endNode;
-                        int intNumberOfSelectedNodes = SelectedNodes.Count;
+                        var intNumberOfSelectedNodes = SelectedNodes.Count;
 
                         // If it was a double click, select node and suspend further processing					
                         if (m_blnWasDoubleClick)
@@ -1073,7 +1073,7 @@ namespace EVEMon.Common.Controls
 
                         if (!IsPlusMinusClicked(endNode, e))
                         {
-                            bool blnNodeWasSelected = IsNodeSelected(endNode);
+                            var blnNodeWasSelected = IsNodeSelected(endNode);
 
                             UnselectAllNodesExceptNode(endNode, tva);
                             SelectNode(endNode, true, tva);
@@ -1084,7 +1084,7 @@ namespace EVEMon.Common.Controls
                             {
                                 // Node should be put in edit mode					
                                 m_tnNodeToStartEditOn = endNode;
-                                Thread t = new Thread(StartEdit);
+                                var t = new Thread(StartEdit);
                                 t.Start();
                             }
                         }
@@ -1127,7 +1127,7 @@ namespace EVEMon.Common.Controls
                         break;
 
                     case TreeViewSelectionMode.MultiSelectSameRootBranch:
-                        TreeNode tnAbsoluteParent2 = GetRootParent(endNode);
+                        var tnAbsoluteParent2 = GetRootParent(endNode);
                         UnselectAllNodesNotBelongingToParent(tnAbsoluteParent2, tva);
                         break;
 
@@ -1136,13 +1136,13 @@ namespace EVEMon.Common.Controls
                         break;
 
                     case TreeViewSelectionMode.MultiSelectSameLevelAndRootBranch:
-                        TreeNode tnAbsoluteParent = GetRootParent(endNode);
+                        var tnAbsoluteParent = GetRootParent(endNode);
                         UnselectAllNodesNotBelongingToParent(tnAbsoluteParent, tva);
                         UnselectAllNodesNotBelongingToLevel(GetNodeLevel(endNode), tva);
                         break;
 
                     case TreeViewSelectionMode.MultiSelectSameParent:
-                        TreeNode tnParent = endNode.Parent;
+                        var tnParent = endNode.Parent;
                         UnselectAllNodesNotBelongingDirectlyToParent(tnParent, tva);
                         break;
                 }
@@ -1176,7 +1176,7 @@ namespace EVEMon.Common.Controls
                     break;
 
                 case TreeViewSelectionMode.MultiSelectSameRootBranch:
-                    TreeNode tnAbsoluteParentStartNode = GetRootParent(startNode);
+                    var tnAbsoluteParentStartNode = GetRootParent(startNode);
                     tnTemp = startNode;
                     // Check each visible node from startNode to endNode and select it if needed
                     while ((tnTemp != null) && (tnTemp != endNode))
@@ -1187,7 +1187,7 @@ namespace EVEMon.Common.Controls
                         if (tnTemp == null)
                             continue;
 
-                        TreeNode tnAbsoluteParent = GetRootParent(tnTemp);
+                        var tnAbsoluteParent = GetRootParent(tnTemp);
                         if (tnAbsoluteParent == tnAbsoluteParentStartNode)
                             SelectNode(tnTemp, true, tva);
                     }
@@ -1207,7 +1207,7 @@ namespace EVEMon.Common.Controls
                         if (tnTemp == null)
                             continue;
 
-                        int intNodeLevel = GetNodeLevel(tnTemp);
+                        var intNodeLevel = GetNodeLevel(tnTemp);
                         if (intNodeLevel == intNodeLevelStart)
                             SelectNode(tnTemp, true, tva);
                     }
@@ -1216,7 +1216,7 @@ namespace EVEMon.Common.Controls
                     break;
 
                 case TreeViewSelectionMode.MultiSelectSameLevelAndRootBranch:
-                    TreeNode tnAbsoluteParentStart = GetRootParent(startNode);
+                    var tnAbsoluteParentStart = GetRootParent(startNode);
                     intNodeLevelStart = GetNodeLevel(startNode);
                     tnTemp = startNode;
                     // Check each visible node from startNode to endNode and select it if needed
@@ -1228,8 +1228,8 @@ namespace EVEMon.Common.Controls
                         if (tnTemp == null)
                             continue;
 
-                        int intNodeLevel = GetNodeLevel(tnTemp);
-                        TreeNode tnAbsoluteParent = GetRootParent(tnTemp);
+                        var intNodeLevel = GetNodeLevel(tnTemp);
+                        var tnAbsoluteParent = GetRootParent(tnTemp);
                         if ((intNodeLevel == intNodeLevelStart) && (tnAbsoluteParent == tnAbsoluteParentStart))
                             SelectNode(tnTemp, true, tva);
                     }
@@ -1244,7 +1244,7 @@ namespace EVEMon.Common.Controls
                     break;
 
                 case TreeViewSelectionMode.MultiSelectSameParent:
-                    TreeNode tnParentStartNode = startNode.Parent;
+                    var tnParentStartNode = startNode.Parent;
                     tnTemp = startNode;
                     // Check each visible node from startNode to endNode and select it if needed
                     while ((tnTemp != null) && (tnTemp != endNode))
@@ -1255,7 +1255,7 @@ namespace EVEMon.Common.Controls
                         if (tnTemp == null)
                             continue;
 
-                        TreeNode tnParent = tnTemp.Parent;
+                        var tnParent = tnTemp.Parent;
                         if (tnParent == tnParentStartNode)
                             SelectNode(tnTemp, true, tva);
                     }
@@ -1285,7 +1285,7 @@ namespace EVEMon.Common.Controls
                     break;
 
                 case TreeViewSelectionMode.MultiSelectSameRootBranch:
-                    TreeNode tnAbsoluteParentStartNode = GetRootParent(startNode);
+                    var tnAbsoluteParentStartNode = GetRootParent(startNode);
                     tnTemp = startNode;
                     // Check each visible node from startNode to endNode and select it if needed
                     while ((tnTemp != null) && (tnTemp != endNode))
@@ -1296,7 +1296,7 @@ namespace EVEMon.Common.Controls
                         if (tnTemp == null)
                             continue;
 
-                        TreeNode tnAbsoluteParent = GetRootParent(tnTemp);
+                        var tnAbsoluteParent = GetRootParent(tnTemp);
                         if (tnAbsoluteParent == tnAbsoluteParentStartNode)
                             SelectNode(tnTemp, true, tva);
                     }
@@ -1315,7 +1315,7 @@ namespace EVEMon.Common.Controls
                         if (tnTemp == null)
                             continue;
 
-                        int intNodeLevel = GetNodeLevel(tnTemp);
+                        var intNodeLevel = GetNodeLevel(tnTemp);
                         if (intNodeLevel == intNodeLevelStart)
                             SelectNode(tnTemp, true, tva);
                     }
@@ -1323,7 +1323,7 @@ namespace EVEMon.Common.Controls
                     break;
 
                 case TreeViewSelectionMode.MultiSelectSameLevelAndRootBranch:
-                    TreeNode tnAbsoluteParentStart = GetRootParent(startNode);
+                    var tnAbsoluteParentStart = GetRootParent(startNode);
                     intNodeLevelStart = GetNodeLevel(startNode);
                     tnTemp = startNode;
                     // Check each visible node from startNode to endNode and select it if needed
@@ -1335,8 +1335,8 @@ namespace EVEMon.Common.Controls
                         if (tnTemp == null)
                             continue;
 
-                        int intNodeLevel = GetNodeLevel(tnTemp);
-                        TreeNode tnAbsoluteParent = GetRootParent(tnTemp);
+                        var intNodeLevel = GetNodeLevel(tnTemp);
+                        var tnAbsoluteParent = GetRootParent(tnTemp);
                         if ((intNodeLevel == intNodeLevelStart) && (tnAbsoluteParent == tnAbsoluteParentStart))
                             SelectNode(tnTemp, true, tva);
                     }
@@ -1358,7 +1358,7 @@ namespace EVEMon.Common.Controls
                     break;
 
                 case TreeViewSelectionMode.MultiSelectSameParent:
-                    TreeNode tnParentStartNode = startNode.Parent;
+                    var tnParentStartNode = startNode.Parent;
                     tnTemp = startNode;
                     // Check each visible node from startNode to endNode and select it if needed
                     while ((tnTemp != null) && (tnTemp != endNode))
@@ -1369,7 +1369,7 @@ namespace EVEMon.Common.Controls
                         if (tnTemp == null)
                             continue;
 
-                        TreeNode tnParent = tnTemp.Parent;
+                        var tnParent = tnTemp.Parent;
                         if (tnParent == tnParentStartNode)
                             SelectNode(tnTemp, true, tva);
                     }
@@ -1411,7 +1411,7 @@ namespace EVEMon.Common.Controls
         /// <param name="e"></param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            Keys kMod = Keys.None;
+            var kMod = Keys.None;
             switch (e.Modifiers)
             {
                 case Keys.Shift:
@@ -1426,7 +1426,7 @@ namespace EVEMon.Common.Controls
                     break;
             }
 
-            int intNumber = 0;
+            var intNumber = 0;
 
             TreeNode tnNewlySelectedNodeWithKeys = null;
             if (m_tnMostRecentSelectedNode != null)
@@ -1540,7 +1540,7 @@ namespace EVEMon.Common.Controls
             m_blnSelectionChanged = false;
 
             // All child nodes should be deselected
-            bool blnChildSelected = false;
+            var blnChildSelected = false;
             foreach (TreeNode tn in e.Node.Nodes)
             {
                 if (IsNodeSelected(tn))

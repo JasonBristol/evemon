@@ -73,20 +73,20 @@ namespace EVEMon.Common.Helpers
         /// </returns>
         internal static bool IsEFTFormat(string text)
         {
-            string[] lines = text.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var lines = text.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
             // Nothing to evaluate
             if (lines.Length == 0)
                 return false;
 
             // Error on first line ?
-            string line = lines.First();
+            var line = lines.First();
             if (string.IsNullOrEmpty(line) || !line.StartsWith("[", StringComparison.CurrentCulture) || !line.Contains(","))
                 return false;
 
             // Retrieve the ship
-            int commaIndex = line.IndexOf(',');
-            string shipTypeName = line.Substring(1, commaIndex - 1);
+            var commaIndex = line.IndexOf(',');
+            var shipTypeName = line.Substring(1, commaIndex - 1);
 
             return StaticItems.ShipsMarketGroup.AllItems.Any(x => x.Name == shipTypeName);
         }
@@ -100,7 +100,7 @@ namespace EVEMon.Common.Helpers
         /// </returns>
         internal static bool IsXMLFormat(string text)
         {
-            XmlRootAttribute xmlRoot = new SerializableXmlFittings().GetType().GetCustomAttributes(
+            var xmlRoot = new SerializableXmlFittings().GetType().GetCustomAttributes(
                 typeof(XmlRootAttribute), false).Cast<XmlRootAttribute>().FirstOrDefault();
 
             if (xmlRoot == null)
@@ -112,7 +112,7 @@ namespace EVEMon.Common.Helpers
                     return false;
             }
 
-            SerializableXmlFittings fittings = Util.DeserializeXmlFromString<SerializableXmlFittings>(text);
+            var fittings = Util.DeserializeXmlFromString<SerializableXmlFittings>(text);
             return StaticItems.ShipsMarketGroup.AllItems.Any(x => x.Name == fittings.Fitting.ShipType.Name);
         }
 
@@ -125,7 +125,7 @@ namespace EVEMon.Common.Helpers
         /// </returns>
         internal static bool IsDNAFormat(string text)
         {
-            string[] lines = text.Split(":".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var lines = text.Split(":".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
             // Nothing to evaluate
             if (lines.Length == 0)
@@ -133,7 +133,7 @@ namespace EVEMon.Common.Helpers
 
             // Error on first line ?
             int shipID;
-            string line = lines.First();
+            var line = lines.First();
             if (string.IsNullOrEmpty(line) || !line.TryParseInv(out shipID))
                 return false;
 
@@ -160,7 +160,7 @@ namespace EVEMon.Common.Helpers
         {
             text.ThrowIfNull(nameof(text));
 
-            string[] lines = text.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var lines = text.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
             ILoadoutInfo loadoutInfo = new LoadoutInfo();
 
@@ -171,14 +171,14 @@ namespace EVEMon.Common.Helpers
             var listOfItems = new List<Item>();
             Loadout loadout = null;
 
-            foreach (string line in lines.Where(line => !string.IsNullOrEmpty(line) &&
-                !line.Contains("empty") && !line.Contains("slot")))
+            foreach (var line in lines.Where(line => !string.IsNullOrEmpty(line) &&
+                                                     !line.Contains("empty") && !line.Contains("slot")))
             {
                 // Retrieve the ship
                 if (line == lines.First())
                 {
                     // Retrieve the loadout name
-                    int commaIndex = line.IndexOf(',');
+                    var commaIndex = line.IndexOf(',');
                     loadoutInfo.Ship = StaticItems.GetItemByName(line.Substring(1,
                         commaIndex - 1));
                     if (loadoutInfo.Ship == null)
@@ -189,29 +189,29 @@ namespace EVEMon.Common.Helpers
                 }
 
                 // Retrieve the item (might be a drone)
-                int lastX = line.LastIndexOf(" x", StringComparison.CurrentCulture);
-                int lastComma = line.LastIndexOf(',');
-                string itemName = lastComma >= 0 ? line.Substring(0, lastComma) : (lastX >= 0 ?
+                var lastX = line.LastIndexOf(" x", StringComparison.CurrentCulture);
+                var lastComma = line.LastIndexOf(',');
+                var itemName = lastComma >= 0 ? line.Substring(0, lastComma) : (lastX >= 0 ?
                     line.Substring(0, lastX) : line);
 
-                int quantity = lastX >= 0 ? int.Parse(line.Substring(lastX + 2, line.Length -
+                var quantity = lastX >= 0 ? int.Parse(line.Substring(lastX + 2, line.Length -
                     (lastX + 2))) : 1;
 
-                Item item = StaticItems.GetItemByName(itemName) ?? Item.UnknownItem;
+                var item = StaticItems.GetItemByName(itemName) ?? Item.UnknownItem;
 
-                for (int i = 0; i < Math.Min(quantity, 100); i++)
+                for (var i = 0; i < Math.Min(quantity, 100); i++)
                 {
                     listOfItems.Add(item);
                 }
 
                 // Retrieve the charge
-                string chargeName = lastComma >= 0 ? line.Substring(lastComma + 1).Trim() :
+                var chargeName = lastComma >= 0 ? line.Substring(lastComma + 1).Trim() :
                     null;
 
                 if (string.IsNullOrEmpty(chargeName))
                     continue;
 
-                Item charge = StaticItems.GetItemByName(chargeName) ?? Item.UnknownItem;
+                var charge = StaticItems.GetItemByName(chargeName) ?? Item.UnknownItem;
 
                 listOfItems.Add(charge);
             }
@@ -232,7 +232,7 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         public static ILoadoutInfo DeserializeXmlFormat(string text)
         {
-            SerializableXmlFittings fittings = Util.DeserializeXmlFromString<SerializableXmlFittings>(text);
+            var fittings = Util.DeserializeXmlFromString<SerializableXmlFittings>(text);
 
             ILoadoutInfo loadoutInfo = new LoadoutInfo();
 
@@ -250,21 +250,21 @@ namespace EVEMon.Common.Helpers
             if (fittings.Fitting.Description.Text.StartsWith("BEGIN gzCLF BLOCK", StringComparison.InvariantCultureIgnoreCase))
                 fittings.Fitting.Description.Text = string.Empty;
 
-            Loadout loadout = new Loadout(fittings.Fitting.Name, fittings.Fitting.Description.Text);
+            var loadout = new Loadout(fittings.Fitting.Name, fittings.Fitting.Description.Text);
 
-            IEnumerable<Item> listOfItems = fittings.Fitting.FittingHardware
+            var listOfItems = fittings.Fitting.FittingHardware
                 .Where(hardware => hardware != null && hardware.Item != null && hardware.Slot != "drone bay")
                 .Select(hardware => hardware.Item);
 
-            IEnumerable<SerializableXmlFittingHardware> listOfXmlDrones = fittings.Fitting.FittingHardware
+            var listOfXmlDrones = fittings.Fitting.FittingHardware
                 .Where(hardware => hardware != null &&
                                    hardware.Item != null &&
                                    hardware.Slot == "drone bay");
 
             var listOfDrones = new List<Item>();
-            foreach (SerializableXmlFittingHardware drone in listOfXmlDrones)
+            foreach (var drone in listOfXmlDrones)
             {
-                for (int i = 0; i < drone.Quantity; i++)
+                for (var i = 0; i < drone.Quantity; i++)
                 {
                     listOfDrones.Add(drone.Item);
                 }
@@ -283,7 +283,7 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         public static ILoadoutInfo DeserializeDnaFormat(string text)
         {
-            string[] lines = text.Split(":".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var lines = text.Split(":".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
             ILoadoutInfo loadoutInfo = new LoadoutInfo();
 
@@ -294,7 +294,7 @@ namespace EVEMon.Common.Helpers
             var listOfItems = new List<Item>();
             Loadout loadout = null;
 
-            foreach (string line in lines.Where(line => !string.IsNullOrEmpty(line)))
+            foreach (var line in lines.Where(line => !string.IsNullOrEmpty(line)))
             {
                 // Retrieve the ship
                 if (line == lines.First())
@@ -312,7 +312,7 @@ namespace EVEMon.Common.Helpers
 
                 // Retrieve the item
                 int itemID;
-                Item item = line.Substring(0, line.LastIndexOf(';')).TryParseInv(out itemID) ?
+                var item = line.Substring(0, line.LastIndexOf(';')).TryParseInv(out itemID) ?
                     (StaticItems.GetItemByID(itemID) ?? Item.UnknownItem) : Item.UnknownItem;
 
                 // Retrieve the quantity
@@ -323,7 +323,7 @@ namespace EVEMon.Common.Helpers
                 if (item.MarketGroup.BelongsIn(DBConstants.AmmosAndChargesMarketGroupID) && quantity > 8)
                     quantity = 1;
 
-                for (int i = 0; i < quantity; i++)
+                for (var i = 0; i < quantity; i++)
                 {
                     listOfItems.Add(item);
                 }
@@ -351,7 +351,7 @@ namespace EVEMon.Common.Helpers
             if (text.Length == 0)
                 return loadoutInfo;
 
-            SerializableClfFitting clfFitting = Util.DeserializeJson<SerializableClfFitting>(text);
+            var clfFitting = Util.DeserializeJson<SerializableClfFitting>(text);
 
             // Nothing to evaluate
             if (clfFitting == null)
@@ -363,26 +363,26 @@ namespace EVEMon.Common.Helpers
             if (loadoutInfo.Ship == null)
                 return loadoutInfo;
 
-            Loadout loadout = new Loadout(clfFitting.MetaData.Title, clfFitting.MetaData.Description);
+            var loadout = new Loadout(clfFitting.MetaData.Title, clfFitting.MetaData.Description);
 
-            IEnumerable<Item> listOfItems = clfFitting.Presets.SelectMany(x => x.Modules)
+            var listOfItems = clfFitting.Presets.SelectMany(x => x.Modules)
                 .Where(module => module != null && module.Item != null)
                 .Select(module => module.Item);
 
-            IEnumerable<Item> listOfCharges = clfFitting.Presets.SelectMany(x => x.Modules)
+            var listOfCharges = clfFitting.Presets.SelectMany(x => x.Modules)
                 .SelectMany(module => module.Charges)
                 .Where(module => module != null && module.Item != null)
                 .Select(module => module.Item);
 
-            IEnumerable<SerializableClfFittingDroneType> listOfClfDrones = clfFitting.Drones.SelectMany(x => x.InBay)
+            var listOfClfDrones = clfFitting.Drones.SelectMany(x => x.InBay)
                 .Concat(clfFitting.Drones.SelectMany(x => x.InSpace))
                 .Where(drone => drone != null && drone.Item != null)
                 .Select(drone => drone);
 
             var listOfDrones = new List<Item>();
-            foreach (SerializableClfFittingDroneType clfDrone in listOfClfDrones)
+            foreach (var clfDrone in listOfClfDrones)
             {
-                for (int i = 0; i < clfDrone.Quantity; i++)
+                for (var i = 0; i < clfDrone.Quantity; i++)
                 {
                     listOfDrones.Add(clfDrone.Item);
                 }

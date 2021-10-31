@@ -76,15 +76,15 @@ namespace EVEMon.Common.Extensions
         /// <returns></returns>
         public static string ToRemainingTimeShortDescription(this DateTime t, DateTimeKind dateTimeKind)
         {
-            DateTime now = dateTimeKind == DateTimeKind.Local ? DateTime.Now : DateTime.UtcNow;
+            var now = dateTimeKind == DateTimeKind.Local ? DateTime.Now : DateTime.UtcNow;
             if (t <= now)
                 return "Done";
 
             // Fixing the small chance that the method could cross over the
             // second boundary, and have an inconsistent result.
-            double factor = Math.Pow(10, 7);
-            long roundedTicks = (long)Math.Round(t.Subtract(now).Ticks / factor) * (int)factor;
-            TimeSpan ts = new TimeSpan(roundedTicks);
+            var factor = Math.Pow(10, 7);
+            var roundedTicks = (long)Math.Round(t.Subtract(now).Ticks / factor) * (int)factor;
+            var ts = new TimeSpan(roundedTicks);
 
             return ts.ToDescriptiveText(DescriptiveTextOptions.SpaceBetween);
         }
@@ -102,17 +102,17 @@ namespace EVEMon.Common.Extensions
         /// <returns></returns>
         public static string ToRemainingTimeDigitalDescription(this DateTime t, DateTimeKind dateTimeKind)
         {
-            DateTime now = dateTimeKind == DateTimeKind.Local ? DateTime.Now : DateTime.UtcNow;
+            var now = dateTimeKind == DateTimeKind.Local ? DateTime.Now : DateTime.UtcNow;
 
             // Small chance that the function could cross over the
             // second boundry, and have an inconsistent result.
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             if (t <= now)
                 return string.Empty;
 
-            double factor = Math.Pow(10, 7);
-            long roundedTicks = (long)Math.Round(t.Subtract(now).Ticks / factor) * (int)factor;
-            TimeSpan ts = new TimeSpan(roundedTicks);
+            var factor = Math.Pow(10, 7);
+            var roundedTicks = (long)Math.Round(t.Subtract(now).Ticks / factor) * (int)factor;
+            var ts = new TimeSpan(roundedTicks);
 
             if (ts.Days > 0)
             {
@@ -148,15 +148,15 @@ namespace EVEMon.Common.Extensions
         /// <returns></returns>
         public static string ToRemainingTimeDescription(this DateTime t, DateTimeKind dateTimeKind)
         {
-            DateTime now = dateTimeKind == DateTimeKind.Local ? DateTime.Now : DateTime.UtcNow;
+            var now = dateTimeKind == DateTimeKind.Local ? DateTime.Now : DateTime.UtcNow;
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             if (t <= now)
                 return "Completed";
 
-            double factor = Math.Pow(10, 7);
-            long roundedTicks = (long)Math.Round(t.Subtract(now).Ticks / factor) * (int)factor;
-            TimeSpan ts = new TimeSpan(roundedTicks);
+            var factor = Math.Pow(10, 7);
+            var roundedTicks = (long)Math.Round(t.Subtract(now).Ticks / factor) * (int)factor;
+            var ts = new TimeSpan(roundedTicks);
 
             if (ts.Days > 0)
             {
@@ -214,8 +214,8 @@ namespace EVEMon.Common.Extensions
         /// <returns>String representation of the time and relative date.</returns>
         public static string ToAbsoluteDateTimeDescription(this DateTime absoluteDateTime, DateTimeKind dateTimeKind)
         {
-            DateTime now = dateTimeKind == DateTimeKind.Local ? DateTime.Now : DateTime.UtcNow;
-            string shortTime = absoluteDateTime.ToShortTimeString();
+            var now = dateTimeKind == DateTimeKind.Local ? DateTime.Now : DateTime.UtcNow;
+            var shortTime = absoluteDateTime.ToShortTimeString();
 
             // Yesterday (i.e. before 00:00 today)
             if (absoluteDateTime.Date == now.Date.AddDays(-1))
@@ -226,15 +226,15 @@ namespace EVEMon.Common.Extensions
                 return $"{shortTime} Today";
 
             // Tomorrow (i.e. after 23:59 today but before 00:00 the day after tomorrow)
-            DateTime tomorrow = now.Date.AddDays(1);
+            var tomorrow = now.Date.AddDays(1);
             if (absoluteDateTime.Date == tomorrow)
                 return $"{shortTime} Tomorrow";
 
             // After tomorrow but within 7 days
-            DateTime sevenDays = now.Date.AddDays(7);
+            var sevenDays = now.Date.AddDays(7);
             if (absoluteDateTime.Date > tomorrow)
             {
-                string dayOfWeek = absoluteDateTime.DayOfWeek.ToString();
+                var dayOfWeek = absoluteDateTime.DayOfWeek.ToString();
                 if (absoluteDateTime.Date < sevenDays)
                     return $"{shortTime} This {dayOfWeek}";
 
@@ -243,7 +243,7 @@ namespace EVEMon.Common.Extensions
             }
 
             // More than seven days away or more than one day ago
-            string shortDate = absoluteDateTime.ToString("d", CultureConstants.DefaultCulture);
+            var shortDate = absoluteDateTime.ToString("d", CultureConstants.DefaultCulture);
             return $"{shortTime} {shortDate}";
         }
 
@@ -256,7 +256,7 @@ namespace EVEMon.Common.Extensions
         /// <returns>Timespan formatted as English text.</returns>
         public static string ToDescriptiveText(this TimeSpan ts, DescriptiveTextOptions dto, bool includeSeconds = true)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             BuildDescriptiveFragment(sb, ts.Days, dto, "days");
             BuildDescriptiveFragment(sb, ts.Hours, dto, "hours");

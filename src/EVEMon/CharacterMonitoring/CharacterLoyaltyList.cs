@@ -128,7 +128,7 @@ namespace EVEMon.CharacterMonitoring
                 return;
             }
 
-            int scrollBarPosition = lbLoyalty.TopIndex;
+            var scrollBarPosition = lbLoyalty.TopIndex;
 
             // Update the standings list
             lbLoyalty.BeginUpdate();
@@ -175,7 +175,7 @@ namespace EVEMon.CharacterMonitoring
             if (e.Index < 0 || e.Index >= lbLoyalty.Items.Count)
                 return;
 
-            Loyalty loyalty = lbLoyalty.Items[e.Index] as Loyalty;
+            var loyalty = lbLoyalty.Items[e.Index] as Loyalty;
             DrawItem(loyalty, e);
         }
 
@@ -207,20 +207,20 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void DrawItem(Loyalty loyalty, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // Draw background
             g.FillRectangle(e.Index % 2 == 0 ? Brushes.White : Brushes.LightGray, e.Bounds);
 
             // Texts - corp on first row, points on last row
-            string corp = loyalty.CorporationName;
-            string loyaltyText = $"{loyalty.LoyaltyPoints}";
-            string pointText = loyalty.LoyaltyPoints == 1 ? "point" : "points";
+            var corp = loyalty.CorporationName;
+            var loyaltyText = $"{loyalty.LoyaltyPoints}";
+            var pointText = loyalty.LoyaltyPoints == 1 ? "point" : "points";
 
             // Measure texts
-            Size corpTextSize = TextRenderer.MeasureText(g, corp, m_loyaltyBoldFont, Size.Empty, Format);
-            Size loyaltyTextSize = TextRenderer.MeasureText(g, loyaltyText, m_loyaltyBoldFont, Size.Empty, Format);
-            Size pointTextSize = TextRenderer.MeasureText(g, pointText, m_loyaltyFont, Size.Empty, Format);
+            var corpTextSize = TextRenderer.MeasureText(g, corp, m_loyaltyBoldFont, Size.Empty, Format);
+            var loyaltyTextSize = TextRenderer.MeasureText(g, loyaltyText, m_loyaltyBoldFont, Size.Empty, Format);
+            var pointTextSize = TextRenderer.MeasureText(g, pointText, m_loyaltyFont, Size.Empty, Format);
 
             // Draw texts
             TextRenderer.DrawText(g, corp, m_loyaltyBoldFont, new Rectangle(
@@ -281,15 +281,15 @@ namespace EVEMon.CharacterMonitoring
                 return;
 
             // Update the drawing based upon the mouse wheel scrolling
-            int numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
-            int lines = numberOfItemLinesToMove;
+            var numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
+            var lines = numberOfItemLinesToMove;
             if (lines == 0)
                 return;
 
             // Compute the number of lines to move
-            int direction = lines / Math.Abs(lines);
-            int[] numberOfPixelsToMove = new int[lines * direction];
-            for (int i = 1; i <= Math.Abs(lines); i++)
+            var direction = lines / Math.Abs(lines);
+            var numberOfPixelsToMove = new int[lines * direction];
+            for (var i = 1; i <= Math.Abs(lines); i++)
             {
                 object item = null;
 
@@ -304,8 +304,8 @@ namespace EVEMon.CharacterMonitoring
                 else
                 {
                     // Compute the height of the items from current the topindex (included)
-                    int height = 0;
-                    for (int j = lbLoyalty.TopIndex + i - 1; j < lbLoyalty.Items.Count; j++)
+                    var height = 0;
+                    for (var j = lbLoyalty.TopIndex + i - 1; j < lbLoyalty.Items.Count; j++)
                     {
                         height += GetItemHeight(lbLoyalty.Items[j]);
                     }
@@ -334,7 +334,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.Windows.Forms.MouseEventArgs"/> instance containing the event data.</param>
         private void lbLoyalty_MouseDown(object sender, MouseEventArgs e)
         {
-            int index = lbLoyalty.IndexFromPoint(e.Location);
+            var index = lbLoyalty.IndexFromPoint(e.Location);
             if (index < 0 || index >= lbLoyalty.Items.Count)
                 return;
 

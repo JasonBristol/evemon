@@ -35,7 +35,7 @@ namespace EVEMon.Common.Models.Collections
             var lookup = new Dictionary<long, Asset>(newAssets.Count);
             foreach (var asset in src)
             {
-                long id = asset.ItemID;
+                var id = asset.ItemID;
                 if (!lookup.ContainsKey(id))
                     // Create asset objects, this can be done outside of the importing process
                     lookup.Add(id, new Asset(asset, m_character));
@@ -43,7 +43,7 @@ namespace EVEMon.Common.Models.Collections
             // Step 2: Match the items to their containers
             Asset root, container;
             int levels;
-            foreach (Asset asset in newAssets)
+            foreach (var asset in newAssets)
             {
                 // Try to find the parent in the assets list
                 root = asset;
@@ -61,12 +61,12 @@ namespace EVEMon.Common.Models.Collections
                 asset.UpdateLocation();
             }
             // Step 3: Initial jump totals
-            foreach (Asset asset in newAssets)
+            foreach (var asset in newAssets)
                 asset.Jumps = GetJumps(asset);
 
             m_isImporting = true;
             Items.Clear();
-            foreach (Asset asset in newAssets)
+            foreach (var asset in newAssets)
                 Items.Add(asset);
             m_isImporting = false;
         }
@@ -76,7 +76,7 @@ namespace EVEMon.Common.Models.Collections
         /// </summary>
         public void UpdateLocation()
         {
-            foreach (Asset asset in Items.TakeWhile(asset => !m_isImporting))
+            foreach (var asset in Items.TakeWhile(asset => !m_isImporting))
             {
                 asset.UpdateLocation();
                 asset.Jumps = GetJumps(asset);
@@ -90,8 +90,8 @@ namespace EVEMon.Common.Models.Collections
         /// <returns></returns>
         private int GetJumps(Asset asset)
         {
-            SolarSystem lastKnownSolarSystem = m_character.LastKnownSolarSystem ??
-                (m_character.LastKnownStation?.SolarSystem);
+            var lastKnownSolarSystem = m_character.LastKnownSolarSystem ??
+                                       (m_character.LastKnownStation?.SolarSystem);
 
             // When data to calculate jumps are insufficient return a default value
             if (lastKnownSolarSystem == null || asset.SolarSystem == null)
@@ -109,7 +109,7 @@ namespace EVEMon.Common.Models.Collections
                 return m_jumps[asset.SolarSystem];
 
             // Calculate the jumps between the character and the asset
-            int jumps = lastKnownSolarSystem.GetFastestPathTo(asset.SolarSystem,
+            var jumps = lastKnownSolarSystem.GetFastestPathTo(asset.SolarSystem,
                 PathSearchCriteria.FewerJumps).Count(system => system != lastKnownSolarSystem);
 
             // Store the calculated jumps

@@ -33,7 +33,7 @@ namespace EVEMon.Common.Models
             m_owner = owner;
 
             m_values = new Implant[SlotNumbers];
-            for (int i = 0; i < SlotNumbers; i++)
+            for (var i = 0; i < SlotNumbers; i++)
             {
                 m_values[i] = new Implant((ImplantSlots)i);
             }
@@ -159,7 +159,7 @@ namespace EVEMon.Common.Models
         /// <param name="src">The source.</param>
         internal void Import(IEnumerable<SerializableNewImplant> src)
         {
-            for (int i = 0; i < SlotNumbers; i++)
+            for (var i = 0; i < SlotNumbers; i++)
             {
                 m_values[i] = StaticItems.GetImplants((ImplantSlots)i).FirstOrDefault(x => src.Any(y => y.ID == x.ID)) ??
                               new Implant((ImplantSlots)i);

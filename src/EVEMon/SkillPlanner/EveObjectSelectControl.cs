@@ -70,7 +70,7 @@ namespace EVEMon.SkillPlanner
                     return;
 
                 // Should we be transforming a Data Browser to a Skill Planner?
-                bool transformToPlanner = (value != null) && (m_plan == null) && (m_character != null);
+                var transformToPlanner = (value != null) && (m_plan == null) && (m_character != null);
 
                 if (value == null)
                     return;
@@ -362,7 +362,7 @@ namespace EVEMon.SkillPlanner
         protected virtual void BuildListBox()
         {
             // Store the selected node (if any) to restore it after the update
-            int selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
+            var selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
 
             lbSearchList.Items.Clear();
 
@@ -375,7 +375,7 @@ namespace EVEMon.SkillPlanner
             }
 
             // Find everything in the current tree that matches the search string
-            List<Item> filteredItems = new List<Item>();
+            var filteredItems = new List<Item>();
             foreach (TreeNode n in tvItems.Nodes)
             {
                 SearchNode(n, tbSearchText.Text, filteredItems);
@@ -386,7 +386,7 @@ namespace EVEMon.SkillPlanner
             lbSearchList.BeginUpdate();
             try
             {
-                foreach (Item item in filteredItems)
+                foreach (var item in filteredItems)
                 {
                     lbSearchList.Items.Add(item);
 
@@ -413,7 +413,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="filteredItems"></param>
         private static void SearchNode(TreeNode tn, string searchText, List<Item> filteredItems)
         {
-            Item item = tn.Tag as Item;
+            var item = tn.Tag as Item;
             if (item == null)
             {
                 foreach (TreeNode subNode in tn.Nodes)
@@ -454,7 +454,7 @@ namespace EVEMon.SkillPlanner
             }
             set
             {
-                List<Item> selectedObjects = new List<Item>();
+                var selectedObjects = new List<Item>();
                 if (value != null)
                     selectedObjects.Add(value);
 
@@ -475,7 +475,7 @@ namespace EVEMon.SkillPlanner
             if (SelectedObjects.Count() == 1)
             {
                 // If the object is not already selected
-                Item obj = SelectedObjects.First();
+                var obj = SelectedObjects.First();
                 tvItems.SelectNodeWithTag(obj);
             }
 
@@ -497,7 +497,7 @@ namespace EVEMon.SkillPlanner
         {
             if (tvItems.SelectedNodes.Count != 0)
             {
-                List<Item> selectedObjects = tvItems.SelectedNodes.Select(node => node.Tag).OfType<Item>().ToList();
+                var selectedObjects = tvItems.SelectedNodes.Select(node => node.Tag).OfType<Item>().ToList();
                 SetSelectedObjects(selectedObjects);
                 return;
             }
@@ -540,7 +540,7 @@ namespace EVEMon.SkillPlanner
         {
             if (lbSearchList.SelectedItems.Count != 0)
             {
-                List<Item> selectedObjects = lbSearchList.SelectedItems.OfType<Item>().ToList();
+                var selectedObjects = lbSearchList.SelectedItems.OfType<Item>().ToList();
                 SetSelectedObjects(selectedObjects);
                 return;
             }
@@ -632,7 +632,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void contextMenu_Opening(object sender, CancelEventArgs e)
         {
-            ContextMenuStrip contextMenuStripControl = sender as ContextMenuStrip;
+            var contextMenuStripControl = sender as ContextMenuStrip;
 
             e.Cancel = contextMenuStripControl?.SourceControl == null ||
                        (!contextMenuStripControl.SourceControl.Visible && SelectedObject == null) ||
@@ -651,7 +651,7 @@ namespace EVEMon.SkillPlanner
         /// </summary>
         private void UpdateContextMenu()
         {
-            TreeNode node = tvItems.SelectedNode;
+            var node = tvItems.SelectedNode;
 
             // Special case for mastery ship levels
             PlanToMasteryLevel(node);
@@ -685,7 +685,7 @@ namespace EVEMon.SkillPlanner
             if (Plan == null)
                 return;
 
-            ShipSelectControl shipSelectorControl = this as ShipSelectControl;
+            var shipSelectorControl = this as ShipSelectControl;
 
             cmiLvPlanTo.Visible = shipSelectorControl != null;
             tsSeparatorPlanTo.Visible = shipSelectorControl != null && lbSearchList.Items.Count == 0;
@@ -697,7 +697,7 @@ namespace EVEMon.SkillPlanner
                 return;
             }
 
-            MasteryShip masteryShip = ((Character)Plan.Character).MasteryShips.GetMasteryShipByID(SelectedObject.ID);
+            var masteryShip = ((Character)Plan.Character).MasteryShips.GetMasteryShipByID(SelectedObject.ID);
 
             if (masteryShip == null)
             {
@@ -710,7 +710,7 @@ namespace EVEMon.SkillPlanner
             cmiLvPlanTo.Text = $"Plan \"{masteryShip.Ship.Name}\" Mastery to...";
 
             // "Plan to N" menus
-            for (int i = 1; i <= 5; i++)
+            for (var i = 1; i <= 5; i++)
             {
                 SetAdditionMenuStatus(cmiLvPlanTo.DropDownItems[i - 1], masteryShip.GetLevel(i));
             }
@@ -741,11 +741,11 @@ namespace EVEMon.SkillPlanner
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void planToLevelMenuItem_Click(object sender, EventArgs e)
         {
-            IPlanOperation operation = ((ToolStripMenuItem)sender).Tag as IPlanOperation;
+            var operation = ((ToolStripMenuItem)sender).Tag as IPlanOperation;
             if (operation == null)
                 return;
 
-            PlanWindow planWindow = ParentForm as PlanWindow;
+            var planWindow = ParentForm as PlanWindow;
             if (planWindow == null)
                 return;
 
@@ -777,13 +777,13 @@ namespace EVEMon.SkillPlanner
             IList<StaticSkillLevel> prerequisites =
                 item.Prerequisites.Where(x => x.Activity != BlueprintActivity.ReverseEngineering).ToList();
 
-            BlueprintSelectControl blueprintSelectControl = this as BlueprintSelectControl;
+            var blueprintSelectControl = this as BlueprintSelectControl;
 
             // Is item a blueprint and supports the selected activity ?  
             if (blueprintSelectControl != null)
             {
-                bool hasSelectedActivity = prerequisites.Any(x => x.Activity == Activity)
-                                           || ((Blueprint)item).MaterialRequirements.Any(x => x.Activity == Activity);
+                var hasSelectedActivity = prerequisites.Any(x => x.Activity == Activity)
+                                          || ((Blueprint)item).MaterialRequirements.Any(x => x.Activity == Activity);
 
                 // Can not be used when item doesn't support the selected activity
                 if ((ActivityFilter == ObjectActivityFilter.Manufacturing || ActivityFilter == ObjectActivityFilter.Invention)
@@ -800,19 +800,19 @@ namespace EVEMon.SkillPlanner
                 return true;
 
             // Is this the "Blueprint Browser" and the activity filter is set to "Any" ?
-            List<bool> prereqTrained = new List<bool>();
+            var prereqTrained = new List<bool>();
             if (blueprintSelectControl != null && ActivityFilter == ObjectActivityFilter.Any)
             {
-                List<BlueprintActivity> prereqActivity = new List<BlueprintActivity>();
+                var prereqActivity = new List<BlueprintActivity>();
 
                 // Create a list with the activities this item supports
-                foreach (StaticSkillLevel prereq in prerequisites.Where(x => !prereqActivity.Contains(x.Activity)))
+                foreach (var prereq in prerequisites.Where(x => !prereqActivity.Contains(x.Activity)))
                 {
                     prereqActivity.Add(prereq.Activity);
                 }
 
                 // Create a list with each prereq skill trained status for the questioned activity
-                foreach (BlueprintActivity activity in prereqActivity)
+                foreach (var activity in prereqActivity)
                 {
                     prereqTrained.Clear();
 
@@ -856,21 +856,21 @@ namespace EVEMon.SkillPlanner
         {
             item.ThrowIfNull(nameof(item));
 
-            Blueprint blueprint = item as Blueprint;
+            var blueprint = item as Blueprint;
 
-            bool hasActivity = blueprint == null || ActivityFilter == ObjectActivityFilter.All
-                               || blueprint.Prerequisites.Any(x => x.Activity == Activity)
-                               || blueprint.MaterialRequirements.Any(x => x.Activity == Activity);
+            var hasActivity = blueprint == null || ActivityFilter == ObjectActivityFilter.All
+                                                || blueprint.Prerequisites.Any(x => x.Activity == Activity)
+                                                || blueprint.MaterialRequirements.Any(x => x.Activity == Activity);
 
             // Special condition check for activity 'Any' 
             // as negative logic returns incorrect results
             if (!(this is BlueprintSelectControl) || ActivityFilter != ObjectActivityFilter.Any)
                 return !CanUse(item) && hasActivity;
 
-            List<StaticSkillLevel> prerequisites =
+            var prerequisites =
                 item.Prerequisites.Where(x => x.Activity != BlueprintActivity.ReverseEngineering).ToList();
 
-            IEnumerable<bool> prereqTrained = prerequisites
+            var prereqTrained = prerequisites
                 .Where(prereq => prereq.Skill != null)
                 .Select(prereq => new
                 {

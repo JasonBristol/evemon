@@ -227,10 +227,10 @@ namespace EVEMon.Common.CloudStorageServices
                 return;
 
             // Find the parent directory of the settings file
-            DirectoryInfo configFileParentDir = Directory.GetParent(Configuration.FilePath);
+            var configFileParentDir = Directory.GetParent(Configuration.FilePath);
 
             // Find the parent directory of the settings file directory
-            DirectoryInfo configFileParentParentDir = configFileParentDir.Parent;
+            var configFileParentParentDir = configFileParentDir.Parent;
 
             // Quits if there is no parent directory
             if (configFileParentParentDir == null)
@@ -247,13 +247,13 @@ namespace EVEMon.Common.CloudStorageServices
 
             // Upgrade the settings file to the current version
             CloudStorageServiceSettings.Default.Upgrade();
-            foreach (CloudStorageServiceProvider provider in Providers)
+            foreach (var provider in Providers)
             {
                 provider.Settings.Upgrade();
             }
 
             // Delete all old settings files inside the settings folder
-            foreach (string directory in Directory.GetDirectories(configFileParentParentDir.FullName)
+            foreach (var directory in Directory.GetDirectories(configFileParentParentDir.FullName)
                 .Where(directory => directory != configFileParentDir.FullName))
             {
                 // Delete the folder recursively
@@ -278,7 +278,7 @@ namespace EVEMon.Common.CloudStorageServices
 
             IsAuthenticated = false;
 
-            SerializableAPIResult<SerializableAPICredentials> result = await RequestProviderAuthCodeAsync().ConfigureAwait(false);
+            var result = await RequestProviderAuthCodeAsync().ConfigureAwait(false);
 
             CredentialsChecked?.ThreadSafeInvoke(this, new CloudStorageServiceProviderEventArgs(result.Error?.ErrorMessage));
 
@@ -301,7 +301,7 @@ namespace EVEMon.Common.CloudStorageServices
 
             EveMonClient.Trace("Initiated");
 
-            SerializableAPIResult<SerializableAPICredentials> result = await CheckProviderAuthCodeAsync(code).ConfigureAwait(false);
+            var result = await CheckProviderAuthCodeAsync(code).ConfigureAwait(false);
             
             if (!result.HasError)
                 Settings.Save();
@@ -340,7 +340,7 @@ namespace EVEMon.Common.CloudStorageServices
 
             IsAuthenticated = false;
 
-            SerializableAPIResult<SerializableAPICredentials> result =
+            var result =
                 await CheckProviderAuthWithCredentialsIsValidAsync(userID, apiKey).ConfigureAwait(false);
 
             IsAuthenticated = !result.HasError;
@@ -378,7 +378,7 @@ namespace EVEMon.Common.CloudStorageServices
 
             IsAuthenticated = false;
 
-            SerializableAPIResult<SerializableAPICredentials> result = await CheckAuthenticationAsync().ConfigureAwait(false);
+            var result = await CheckAuthenticationAsync().ConfigureAwait(false);
 
             IsAuthenticated = !result.HasError && HasCredentialsStored;
 
@@ -397,7 +397,7 @@ namespace EVEMon.Common.CloudStorageServices
         {
             EveMonClient.Trace("Initiated");
 
-            SerializableAPIResult<SerializableAPICredentials> result = await RevokeAuthorizationAsync().ConfigureAwait(false);
+            var result = await RevokeAuthorizationAsync().ConfigureAwait(false);
 
             if (!result.HasError)
                 Settings.Reset();
@@ -433,7 +433,7 @@ namespace EVEMon.Common.CloudStorageServices
             // Ask for user action if uploading fails
             while (true)
             {
-                SerializableAPIResult<CloudStorageServiceAPIFile> result = await UploadFileAsync().ConfigureAwait(false);
+                var result = await UploadFileAsync().ConfigureAwait(false);
                 FileUploaded?.ThreadSafeInvoke(this, new CloudStorageServiceProviderEventArgs(result.Error?.ErrorMessage));
 
                 if (!result.HasError)
@@ -442,7 +442,7 @@ namespace EVEMon.Common.CloudStorageServices
                     return true;
                 }
 
-                DialogResult dialogResult = MessageBox.Show(result.Error?.ErrorMessage, $"{Name} API Error",
+                var dialogResult = MessageBox.Show(result.Error?.ErrorMessage, $"{Name} API Error",
                     MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error);
 
                 switch (dialogResult)
@@ -478,7 +478,7 @@ namespace EVEMon.Common.CloudStorageServices
 
             EveMonClient.Trace("Initiated");
 
-            SerializableAPIResult<CloudStorageServiceAPIFile> result = DownloadFileAsync().Result;
+            var result = DownloadFileAsync().Result;
             FileDownloaded?.ThreadSafeInvoke(this, new CloudStorageServiceProviderEventArgs(result.Error?.ErrorMessage));
 
             if (CloudStorageServiceSettings.Default.UseImmediately)
@@ -518,11 +518,11 @@ namespace EVEMon.Common.CloudStorageServices
 
             EveMonClient.Trace("Initiated");
 
-            SerializableAPIResult<CloudStorageServiceAPIFile> result = await UploadFileAsync().ConfigureAwait(false);
+            var result = await UploadFileAsync().ConfigureAwait(false);
             FileUploaded?.ThreadSafeInvoke(this, new CloudStorageServiceProviderEventArgs(result.Error?.ErrorMessage));
             m_queryPending = false;
 
-            string resultText = result.HasError ? "Failed" : "Completed";
+            var resultText = result.HasError ? "Failed" : "Completed";
             EveMonClient.Trace($"CloudStorageServiceProvider.UploadSettingsFileAsync - {resultText}", printMethod: false);
         }
 
@@ -538,11 +538,11 @@ namespace EVEMon.Common.CloudStorageServices
 
             EveMonClient.Trace("Initiated");
 
-            SerializableAPIResult<CloudStorageServiceAPIFile> result = await DownloadFileAsync().ConfigureAwait(false);
+            var result = await DownloadFileAsync().ConfigureAwait(false);
             FileDownloaded?.ThreadSafeInvoke(this, new CloudStorageServiceProviderEventArgs(result.Error?.ErrorMessage));
             m_queryPending = false;
 
-            string resultText = result.HasError ? "Failed" : "Completed";
+            var resultText = result.HasError ? "Failed" : "Completed";
             EveMonClient.Trace($"CloudStorageServiceProvider.DownloadSettingsFileAsync - {resultText}", printMethod: false);
 
             if (!result.HasError)
@@ -571,7 +571,7 @@ namespace EVEMon.Common.CloudStorageServices
             if (configFileParentParentDir.Parent == null || !Directory.Exists(configFileParentParentDir.Parent.FullName))
                 return;
 
-            foreach (string directory in Directory.GetDirectories(configFileParentParentDir.Parent.FullName)
+            foreach (var directory in Directory.GetDirectories(configFileParentParentDir.Parent.FullName)
                 .Where(directory => directory != configFileParentParentDir.FullName &&
                                     directory.StartsWith(EveMonClient.FileVersionInfo.ProductName,
                                         StringComparison.OrdinalIgnoreCase)))
@@ -590,7 +590,7 @@ namespace EVEMon.Common.CloudStorageServices
         {
             result.ThrowIfNull(nameof(result));
 
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            using (var saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Title = @"EVEMon Settings Backup File Save";
                 saveFileDialog.DefaultExt = "bak";
@@ -601,7 +601,7 @@ namespace EVEMon.Common.CloudStorageServices
                 // Prompts the user for a location
                 saveFileDialog.FileName = $"{result.FileName}.bak";
                 saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                DialogResult dialogResult = saveFileDialog.ShowDialog();
+                var dialogResult = saveFileDialog.ShowDialog();
 
                 // Save settings file if OK
                 if (dialogResult != DialogResult.OK)
@@ -625,7 +625,7 @@ namespace EVEMon.Common.CloudStorageServices
                 return null;
 
             string content;
-            using (StreamReader reader = new StreamReader(Util.ZlibUncompress(response)))
+            using (var reader = new StreamReader(Util.ZlibUncompress(response)))
                 content = await reader.ReadToEndAsync();
 
             if (string.IsNullOrWhiteSpace(content))

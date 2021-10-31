@@ -64,7 +64,7 @@ namespace EVEMon.Common.Serialization.Eve
         {
             get
             {
-                Item ship = StaticItems.GetItemByID(ShipTypeID);
+                var ship = StaticItems.GetItemByID(ShipTypeID);
                 return ship == null || ShipTypeID == 0 ? EveMonConstants.UnknownText : ship.Name;
             }
         }

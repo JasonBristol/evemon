@@ -40,7 +40,7 @@ namespace EVEMon.SkillPlanner
         {
             get
             {
-                PlanWindowSettings settings = new PlanWindowSettings();
+                var settings = new PlanWindowSettings();
                 return settings.DefaultColumns;
             }
         }

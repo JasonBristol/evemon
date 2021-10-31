@@ -64,13 +64,13 @@ namespace EVEMon.SettingsUI
             UpdateCharactersList();
 
             // Replaces the fragments like "%10546464r" (the number being the character ID) by the remaining time
-            string tooltip = m_tooltipFormat ?? string.Empty;
-            foreach (Character character in m_characters)
+            var tooltip = m_tooltipFormat ?? string.Empty;
+            foreach (var character in m_characters)
             {
                 if (character.IsTraining)
                 {
-                    QueuedSkill trainingSkill = character.CurrentlyTrainingSkill;
-                    TimeSpan remainingTime = trainingSkill.EndTime.Subtract(DateTime.UtcNow);
+                    var trainingSkill = character.CurrentlyTrainingSkill;
+                    var remainingTime = trainingSkill.EndTime.Subtract(DateTime.UtcNow);
 
                     tooltip = Regex.Replace(tooltip,
                         $"%{character.CharacterID}r",
@@ -78,7 +78,7 @@ namespace EVEMon.SettingsUI
                         RegexOptions.Compiled);
                 }
 
-                CCPCharacter ccpCharacter = character as CCPCharacter;
+                var ccpCharacter = character as CCPCharacter;
                 if (ccpCharacter != null && ccpCharacter.SkillQueue.IsPaused)
                 {
                     tooltip = Regex.Replace(tooltip,
@@ -104,7 +104,7 @@ namespace EVEMon.SettingsUI
                                       : EveMonClient.MonitoredCharacters.Where(x => x.IsTraining));
 
             // Assembles the tooltip format
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             if (string.IsNullOrEmpty(Settings.UI.SystemTrayTooltip.Format))
             {
                 // Bad tooltip format
@@ -118,7 +118,7 @@ namespace EVEMon.SettingsUI
             else
             {
                 // Assemble tooltip base format with character informations
-                foreach (Character character in m_characters)
+                foreach (var character in m_characters)
                 {
                     if (sb.Length != 0)
                         sb.Append("\n");
@@ -137,9 +137,9 @@ namespace EVEMon.SettingsUI
         /// <returns></returns>
         private static string FormatTooltipText(string toolTipFormat, Character character)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            string tooltipText = Regex.Replace(toolTipFormat, "%([nbsdr]|[ct][ir])",
+            var tooltipText = Regex.Replace(toolTipFormat, "%([nbsdr]|[ct][ir])",
                                                m => TransformTooltipText(character, m), RegexOptions.Compiled);
 
             sb.Append(tooltipText);
@@ -163,7 +163,7 @@ namespace EVEMon.SettingsUI
                     return character.Balance.ToNumericString(2);
             }
 
-            CCPCharacter ccpCharacter = character as CCPCharacter;
+            var ccpCharacter = character as CCPCharacter;
             if (ccpCharacter == null || (!ccpCharacter.IsTraining && !ccpCharacter.SkillQueue.IsPaused))
                 return string.Empty;
 

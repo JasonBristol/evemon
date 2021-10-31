@@ -105,7 +105,7 @@ namespace EVEMon.Common.CloudStorageServices.Dropbox
 
             try
             {
-                Uri authorizeUri = DropboxOAuth2Helper.GetAuthorizeUri(
+                var authorizeUri = DropboxOAuth2Helper.GetAuthorizeUri(
                     Util.Decrypt(DropboxCloudStorageServiceSettings.Default.AppKey,
                         CultureConstants.InvariantCulture.NativeName));
 
@@ -131,7 +131,7 @@ namespace EVEMon.Common.CloudStorageServices.Dropbox
 
             try
             {
-                OAuth2Response response = await DropboxOAuth2Helper.ProcessCodeFlowAsync(code,
+                var response = await DropboxOAuth2Helper.ProcessCodeFlowAsync(code,
                     Util.Decrypt(DropboxCloudStorageServiceSettings.Default.AppKey,
                         CultureConstants.InvariantCulture.NativeName),
                     Util.Decrypt(DropboxCloudStorageServiceSettings.Default.AppSecret,
@@ -167,7 +167,7 @@ namespace EVEMon.Common.CloudStorageServices.Dropbox
             try
             {
                 InitializeCertPinning();
-                using (DropboxClient client = GetClient())
+                using (var client = GetClient())
                 {
                     await client.Users.GetCurrentAccountAsync().ConfigureAwait(false);
                 }
@@ -212,16 +212,16 @@ namespace EVEMon.Common.CloudStorageServices.Dropbox
         /// <returns></returns>
         protected override async Task<SerializableAPIResult<CloudStorageServiceAPIFile>> UploadFileAsync()
         {
-            SerializableAPIResult<CloudStorageServiceAPIFile> result = new SerializableAPIResult<CloudStorageServiceAPIFile>();
+            var result = new SerializableAPIResult<CloudStorageServiceAPIFile>();
 
             try
             {
-                byte[] content = Util.GZipCompress(SettingsFileContentByteArray).ToArray();
-                CommitInfo commitInfo = new CommitInfo($"/{SettingsFileNameWithoutExtension}",
+                var content = Util.GZipCompress(SettingsFileContentByteArray).ToArray();
+                var commitInfo = new CommitInfo($"/{SettingsFileNameWithoutExtension}",
                     WriteMode.Overwrite.Instance);
 
                 InitializeCertPinning();
-                using (DropboxClient client = GetClient())
+                using (var client = GetClient())
                 using (Stream stream = Util.GetMemoryStream(content))
                 {
                     await client.Files.UploadAsync(commitInfo, stream).ConfigureAwait(false);
@@ -260,15 +260,15 @@ namespace EVEMon.Common.CloudStorageServices.Dropbox
         /// <returns></returns>
         protected override async Task<SerializableAPIResult<CloudStorageServiceAPIFile>> DownloadFileAsync()
         {
-            SerializableAPIResult<CloudStorageServiceAPIFile> result = new SerializableAPIResult<CloudStorageServiceAPIFile>();
+            var result = new SerializableAPIResult<CloudStorageServiceAPIFile>();
 
             try
             {
                 InitializeCertPinning();
-                DownloadArg arg = new DownloadArg($"/{SettingsFileNameWithoutExtension}");
-                using (DropboxClient client = GetClient())
+                var arg = new DownloadArg($"/{SettingsFileNameWithoutExtension}");
+                using (var client = GetClient())
                 {
-                    Task<Stream> response = await client.Files.DownloadAsync(arg)
+                    var response = await client.Files.DownloadAsync(arg)
                         .ContinueWith(async task => await task.Result.GetContentAsStreamAsync());
                     return await GetMappedAPIFileAsync(result, response.Result);
                 }
@@ -337,11 +337,11 @@ namespace EVEMon.Common.CloudStorageServices.Dropbox
             // http://babbacom.com/?p=300 - fix security hole
             if (sslpolicyerrors != SslPolicyErrors.None || chain == null)
                 return false;
-            int n = chain.ChainElements.Count;
+            var n = chain.ChainElements.Count;
             if (n == 0)
                 return false;
-            X509ChainElement root = chain.ChainElements[n - 1];
-            string publicKey = root.Certificate.GetPublicKeyString();
+            var root = chain.ChainElements[n - 1];
+            var publicKey = root.Certificate.GetPublicKeyString();
 
             return DropboxCertHelper.IsKnownRootCertPublicKey(publicKey);
         }

@@ -39,7 +39,7 @@ namespace EVEMon.SettingsUI
                 .Select(
                     portraitSize =>
                     {
-                        string size = FormattableString.Invariant($"{portraitSize.GetDefaultValue()}");
+                        var size = FormattableString.Invariant($"{portraitSize.GetDefaultValue()}");
                         return $"{size} by {size}";
                     })
                 .ToArray<object>();
@@ -143,8 +143,8 @@ namespace EVEMon.SettingsUI
         /// <returns></returns>
         private TrayPopupSort GetSortOrder(string selectedSortOrder)
         {
-            TrayPopupSort sortOrder = TrayPopupSort.TrainingCompletionTimeDESC;
-            for (int i = 0; i < m_sortOrder.Length; i++)
+            var sortOrder = TrayPopupSort.TrainingCompletionTimeDESC;
+            for (var i = 0; i < m_sortOrder.Length; i++)
             {
                 if (selectedSortOrder == m_sortOrder[i])
                     sortOrder = (TrayPopupSort)i;
@@ -181,7 +181,7 @@ namespace EVEMon.SettingsUI
             }
             else
             {
-                TrayPopupGrouping groupBy = (TrayPopupGrouping)cbGroupBy.SelectedIndex;
+                var groupBy = (TrayPopupGrouping)cbGroupBy.SelectedIndex;
                 switch (groupBy)
                 {
                     case TrayPopupGrouping.None:

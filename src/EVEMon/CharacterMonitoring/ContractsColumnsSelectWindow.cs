@@ -40,7 +40,7 @@ namespace EVEMon.CharacterMonitoring
         {
             get
             {
-                ContractSettings settings = new ContractSettings();
+                var settings = new ContractSettings();
                 return settings.DefaultColumns;
             }
         }

@@ -55,10 +55,10 @@ namespace EVEMon.Common.Controls
         {
             base.OnDragOver(e);
 
-            TabPage draggedTab = GetDraggedTab(e);
+            var draggedTab = GetDraggedTab(e);
 
             // Retrieve the point in client coordinates
-            Point pt = new Point(e.X, e.Y);
+            var pt = new Point(e.X, e.Y);
             pt = PointToClient(pt);
             if (pt.Equals(m_lastPoint))
                 return;
@@ -72,7 +72,7 @@ namespace EVEMon.Common.Controls
             }
 
             // Retrieve the dragged page. If same as dragged page, return
-            TabPage hoveredTab = GetTabPageAt(pt);
+            var hoveredTab = GetTabPageAt(pt);
             if (draggedTab == hoveredTab)
             {
                 e.Effect = DragDropEffects.None;
@@ -82,8 +82,8 @@ namespace EVEMon.Common.Controls
 
             // Get the old and new marker indices
             bool onLeft;
-            int newIndex = GetMarkerIndex(draggedTab, pt, out onLeft);
-            int oldIndex = m_markerIndex;
+            var newIndex = GetMarkerIndex(draggedTab, pt, out onLeft);
+            var oldIndex = m_markerIndex;
             m_markerIndex = newIndex;
             m_markerOnLeft = onLeft;
 
@@ -100,20 +100,20 @@ namespace EVEMon.Common.Controls
         /// <param name="drgevent"></param>
         protected override void OnDragDrop(DragEventArgs drgevent)
         {
-            TabPage draggedTab = GetDraggedTab(drgevent);
+            var draggedTab = GetDraggedTab(drgevent);
 
             m_lastPoint = new Point(int.MaxValue, int.MaxValue);
             m_markerIndex = -1;
             UpdateMarker();
 
             // Retrieve the point in client coordinates
-            Point pt = new Point(drgevent.X, drgevent.Y);
+            var pt = new Point(drgevent.X, drgevent.Y);
             pt = PointToClient(pt);
 
             // Get the tab we are hovering over.
             bool onLeft;
-            int markerIndex = GetMarkerIndex(draggedTab, pt, out onLeft);
-            int index = GetInsertionIndex(markerIndex, onLeft);
+            var markerIndex = GetMarkerIndex(draggedTab, pt, out onLeft);
+            var index = GetInsertionIndex(markerIndex, onLeft);
 
             // Make sure there is a TabPage being dragged.
             if (draggedTab == null)
@@ -124,7 +124,7 @@ namespace EVEMon.Common.Controls
             }
 
             // Retrieve the dragged page. If same as dragged page, return
-            int draggedIndex = TabPages.IndexOf(draggedTab);
+            var draggedIndex = TabPages.IndexOf(draggedTab);
             if (draggedIndex == index || (draggedIndex == index - 1 && onLeft))
             {
                 drgevent.Effect = DragDropEffects.None;
@@ -187,7 +187,7 @@ namespace EVEMon.Common.Controls
         /// <returns></returns>
         private int GetMarkerIndex(TabPage draggedPage, Point pt, out bool onLeft)
         {
-            TabPage hoveredPage = GetTabPageAt(pt);
+            var hoveredPage = GetTabPageAt(pt);
             if (hoveredPage == null)
             {
                 // Is it on the left or the right side of this control ?
@@ -202,10 +202,10 @@ namespace EVEMon.Common.Controls
             }
 
             // So we're over a page, retrieves its index.
-            int newIndex = TabPages.IndexOf(hoveredPage);
+            var newIndex = TabPages.IndexOf(hoveredPage);
 
             // Is it on the left or the right side of the tab ?
-            Rectangle rect = GetTabRect(newIndex);
+            var rect = GetTabRect(newIndex);
             onLeft = pt.X < (rect.Left + rect.Right) / 2;
             if (onLeft)
                 return newIndex;
@@ -214,7 +214,7 @@ namespace EVEMon.Common.Controls
             if (newIndex + 1 >= TabCount)
                 return newIndex;
 
-            TabPage nextPage = GetTabPageAt(new Point(rect.Right + 1, pt.Y));
+            var nextPage = GetTabPageAt(new Point(rect.Right + 1, pt.Y));
 
             if (nextPage == null || nextPage == draggedPage)
                 return newIndex;
@@ -253,7 +253,7 @@ namespace EVEMon.Common.Controls
             if ((e.Button & MouseButtons.Left) != MouseButtons.Left)
                 return;
 
-            TabPage tp = SelectedTab;
+            var tp = SelectedTab;
 
             if (tp != null)
                 DoDragDrop(tp, DragDropEffects.All);
@@ -268,7 +268,7 @@ namespace EVEMon.Common.Controls
         {
             TabPage tp = null;
 
-            for (int i = 0; i < TabPages.Count; i++)
+            for (var i = 0; i < TabPages.Count; i++)
             {
                 if (!GetTabRect(i).Contains(pt))
                     continue;
@@ -291,13 +291,13 @@ namespace EVEMon.Common.Controls
                 return;
             }
 
-            Rectangle rect = GetTabRect(m_markerIndex);
+            var rect = GetTabRect(m_markerIndex);
             rect.Height -= 1;
             rect.X += 1;
             rect.Y += 1;
 
-            Point topLeft = PointToScreen(new Point(rect.Left, rect.Top));
-            Point topRight = PointToScreen(new Point(rect.Right, rect.Top));
+            var topLeft = PointToScreen(new Point(rect.Left, rect.Top));
+            var topRight = PointToScreen(new Point(rect.Right, rect.Top));
 
             m_marker.Reversed = !m_markerOnLeft;
             m_marker.ShowInactiveTopmost();
@@ -361,21 +361,21 @@ namespace EVEMon.Common.Controls
             {
                 base.OnPaint(e);
 
-                Rectangle rect = ClientRectangle;
-                Color startColor = Color.FromArgb(0, 148, 255);
-                Color endColor = Color.FromArgb(0, 255, 255);
+                var rect = ClientRectangle;
+                var startColor = Color.FromArgb(0, 148, 255);
+                var endColor = Color.FromArgb(0, 255, 255);
 
                 // Computes the marker rectangle and the gradient
                 if (m_reversed)
                 {
-                    Color tempColor = startColor;
+                    var tempColor = startColor;
                     startColor = endColor;
                     endColor = tempColor;
                 }
 
                 // Draws the marker rectangle
                 using (
-                    LinearGradientBrush brush = new LinearGradientBrush(new Point(0, 0), new Point(Width, 0), startColor, endColor)
+                    var brush = new LinearGradientBrush(new Point(0, 0), new Point(Width, 0), startColor, endColor)
                     )
                 {
                     e.Graphics.FillRectangle(brush, rect);
@@ -420,7 +420,7 @@ namespace EVEMon.Common.Controls
             {
                 base.OnDragLeave(e);
 
-                Point pt = m_owner.PointToClient(Cursor.Position);
+                var pt = m_owner.PointToClient(Cursor.Position);
                 if (m_owner.ClientRectangle.Contains(pt))
                     return;
 

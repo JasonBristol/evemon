@@ -204,10 +204,10 @@ namespace EVEMon.CharacterMonitoring
             get
             {
                 // Add the visible columns; matching the display order
-                List<MarketOrderColumnSettings> newColumns = new List<MarketOrderColumnSettings>();
-                foreach (ColumnHeader header in lvOrders.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
+                var newColumns = new List<MarketOrderColumnSettings>();
+                foreach (var header in lvOrders.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
                 {
-                    MarketOrderColumnSettings columnSetting = m_columns.First(x => x.Column == (MarketOrderColumn)header.Tag);
+                    var columnSetting = m_columns.First(x => x.Column == (MarketOrderColumn)header.Tag);
                     if (columnSetting.Width > -1)
                         columnSetting.Width = header.Width;
                     newColumns.Add(columnSetting);
@@ -334,9 +334,9 @@ namespace EVEMon.CharacterMonitoring
                 lvOrders.Groups.Clear();
                 lvOrders.Items.Clear();
 
-                foreach (MarketOrderColumnSettings column in m_columns.Where(x => x.Visible))
+                foreach (var column in m_columns.Where(x => x.Visible))
                 {
-                    ColumnHeader header = lvOrders.Columns.Add(column.Column.GetHeader(), column.Width);
+                    var header = lvOrders.Columns.Add(column.Column.GetHeader(), column.Width);
                     header.Tag = column.Column;
 
                     switch (column.Column)
@@ -376,18 +376,18 @@ namespace EVEMon.CharacterMonitoring
             if (!Visible)
                 return;
 
-            int scrollBarPosition = lvOrders.GetVerticalScrollBarPosition();
+            var scrollBarPosition = lvOrders.GetVerticalScrollBarPosition();
 
             // Store the selected item (if any) to restore it after the update
-            int selectedItem = lvOrders.SelectedItems.Count > 0
+            var selectedItem = lvOrders.SelectedItems.Count > 0
                 ? lvOrders.SelectedItems[0].Tag.GetHashCode()
                 : 0;
 
             lvOrders.BeginUpdate();
             try
             {
-                IEnumerable<MarketOrder> orders = m_list.Where(x => x.Item != null &&
-                    x.Station != null).Where(x => IsTextMatching(x, m_textFilter));
+                var orders = m_list.Where(x => x.Item != null &&
+                                               x.Station != null).Where(x => IsTextMatching(x, m_textFilter));
 
                 if (Character != null && Settings.UI.MainWindow.MarketOrders.HideInactiveOrders)
                     orders = orders.Where(x => x.IsAvailable);
@@ -402,7 +402,7 @@ namespace EVEMon.CharacterMonitoring
                 // Restore the selected item (if any)
                 if (selectedItem > 0)
                 {
-                    foreach (ListViewItem lvItem in lvOrders.Items.Cast<ListViewItem>().Where(
+                    foreach (var lvItem in lvOrders.Items.Cast<ListViewItem>().Where(
                         lvItem => lvItem.Tag.GetHashCode() == selectedItem))
                     {
                         lvItem.Selected = true;
@@ -448,52 +448,52 @@ namespace EVEMon.CharacterMonitoring
             switch (m_grouping)
             {
                 case MarketOrderGrouping.State:
-                    IOrderedEnumerable<IGrouping<OrderState, MarketOrder>> groups0 =
+                    var groups0 =
                         orders.GroupBy(x => x.State).OrderBy(x => (int)x.Key);
                     UpdateContent(groups0);
                     break;
                 case MarketOrderGrouping.StateDesc:
-                    IOrderedEnumerable<IGrouping<OrderState, MarketOrder>> groups1 =
+                    var groups1 =
                         orders.GroupBy(x => x.State).OrderByDescending(x => (int)x.Key);
                     UpdateContent(groups1);
                     break;
                 case MarketOrderGrouping.Issued:
-                    IOrderedEnumerable<IGrouping<DateTime, MarketOrder>> groups2 =
+                    var groups2 =
                         orders.GroupBy(x => x.Issued.ToLocalTime().Date).OrderBy(x => x.Key);
                     UpdateContent(groups2);
                     break;
                 case MarketOrderGrouping.IssuedDesc:
-                    IOrderedEnumerable<IGrouping<DateTime, MarketOrder>> groups3 =
+                    var groups3 =
                         orders.GroupBy(x => x.Issued.ToLocalTime().Date).OrderByDescending(x => x.Key);
                     UpdateContent(groups3);
                     break;
                 case MarketOrderGrouping.ItemType:
-                    IOrderedEnumerable<IGrouping<MarketGroup, MarketOrder>> groups4 =
+                    var groups4 =
                         orders.GroupBy(x => x.Item.MarketGroup).OrderBy(x => x.Key.Name);
                     UpdateContent(groups4);
                     break;
                 case MarketOrderGrouping.ItemTypeDesc:
-                    IOrderedEnumerable<IGrouping<MarketGroup, MarketOrder>> groups5 =
+                    var groups5 =
                         orders.GroupBy(x => x.Item.MarketGroup).OrderByDescending(x => x.Key.Name);
                     UpdateContent(groups5);
                     break;
                 case MarketOrderGrouping.Location:
-                    IOrderedEnumerable<IGrouping<Station, MarketOrder>> groups6 =
+                    var groups6 =
                         orders.GroupBy(x => x.Station).OrderBy(x => x.Key.Name);
                     UpdateContent(groups6);
                     break;
                 case MarketOrderGrouping.LocationDesc:
-                    IOrderedEnumerable<IGrouping<Station, MarketOrder>> groups7 =
+                    var groups7 =
                         orders.GroupBy(x => x.Station).OrderByDescending(x => x.Key.Name);
                     UpdateContent(groups7);
                     break;
                 case MarketOrderGrouping.OrderType:
-                    IOrderedEnumerable<IGrouping<string, MarketOrder>> groups8 =
+                    var groups8 =
                         orders.GroupBy(x => x is BuyOrder ? "Buying Orders" : "Selling Orders").OrderBy(x => x.Key);
                     UpdateContent(groups8);
                     break;
                 case MarketOrderGrouping.OrderTypeDesc:
-                    IOrderedEnumerable<IGrouping<string, MarketOrder>> groups9 =
+                    var groups9 =
                         orders.GroupBy(x => x is BuyOrder ? "Buying Orders" : "Selling Orders").OrderByDescending(x => x.Key);
                     UpdateContent(groups9);
                     break;
@@ -511,7 +511,7 @@ namespace EVEMon.CharacterMonitoring
             lvOrders.Groups.Clear();
 
             // Add the groups
-            foreach (IGrouping<TKey, MarketOrder> group in groups)
+            foreach (var group in groups)
             {
                 string groupText;
                 if (group.Key is OrderState)
@@ -521,7 +521,7 @@ namespace EVEMon.CharacterMonitoring
                 else
                     groupText = group.Key.ToString();
 
-                ListViewGroup listGroup = new ListViewGroup(groupText);
+                var listGroup = new ListViewGroup(groupText);
                 lvOrders.Groups.Add(listGroup);
 
                 // Add the items in every group
@@ -561,13 +561,13 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Creates the subitems
-            for (int i = 0; i < lvOrders.Columns.Count; i++)
+            for (var i = 0; i < lvOrders.Columns.Count; i++)
             {
                 SetColumn(order, item.SubItems[i], (MarketOrderColumn)lvOrders.Columns[i].Tag);
             }
 
             // Tooltip
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder
                 .Append($"Issued For: {order.IssuedFor}")
                 .AppendLine()
@@ -606,14 +606,14 @@ namespace EVEMon.CharacterMonitoring
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (lvOrders.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += lvOrders.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -638,9 +638,9 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void UpdateSortVisualFeedback()
         {
-            foreach (ColumnHeader columnHeader in lvOrders.Columns.Cast<ColumnHeader>())
+            foreach (var columnHeader in lvOrders.Columns.Cast<ColumnHeader>())
             {
-                MarketOrderColumn column = (MarketOrderColumn)columnHeader.Tag;
+                var column = (MarketOrderColumn)columnHeader.Tag;
                 if (m_sortCriteria == column)
                     columnHeader.ImageIndex = m_sortAscending ? 0 : 1;
                 else
@@ -678,7 +678,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="column"></param>
         private static void SetColumn(MarketOrder order, ListViewItem.ListViewSubItem item, MarketOrderColumn column)
         {
-            BuyOrder buyOrder = order as BuyOrder;
+            var buyOrder = order as BuyOrder;
 
             switch (column)
             {
@@ -686,7 +686,7 @@ namespace EVEMon.CharacterMonitoring
                 item.Text = $"{order.Duration} Day{(order.Duration.S())}";
                 break;
             case MarketOrderColumn.Expiration:
-                ListViewItemFormat format = FormatExpiration(order);
+                var format = FormatExpiration(order);
                 item.Text = format.Text;
                 item.ForeColor = format.TextColor;
                 break;
@@ -733,8 +733,8 @@ namespace EVEMon.CharacterMonitoring
                 item.ForeColor = buyOrder != null ? Color.DarkRed : Color.DarkGreen;
                 break;
             case MarketOrderColumn.Volume:
-                string remainingVolumeText = FormatQuantity(order.RemainingVolume);
-                string initialVolumeText = FormatQuantity(order.InitialVolume);
+                var remainingVolumeText = FormatQuantity(order.RemainingVolume);
+                var initialVolumeText = FormatQuantity(order.InitialVolume);
                 item.Text = $"{remainingVolumeText} / {initialVolumeText}";
                 break;
             case MarketOrderColumn.LastStateChange:
@@ -784,7 +784,7 @@ namespace EVEMon.CharacterMonitoring
         private static ListViewItemFormat FormatExpiration(MarketOrder order)
         {
             // Initialize to sensible defaults
-            ListViewItemFormat format = new ListViewItemFormat
+            var format = new ListViewItemFormat
             {
                 TextColor = Color.Black,
                 Text = order.Expiration.ToRemainingTimeShortDescription(DateTimeKind.Utc)
@@ -860,7 +860,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            MarketOrderColumn column = (MarketOrderColumn)lvOrders.Columns[e.Column].Tag;
+            var column = (MarketOrderColumn)lvOrders.Columns[e.Column].Tag;
             if (m_sortCriteria == column)
                 m_sortAscending = !m_sortAscending;
             else
@@ -902,7 +902,7 @@ namespace EVEMon.CharacterMonitoring
 
             lvOrders.Cursor = CustomCursors.ContextMenu;
 
-            ListViewItem item = lvOrders.GetItemAt(e.Location.X, e.Location.Y);
+            var item = lvOrders.GetItemAt(e.Location.X, e.Location.Y);
             if (item == null)
             {
                 m_tooltip.Hide();
@@ -929,7 +929,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
         private void contextMenu_Opening(object sender, CancelEventArgs e)
         {
-            bool visible = lvOrders.SelectedItems.Count != 0;
+            var visible = lvOrders.SelectedItems.Count != 0;
 
             showInBrowserMenuItem.Visible =
                 showInBrowserMenuSeparator.Visible = visible;
@@ -937,19 +937,19 @@ namespace EVEMon.CharacterMonitoring
             if (!visible)
                 return;
 
-            MarketOrder order = lvOrders.SelectedItems[0]?.Tag as MarketOrder;
+            var order = lvOrders.SelectedItems[0]?.Tag as MarketOrder;
 
             if (order?.Item == null)
                 return;
 
-            Blueprint blueprint = StaticBlueprints.GetBlueprintByID(order.Item.ID);
-            Ship ship = order.Item as Ship;
-            Skill skill = Character.Skills[order.Item.ID];
+            var blueprint = StaticBlueprints.GetBlueprintByID(order.Item.ID);
+            var ship = order.Item as Ship;
+            var skill = Character.Skills[order.Item.ID];
 
             if (skill == Skill.UnknownSkill)
                 skill = null;
 
-            string text = ship != null ? "Ship" : blueprint != null ? "Blueprint" : skill != null ? "Skill" : "Item";
+            var text = ship != null ? "Ship" : blueprint != null ? "Blueprint" : skill != null ? "Skill" : "Item";
 
             showInBrowserMenuItem.Text = $"Show In {text} Browser...";
         }
@@ -961,19 +961,19 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void showInBrowserMenuItem_Click(object sender, EventArgs e)
         {
-            MarketOrder order = lvOrders.SelectedItems[0]?.Tag as MarketOrder;
+            var order = lvOrders.SelectedItems[0]?.Tag as MarketOrder;
 
             if (order?.Item == null)
                 return;
 
-            Ship ship = order.Item as Ship;
-            Blueprint blueprint = StaticBlueprints.GetBlueprintByID(order.Item.ID);
-            Skill skill = Character.Skills[order.Item.ID];
+            var ship = order.Item as Ship;
+            var blueprint = StaticBlueprints.GetBlueprintByID(order.Item.ID);
+            var skill = Character.Skills[order.Item.ID];
 
             if (skill == Skill.UnknownSkill)
                 skill = null;
 
-            PlanWindow planWindow = PlanWindow.ShowPlanWindow(Character);
+            var planWindow = PlanWindow.ShowPlanWindow(Character);
 
             if (ship != null)
                 planWindow.ShowShipInBrowser(ship);
@@ -1033,7 +1033,7 @@ namespace EVEMon.CharacterMonitoring
             if (Character == null)
                 return;
 
-            foreach (MarketOrder order in m_list)
+            foreach (var order in m_list)
             {
                 order.UpdateStation();
             }
@@ -1077,14 +1077,14 @@ namespace EVEMon.CharacterMonitoring
         {
             const int BaseOrders = 5;
             long maxOrders = BaseOrders + m_skillBasedOrders;
-            int activeOrders = m_activeOrdersIssuedForCharacter + m_activeOrdersIssuedForCorporation;
-            long remainingOrders = maxOrders - activeOrders;
-            decimal activeSellOrdersTotal = m_sellOrdersIssuedForCharacterTotal + m_sellOrdersIssuedForCorporationTotal;
-            decimal activeBuyOrdersTotal = m_buyOrdersIssuedForCharacterTotal + m_buyOrdersIssuedForCorporationTotal;
+            var activeOrders = m_activeOrdersIssuedForCharacter + m_activeOrdersIssuedForCorporation;
+            var remainingOrders = maxOrders - activeOrders;
+            var activeSellOrdersTotal = m_sellOrdersIssuedForCharacterTotal + m_sellOrdersIssuedForCorporationTotal;
+            var activeBuyOrdersTotal = m_buyOrdersIssuedForCharacterTotal + m_buyOrdersIssuedForCorporationTotal;
 
-            string ordersRemainingText = $"Orders Remaining: {remainingOrders} out of {maxOrders} max";
-            string activeSellOrdersTotalText = $"Sell Orders Total: {activeSellOrdersTotal:N} ISK";
-            string activeBuyOrdersTotalText = $"Buy Orders Total: {activeBuyOrdersTotal:N} ISK";
+            var ordersRemainingText = $"Orders Remaining: {remainingOrders} out of {maxOrders} max";
+            var activeSellOrdersTotalText = $"Sell Orders Total: {activeSellOrdersTotal:N} ISK";
+            var activeBuyOrdersTotalText = $"Buy Orders Total: {activeBuyOrdersTotal:N} ISK";
             marketExpPanelControl.HeaderText =
                 $"{ordersRemainingText}{string.Empty,5}{activeSellOrdersTotalText}{string.Empty,5}{activeBuyOrdersTotalText}";
         }
@@ -1140,7 +1140,7 @@ namespace EVEMon.CharacterMonitoring
             marketExpPanelControl.SuspendLayout();
 
             const int Pad = 5;
-            int height = marketExpPanelControl.ExpandDirection == Direction.Up ? Pad : marketExpPanelControl.HeaderHeight;
+            var height = marketExpPanelControl.ExpandDirection == Direction.Up ? Pad : marketExpPanelControl.HeaderHeight;
 
             m_lblTotalEscrow.Location = new Point(5, height);
             height += m_lblTotalEscrow.Height;
@@ -1369,7 +1369,7 @@ namespace EVEMon.CharacterMonitoring
                 });
 
             // Apply properties
-            foreach (Label label in marketExpPanelControl.Controls.OfType<Label>())
+            foreach (var label in marketExpPanelControl.Controls.OfType<Label>())
             {
                 label.ForeColor = SystemColors.ControlText;
                 label.BackColor = Color.Transparent;
@@ -1387,7 +1387,7 @@ namespace EVEMon.CharacterMonitoring
             m_lblRemoteBidRange.Location = new Point(220, 0);
 
             // Subscribe events
-            foreach (Label label in marketExpPanelControl.Controls.OfType<Label>())
+            foreach (var label in marketExpPanelControl.Controls.OfType<Label>())
             {
                 label.MouseClick += OnExpandablePanelMouseClick;
             }

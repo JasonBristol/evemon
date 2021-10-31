@@ -20,19 +20,19 @@ namespace EVEMon.XmlGenerator.Datafiles
         /// </summary>
         internal static void GenerateDatafile()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             Util.ResetCounters();
 
             Console.WriteLine();
             Console.Write(@"Generating skills datafile... ");
 
             // Export skill groups
-            List<SerializableSkillGroup> listOfSkillGroups = new List<SerializableSkillGroup>();
+            var listOfSkillGroups = new List<SerializableSkillGroup>();
 
-            foreach (InvGroups group in Database.InvGroupsTable.Where(
+            foreach (var group in Database.InvGroupsTable.Where(
                 x => x.CategoryID == DBConstants.SkillCategoryID && x.ID != DBConstants.FakeSkillsGroupID).OrderBy(x => x.Name))
             {
-                SerializableSkillGroup skillGroup = new SerializableSkillGroup
+                var skillGroup = new SerializableSkillGroup
                 {
                     ID = group.ID,
                     Name = group.Name,
@@ -46,7 +46,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             }
 
             // Serialize
-            SkillsDatafile datafile = new SkillsDatafile();
+            var datafile = new SkillsDatafile();
             datafile.SkillGroups.AddRange(listOfSkillGroups);
 
             Util.DisplayEndTime(stopwatch);
@@ -61,7 +61,7 @@ namespace EVEMon.XmlGenerator.Datafiles
         /// <returns></returns>
         private static IEnumerable<SerializableSkill> ExportSkillsInGroup(IHasID group)
         {
-            List<SerializableSkill> listOfSkillsInGroup = new List<SerializableSkill>();
+            var listOfSkillsInGroup = new List<SerializableSkill>();
 
             var alphaLimit = HoboleaksAlphaSkills.GetAlphaSkillLimits();
             var l5 = new SerializableSkillPrerequisite()
@@ -71,12 +71,12 @@ namespace EVEMon.XmlGenerator.Datafiles
                 Name = Database.InvTypesTable[3348].Name
             };
 
-            foreach (InvTypes skill in Database.InvTypesTable.Where(x => x.GroupID == group.ID))
+            foreach (var skill in Database.InvTypesTable.Where(x => x.GroupID == group.ID))
             {
                 Util.UpdatePercentDone(Database.SkillsTotalCount);
 
-                int skillID = skill.ID;
-                SerializableSkill singleSkill = new SerializableSkill
+                var skillID = skill.ID;
+                var singleSkill = new SerializableSkill
                 {
                     ID = skillID,
                     Name = skill.Name,
@@ -87,7 +87,7 @@ namespace EVEMon.XmlGenerator.Datafiles
                 };
 
                 // Export skill atributes
-                Dictionary<int, long> skillAttributes = Database.DgmTypeAttributesTable.Where(
+                var skillAttributes = Database.DgmTypeAttributesTable.Where(
                     x => x.ItemID == skill.ID).ToDictionary(
                         attribute => attribute.AttributeID, attribute => attribute.GetInt64Value);
 
@@ -105,17 +105,17 @@ namespace EVEMon.XmlGenerator.Datafiles
                     : EveAttribute.None;
 
                 // Export prerequisites
-                List<SerializableSkillPrerequisite> listOfPrerequisites = new List<SerializableSkillPrerequisite>();
+                var listOfPrerequisites = new List<SerializableSkillPrerequisite>();
 
-                for (int i = 0; i < DBConstants.RequiredSkillPropertyIDs.Count; i++)
+                for (var i = 0; i < DBConstants.RequiredSkillPropertyIDs.Count; i++)
                 {
                     if (!skillAttributes.ContainsKey(DBConstants.RequiredSkillPropertyIDs[i]) ||
                         !skillAttributes.ContainsKey(DBConstants.RequiredSkillLevelPropertyIDs[i]))
                         continue;
 
-                    InvTypes prereqSkill = Database.InvTypesTable[skillAttributes[DBConstants.RequiredSkillPropertyIDs[i]]];
+                    var prereqSkill = Database.InvTypesTable[skillAttributes[DBConstants.RequiredSkillPropertyIDs[i]]];
 
-                    SerializableSkillPrerequisite preReq = new SerializableSkillPrerequisite
+                    var preReq = new SerializableSkillPrerequisite
                     {
                         ID = prereqSkill.ID,
                         Level =

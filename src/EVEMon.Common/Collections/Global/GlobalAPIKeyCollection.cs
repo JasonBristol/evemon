@@ -41,7 +41,7 @@ namespace EVEMon.Common.Collections.Global
             apiKey.ThrowIfNull(nameof(apiKey));
 
             // Removes the API key on the owned identities
-            foreach (CharacterIdentity identity in apiKey.CharacterIdentities.Where(x => x.ESIKeys.Contains(apiKey)))
+            foreach (var identity in apiKey.CharacterIdentities.Where(x => x.ESIKeys.Contains(apiKey)))
             {
                 identity.ESIKeys.Remove(apiKey);
 
@@ -81,13 +81,13 @@ namespace EVEMon.Common.Collections.Global
         internal void Import(IEnumerable<SerializableESIKey> serial)
         {
             // Unsubscribe events
-            foreach (ESIKey apiKey in Items.Values)
+            foreach (var apiKey in Items.Values)
             {
                 apiKey.Dispose();
             }
 
             Items.Clear();
-            foreach (SerializableESIKey apikey in serial)
+            foreach (var apikey in serial)
             {
                 try
                 {

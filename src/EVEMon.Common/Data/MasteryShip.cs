@@ -90,7 +90,7 @@ namespace EVEMon.Common.Data
             do
             {
                 updatedAnything = false;
-                bool previousUntrained = false;
+                var previousUntrained = false;
                 // Iterate 1 to 5
                 // If a mastery is untrained, then we know that all levels above it are
                 // also untrained

@@ -143,7 +143,7 @@ namespace EVEMon.Common.Controls
             // Calling the base method
             base.OnPaint(pe);
 
-            Image frame = s_strobeFrame;
+            var frame = s_strobeFrame;
 
             // Select the frame to display
             switch (m_state)
@@ -193,7 +193,7 @@ namespace EVEMon.Common.Controls
 
             //Make the stopped Image
             s_strobeFrame = new Bitmap(ImageWidth, ImageHeight);
-            using (Graphics g = Graphics.FromImage(s_strobeFrame))
+            using (var g = Graphics.FromImage(s_strobeFrame))
             {
                 g.DrawImage(b, new Rectangle(0, 0, ImageWidth, ImageHeight), new Rectangle(0, 0, ImageWidth, ImageHeight),
                             GraphicsUnit.Pixel);
@@ -201,15 +201,15 @@ namespace EVEMon.Common.Controls
 
             //Make the moving Images
             s_movingFrames = new Image[8];
-            for (int i = 1; i < 9; i++)
+            for (var i = 1; i < 9; i++)
             {
                 Bitmap bmp;
-                using (Bitmap tempBitmap = new Bitmap(ImageWidth, ImageHeight))
+                using (var tempBitmap = new Bitmap(ImageWidth, ImageHeight))
                 {
                     bmp = (Bitmap)tempBitmap.Clone();
                 }
 
-                using (Graphics g = Graphics.FromImage(bmp))
+                using (var g = Graphics.FromImage(bmp))
                 {
                     g.DrawImage(b, new Rectangle(0, 0, ImageWidth, ImageHeight),
                                 new Rectangle(i * ImageWidth, 0, ImageWidth, ImageHeight),

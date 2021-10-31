@@ -31,7 +31,7 @@ namespace EVEMon.Common.Controls
 
             // stacked using blocks to avoid indentation, don't need to call IDisposable.Dispose explicitly
             using (var currentContext = new BufferedGraphicsContext())
-            using (BufferedGraphics bufferedGraphics = currentContext.Allocate(e.Graphics, newBounds))
+            using (var bufferedGraphics = currentContext.Allocate(e.Graphics, newBounds))
             {
                 var newArgs = new DrawItemEventArgs(bufferedGraphics.Graphics, e.Font,
                     newBounds, e.Index, e.State, e.ForeColor, e.BackColor);
@@ -56,8 +56,8 @@ namespace EVEMon.Common.Controls
                 m.Msg = NativeMethods.WM_NULL;
                 break;
             case NativeMethods.WM_POINTERDOWN:
-                uint id = (uint)m.WParam & NativeMethods.PT_POINTERID_MASK;
-                if (NativeMethods.GetPointerType(id, out int pPointerType))
+                var id = (uint)m.WParam & NativeMethods.PT_POINTERID_MASK;
+                if (NativeMethods.GetPointerType(id, out var pPointerType))
                 {
                     if (pPointerType == NativeMethods.PT_TOUCH)
                         // Touch press down
@@ -96,9 +96,9 @@ namespace EVEMon.Common.Controls
             {
                 using (var r = new Region(ClientRectangle))
                 {
-                    for (int i = 0; i < Items.Count; i++)
+                    for (var i = 0; i < Items.Count; i++)
                     {
-                        Rectangle itemRect = GetItemRectangle(i);
+                        var itemRect = GetItemRectangle(i);
                         r.Exclude(itemRect);
                     }
 

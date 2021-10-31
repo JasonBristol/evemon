@@ -28,19 +28,19 @@ namespace EVEMon.Common.Data
                 return;
 
             // Create the implants slots
-            for (int i = 0; i < s_implantSlots.Length; i++)
+            for (var i = 0; i < s_implantSlots.Length; i++)
             {
                 s_implantSlots[i] = new ImplantCollection((ImplantSlots)i);
             }
 
             // Deserialize the items datafile
-            ItemsDatafile datafile = Util.DeserializeDatafile<ItemsDatafile>(DatafileConstants.ItemsDatafile,
+            var datafile = Util.DeserializeDatafile<ItemsDatafile>(DatafileConstants.ItemsDatafile,
                 Util.LoadXslt(Properties.Resources.DatafilesXSLT));
 
             MarketGroups = new MarketGroupCollection(null, datafile.MarketGroups);
 
             // Gather the items into a by-ID dictionary
-            foreach (MarketGroup marketGroup in MarketGroups)
+            foreach (var marketGroup in MarketGroups)
             {
                 InitializeDictionaries(marketGroup);
             }
@@ -60,12 +60,12 @@ namespace EVEMon.Common.Data
 
             s_marketGroupsByID[marketGroup.ID] = marketGroup;
 
-            foreach (Item item in marketGroup.Items)
+            foreach (var item in marketGroup.Items)
             {
                 s_itemsByID[item.ID] = item;
             }
 
-            foreach (MarketGroup childGroup in marketGroup.SubGroups)
+            foreach (var childGroup in marketGroup.SubGroups)
             {
                 InitializeDictionaries(childGroup);
             }

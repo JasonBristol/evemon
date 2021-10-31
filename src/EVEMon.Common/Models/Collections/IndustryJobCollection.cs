@@ -42,10 +42,10 @@ namespace EVEMon.Common.Models.Collections
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void EveMonClient_TimerTick(object sender, EventArgs e)
         {
-            IQueryMonitor charIndustryJobsMonitor = m_ccpCharacter.QueryMonitors.Any(x =>
+            var charIndustryJobsMonitor = m_ccpCharacter.QueryMonitors.Any(x =>
                 (ESIAPICharacterMethods)x.Method == ESIAPICharacterMethods.IndustryJobs) ?
                 m_ccpCharacter.QueryMonitors[ESIAPICharacterMethods.IndustryJobs] : null;
-            IQueryMonitor corpIndustryJobsMonitor = m_ccpCharacter.QueryMonitors.Any(x =>
+            var corpIndustryJobsMonitor = m_ccpCharacter.QueryMonitors.Any(x =>
                 (ESIAPICorporationMethods)x.Method == ESIAPICorporationMethods.
                 CorporationIndustryJobs) ? m_ccpCharacter.QueryMonitors[
                 ESIAPICorporationMethods.CorporationIndustryJobs] : null;
@@ -62,7 +62,7 @@ namespace EVEMon.Common.Models.Collections
         internal void Import(IEnumerable<SerializableJob> src)
         {
             Items.Clear();
-            foreach (SerializableJob srcJob in src)
+            foreach (var srcJob in src)
                 Items.Add(new IndustryJob(srcJob) { InstallerID = m_ccpCharacter.CharacterID });
         }
 
@@ -75,14 +75,14 @@ namespace EVEMon.Common.Models.Collections
         internal void Import(IEnumerable<EsiJobListItem> src, IssuedFor issuedFor)
         {
             // Mark all jobs for deletion, jobs found in the API will be unmarked
-            foreach (IndustryJob job in Items)
+            foreach (var job in Items)
                 job.MarkedForDeletion = true;
             var newJobs = new LinkedList<IndustryJob>();
             var now = DateTime.UtcNow;
             // Import the jobs from the API
-            foreach (EsiJobListItem job in src)
+            foreach (var job in src)
             {
-                DateTime limit = job.EndDate.AddDays(IndustryJob.MaxEndedDays);
+                var limit = job.EndDate.AddDays(IndustryJob.MaxEndedDays);
                 // For jobs which are not yet ended, or are active and not ready (active is
                 // defined as having an empty completion date)
                 if (limit >= now || (job.CompletedDate == DateTime.MinValue && job.Status !=
@@ -125,13 +125,13 @@ namespace EVEMon.Common.Models.Collections
         /// </summary>
         private void UpdateOnTimerTick()
         {
-            bool isCorporateMonitor = true;
+            var isCorporateMonitor = true;
             if (Items.Count > 0)
             {
                 // Add the not notified "Ready" jobs to the completed list
                 var jobsCompleted = new LinkedList<IndustryJob>();
                 var characterJobs = new LinkedList<IndustryJob>();
-                foreach (IndustryJob job in Items)
+                foreach (var job in Items)
                 {
                     if (job.IsActive && job.TTC.Length == 0 && !job.NotificationSend)
                     {

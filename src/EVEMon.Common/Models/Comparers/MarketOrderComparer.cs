@@ -61,8 +61,8 @@ namespace EVEMon.Common.Models.Comparers
         /// </returns>
         private int CompareCore(MarketOrder x, MarketOrder y)
         {
-            BuyOrder buyOrderX = x as BuyOrder;
-            BuyOrder buyOrderY = y as BuyOrder;
+            var buyOrderX = x as BuyOrder;
+            var buyOrderY = y as BuyOrder;
 
             switch (m_column)
             {

@@ -14,7 +14,7 @@ namespace EVEMon.Common.Models.Collections
         {
             Items.Clear();
 
-            foreach (SerializableEveFactionalWarfareStatsListItem item in src)
+            foreach (var item in src)
             {
                 Items.Add(new EveFactionWarfareStats(item));
             }

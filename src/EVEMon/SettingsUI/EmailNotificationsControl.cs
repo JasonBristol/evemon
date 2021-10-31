@@ -52,9 +52,9 @@ namespace EVEMon.SettingsUI
             EmailProviders.Initialize();
 
             // Place default provider at the end
-            List<IEmailProvider> providers = EmailProviders.Providers.ToList();
+            var providers = EmailProviders.Providers.ToList();
             m_defaultProvider = EmailProviders.Providers.First(provider => provider is DefaultProvider);
-            int index = providers.IndexOf(m_defaultProvider);
+            var index = providers.IndexOf(m_defaultProvider);
             providers.RemoveAt(index);
             providers.Insert(providers.Count, m_defaultProvider);
 
@@ -109,7 +109,7 @@ namespace EVEMon.SettingsUI
         /// </summary>
         private void SetControls()
         {
-            IEmailProvider provider = EmailProviders.GetByKey((string)cbbEMailServerProvider.SelectedItem);
+            var provider = EmailProviders.GetByKey((string)cbbEMailServerProvider.SelectedItem);
 
             if (provider != null && provider != m_defaultProvider)
             {
@@ -252,7 +252,7 @@ namespace EVEMon.SettingsUI
             if (!e.Cancel)
                 return;
 
-            string text = $"{tbFromAddress.Text.Trim()} is not of a valid email format";
+            var text = $"{tbFromAddress.Text.Trim()} is not of a valid email format";
 
             errorProvider.SetError(tbFromAddress, text);
         }
@@ -267,7 +267,7 @@ namespace EVEMon.SettingsUI
             IEnumerable<string> toAddresses = tbToAddress.Text.Trim().Split(
                 new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-            IEnumerable<string> invalidToAddresses = toAddresses.Where(address => !address.IsValidEmail());
+            var invalidToAddresses = toAddresses.Where(address => !address.IsValidEmail());
 
             e.Cancel = string.IsNullOrEmpty(tbToAddress.Text.Trim()) || !toAddresses.Any() || invalidToAddresses.Any();
 
@@ -275,7 +275,7 @@ namespace EVEMon.SettingsUI
             if (!e.Cancel)
                 return;
 
-            string text = !invalidToAddresses.Any()
+            var text = !invalidToAddresses.Any()
                 ? "\'To address\' can not be blank"
                 : $"{string.Join(", ", invalidToAddresses)} {(invalidToAddresses.Count() == 1 ? "is" : "are")}" +
                   @" not of a valid email format";

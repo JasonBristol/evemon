@@ -66,7 +66,7 @@ namespace EVEMon.Common.Models.Collections
         {
             character.ThrowIfNull(nameof(character));
 
-            CharacterIdentity id = character.Identity;
+            var id = character.Identity;
             if (Items.Contains(id))
                 return;
 
@@ -84,7 +84,7 @@ namespace EVEMon.Common.Models.Collections
         internal void Import(IEnumerable<SerializableCharacterIdentity> serialIDList)
         {
             Items.Clear();
-            foreach (CharacterIdentity id in serialIDList.Select(
+            foreach (var id in serialIDList.Select(
                 serialID => EveMonClient.CharacterIdentities[serialID.ID] ??
                             EveMonClient.CharacterIdentities.Add(serialID.ID, serialID.Name)))
             {

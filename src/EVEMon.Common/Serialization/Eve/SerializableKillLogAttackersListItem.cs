@@ -27,7 +27,7 @@ namespace EVEMon.Common.Serialization.Eve
                 if (WeaponTypeID == 0)
                     return string.Empty;
 
-                Item weapon = StaticItems.GetItemByID(WeaponTypeID);
+                var weapon = StaticItems.GetItemByID(WeaponTypeID);
                 return weapon?.Name ?? EveMonConstants.UnknownText;
             }
         }

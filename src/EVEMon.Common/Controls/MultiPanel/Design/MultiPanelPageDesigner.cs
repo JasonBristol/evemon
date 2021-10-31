@@ -61,11 +61,11 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
             {
                 m_page.Text = value;
 
-                IComponentChangeService service = GetService(typeof(IComponentChangeService)) as IComponentChangeService;
+                var service = GetService(typeof(IComponentChangeService)) as IComponentChangeService;
                 if (service == null)
                     return;
 
-                MultiPanel panel = m_page.Parent as MultiPanel;
+                var panel = m_page.Parent as MultiPanel;
                 panel?.Refresh();
             }
         }
@@ -77,8 +77,8 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
         {
             get
             {
-                IDesignerHost host = (IDesignerHost)GetService(typeof(IDesignerHost));
-                MultiPanel panel = (MultiPanel)m_page.Parent;
+                var host = (IDesignerHost)GetService(typeof(IDesignerHost));
+                var panel = (MultiPanel)m_page.Parent;
                 return MultiPanelDesignerHelper.GetDesignerVerbs(host, panel);
             }
         }
@@ -94,7 +94,7 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
             base.OnPaintAdornments(pea);
 
             // My thanks to bschurter (Bruce), CodeProject member #1255339 for this!
-            using (Pen p = new Pen(SystemColors.ControlDark, 1))
+            using (var p = new Pen(SystemColors.ControlDark, 1))
             {
                 p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                 pea.Graphics.DrawRectangle(p, 0, 0, m_page.Width - 1, m_page.Height - 1);
@@ -102,11 +102,11 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
 
             using (Brush b = new SolidBrush(Color.FromArgb(100, Color.Black)))
             {
-                float fh = m_font.GetHeight(pea.Graphics);
-                RectangleF tleft = new RectangleF(0, 0, (float)m_page.Width / 2, fh);
-                RectangleF bleft = new RectangleF(0, m_page.Height - fh, (float)m_page.Width / 2, fh);
-                RectangleF tright = new RectangleF((float)m_page.Width / 2, 0, (float)m_page.Width / 2, fh);
-                RectangleF bright = new RectangleF((float)m_page.Width / 2, m_page.Height - fh, (float)m_page.Width / 2, fh);
+                var fh = m_font.GetHeight(pea.Graphics);
+                var tleft = new RectangleF(0, 0, (float)m_page.Width / 2, fh);
+                var bleft = new RectangleF(0, m_page.Height - fh, (float)m_page.Width / 2, fh);
+                var tright = new RectangleF((float)m_page.Width / 2, 0, (float)m_page.Width / 2, fh);
+                var bright = new RectangleF((float)m_page.Width / 2, m_page.Height - fh, (float)m_page.Width / 2, fh);
                 pea.Graphics.DrawString(m_page.Text, m_font, b, tleft);
                 pea.Graphics.DrawString(m_page.Text, m_font, b, bleft);
                 pea.Graphics.DrawString(m_page.Text, m_font, b, tright, m_rightFormat);

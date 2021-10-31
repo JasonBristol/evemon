@@ -19,7 +19,7 @@ namespace EVEMon.Common.Helpers
         {
             try
             {
-                string killLogInfoText = ExportKillLogInfo(killLog);
+                var killLogInfoText = ExportKillLogInfo(killLog);
                 if (string.IsNullOrEmpty(killLogInfoText))
                 {
                     MessageBox.Show(@"No kill info was available. Nothing has been copied to the clipboard.",
@@ -49,7 +49,7 @@ namespace EVEMon.Common.Helpers
             if (killLog == null)
                 return string.Empty;
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb
                 .AppendLine(killLog.KillTime.DateTimeToDotFormattedString())
                 .AppendLine()
@@ -66,7 +66,7 @@ namespace EVEMon.Common.Helpers
             sb.AppendLine("Involved parties:");
             sb.AppendLine();
 
-            foreach (SerializableKillLogAttackersListItem attacker in killLog.Attackers.OrderByDescending(x => x.DamageDone))
+            foreach (var attacker in killLog.Attackers.OrderByDescending(x => x.DamageDone))
             {
                 // Append info for NPC or player entities
                 if (string.IsNullOrEmpty(attacker.Name))
@@ -121,7 +121,7 @@ namespace EVEMon.Common.Helpers
         /// <param name="droppedItems">The dropped items.</param>
         private static void AppendDroppedItems(StringBuilder sb, IEnumerable<KillLogItem> droppedItems)
         {
-            foreach (KillLogItem droppedItem in droppedItems.Where(droppedItem => droppedItem.EVEFlag != 0 || droppedItem.IsInContainer))
+            foreach (var droppedItem in droppedItems.Where(droppedItem => droppedItem.EVEFlag != 0 || droppedItem.IsInContainer))
             {
                 if (droppedItem.IsInContainer)
                     sb.Append("   ");
@@ -152,7 +152,7 @@ namespace EVEMon.Common.Helpers
         /// <param name="destroyedItems">The destroyed items.</param>
         private static void AppendDestroyedItems(StringBuilder sb, IEnumerable<KillLogItem> destroyedItems)
         {
-            foreach (KillLogItem destroyedItem in destroyedItems.Where(destroyedItem => destroyedItem.EVEFlag != 0 || destroyedItem.IsInContainer))
+            foreach (var destroyedItem in destroyedItems.Where(destroyedItem => destroyedItem.EVEFlag != 0 || destroyedItem.IsInContainer))
             {
                 if (destroyedItem.IsInContainer)
                     sb.Append("   ");

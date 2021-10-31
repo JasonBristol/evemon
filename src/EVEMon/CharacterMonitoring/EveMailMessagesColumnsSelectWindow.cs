@@ -40,7 +40,7 @@ namespace EVEMon.CharacterMonitoring
         {
             get
             {
-                EveMailMessageSettings settings = new EveMailMessageSettings();
+                var settings = new EveMailMessageSettings();
                 return settings.DefaultColumns;
             }
         }

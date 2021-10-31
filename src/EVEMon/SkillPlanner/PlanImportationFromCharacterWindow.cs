@@ -46,7 +46,7 @@ namespace EVEMon.SkillPlanner
         {
             btnLoad.Enabled = false;
             lbPlan.Items.Clear();
-            foreach (Plan plan in character.Plans)
+            foreach (var plan in character.Plans)
             {
                 lbPlan.Items.Add(plan);
             }
@@ -61,7 +61,7 @@ namespace EVEMon.SkillPlanner
         private void CrossPlanSelect_Load(object sender, EventArgs e)
         {
             cbCharacter.Items.Clear();
-            foreach (Character character in EveMonClient.Characters.Where(x => x.CharacterID != TargetCharacter.CharacterID))
+            foreach (var character in EveMonClient.Characters.Where(x => x.CharacterID != TargetCharacter.CharacterID))
             {
                 cbCharacter.Items.Add(character);
             }

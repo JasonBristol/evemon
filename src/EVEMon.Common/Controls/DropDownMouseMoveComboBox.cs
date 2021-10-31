@@ -60,7 +60,7 @@ namespace EVEMon.Common.Controls
             protected override void OnMouseMove(MouseEventArgs e)
             {
                 base.OnMouseMove(e);
-                int index = IndexFromPoint(e.Location);
+                var index = IndexFromPoint(e.Location);
                 if (index < 0)
                     return;
 
@@ -241,8 +241,8 @@ namespace EVEMon.Common.Controls
                 using (Brush foreBrush = new SolidBrush(ForeColor))
                 {
                     const int Offset = 3;
-                    Size size = e.Graphics.MeasureString(m_displayText, Font).ToSize();
-                    Rectangle rect = new Rectangle(Offset, (Bounds.Height - size.Height) / 2, e.Bounds.Width - Offset,
+                    var size = e.Graphics.MeasureString(m_displayText, Font).ToSize();
+                    var rect = new Rectangle(Offset, (Bounds.Height - size.Height) / 2, e.Bounds.Width - Offset,
                         size.Height);
                     e.Graphics.DrawString(m_displayText, Font, foreBrush, rect, StringFormat.GenericTypographic);
                 }

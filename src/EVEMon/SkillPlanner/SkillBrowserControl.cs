@@ -56,7 +56,7 @@ namespace EVEMon.SkillPlanner
             lblSkillName.Font = FontFactory.GetFont("Tahoma", 8.25F, FontStyle.Bold);
 
             // Reposition the help text along side the treeview
-            Control[] result = skillSelectControl.Controls.Find("pnlResults", true);
+            var result = skillSelectControl.Controls.Find("pnlResults", true);
             if (result.Length > 0)
                 lblHelp.Location = new Point(lblHelp.Location.X, result[0].Location.Y);
 
@@ -188,13 +188,13 @@ namespace EVEMon.SkillPlanner
             planToLevel.Enabled = false;
 
             // Toolbar > Planned to... dropdown menu
-            for (int i = 0; i <= 5; i++)
+            for (var i = 0; i <= 5; i++)
             {
                 planToLevel.Enabled |= m_plan.UpdatesRegularPlanToMenu(planToLevel.DropDownItems[i], m_selectedSkill, i);
             }
 
             // Toolbar > "Planned to" label
-            int level = m_plan.GetPlannedLevel(m_selectedSkill);
+            var level = m_plan.GetPlannedLevel(m_selectedSkill);
             planToLevel.Text = $"Planned To {(level == 0 ? "(none)" : $"Level {Skill.GetRomanFromInt(level)}")}...";
         }
 
@@ -234,7 +234,7 @@ namespace EVEMon.SkillPlanner
                 lblAttributes.Text += $" (SP/Hour: {m_selectedSkill.SkillPointsPerHour:N0})";
 
             // Training time per level
-            for (int i = 1; i <= 5; i++)
+            for (var i = 1; i <= 5; i++)
             {
                 UpdateLevelLabel(pnlPlanControl.Controls.OfType<Label>()
                     .First(label => label.Name == $"lblLevel{i}Time"), i);
@@ -272,7 +272,7 @@ namespace EVEMon.SkillPlanner
             if (m_selectedSkill?.Character == null)
                 return;
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             // "Level III: "
             sb.Append($"Level {Skill.GetRomanFromInt(level)}: ");
@@ -285,12 +285,12 @@ namespace EVEMon.SkillPlanner
             }
 
             // Left training time for level only
-            TimeSpan timeOfLevelOnly = m_selectedSkill.GetLeftTrainingTimeForLevelOnly(level);
+            var timeOfLevelOnly = m_selectedSkill.GetLeftTrainingTimeForLevelOnly(level);
             sb.Append(timeOfLevelOnly.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas));
 
             // Total training time or completion percentage
-            TimeSpan timeForPrereqs = m_selectedSkill.Character.GetTrainingTimeToMultipleSkills(m_selectedSkill.Prerequisites);
-            TimeSpan totalPrereqTime = m_selectedSkill.GetLeftTrainingTimeToLevel(level - 1).Add(timeForPrereqs);
+            var timeForPrereqs = m_selectedSkill.Character.GetTrainingTimeToMultipleSkills(m_selectedSkill.Prerequisites);
+            var totalPrereqTime = m_selectedSkill.GetLeftTrainingTimeToLevel(level - 1).Add(timeForPrereqs);
             if (totalPrereqTime > TimeSpan.Zero)
             {
                 sb.Append($" (plus {totalPrereqTime.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas)})");
@@ -300,7 +300,7 @@ namespace EVEMon.SkillPlanner
                 // Completion percentage
                 if (m_selectedSkill.Level != 5)
                 {
-                    float percentDone = m_selectedSkill.FractionCompleted;
+                    var percentDone = m_selectedSkill.FractionCompleted;
                     sb.Append($" ({percentDone:P0} complete)");
                 }
             }
@@ -318,7 +318,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="skill">The skill.</param>
         private void SetPlanEditorSkillSelectorSelectedSkill(Skill skill)
         {
-            PlanWindow planWindow = ParentForm as PlanWindow;
+            var planWindow = ParentForm as PlanWindow;
             planWindow?.SetPlanEditorSkillSelectorSelectedSkill(skill);
         }
 
@@ -335,7 +335,7 @@ namespace EVEMon.SkillPlanner
             skillSelectControl.UpdateContent();
 
             // Update also the skill selector of the Plan Editor
-            PlanWindow planWindow = ParentForm as PlanWindow;
+            var planWindow = ParentForm as PlanWindow;
             planWindow?.UpdatePlanEditorSkillSelection();
 
             // Update the Owned Skill books window if open
@@ -464,7 +464,7 @@ namespace EVEMon.SkillPlanner
                 if (m_plan == null)
                     return;
 
-                for (int i = 0; i <= 5; i++)
+                for (var i = 0; i <= 5; i++)
                 {
                     m_plan.UpdatesRegularPlanToMenu(cmsSkillContext.Items[i], e.Skill, i);
                 }
@@ -487,11 +487,11 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void planToMenu_Click(object sender, EventArgs e)
         {
-            IPlanOperation operation = ((ToolStripMenuItem)sender).Tag as IPlanOperation;
+            var operation = ((ToolStripMenuItem)sender).Tag as IPlanOperation;
             if (operation == null)
                 return;
 
-            PlanWindow planWindow = ParentForm as PlanWindow;
+            var planWindow = ParentForm as PlanWindow;
             if (planWindow == null)
                 return;
 

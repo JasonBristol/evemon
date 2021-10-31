@@ -75,7 +75,7 @@ namespace EVEMon.Controls
         /// </summary>
         private void UpdateContent()
         {
-            string alliance = m_attacker.AllianceName;
+            var alliance = m_attacker.AllianceName;
             CharacterNameLabel.Text = m_attacker.Name.IsEmptyOrUnknown() ? m_attacker.
                 ShipTypeName : m_attacker.Name;
             CorpNameLabel.Text = m_attacker.CorporationName;
@@ -96,7 +96,7 @@ namespace EVEMon.Controls
         /// <param name="pictureBox">The picture box.</param>
         private async Task GetImageForAsync(PictureBox pictureBox)
         {
-            Image img = await ImageService.GetImageAsync(GetImageUrl(pictureBox));
+            var img = await ImageService.GetImageAsync(GetImageUrl(pictureBox));
             if (img != null || pictureBox.Equals(WeaponPictureBox))
                 pictureBox.Image = img;
         }
@@ -161,7 +161,7 @@ namespace EVEMon.Controls
             if (e.Button != MouseButtons.Right)
                 return;
 
-            PictureBox pictureBox = sender as PictureBox;
+            var pictureBox = sender as PictureBox;
 
             if (pictureBox == null)
                 return;
@@ -169,7 +169,7 @@ namespace EVEMon.Controls
             // Right click reset the cursor
             pictureBox.Cursor = Cursors.Default;
 
-            int typeId =
+            var typeId =
                 pictureBox == ShipPictureBox
                     ? m_attacker.ShipTypeID
                     : pictureBox == WeaponPictureBox
@@ -190,7 +190,7 @@ namespace EVEMon.Controls
         /// <param name="e">The <see cref="MouseEventArgs"/> instance containing the event data.</param>
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            PictureBox pictureBox = sender as PictureBox;
+            var pictureBox = sender as PictureBox;
             m_selectedItem = null;
 
             if (pictureBox == null)
@@ -213,7 +213,7 @@ namespace EVEMon.Controls
         /// <param name="e">The <see cref="System.ComponentModel.CancelEventArgs"/> instance containing the event data.</param>
         private void contextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            PictureBox pictureBox = contextMenuStrip.SourceControl as PictureBox;
+            var pictureBox = contextMenuStrip.SourceControl as PictureBox;
 
             e.Cancel = pictureBox == null ||
                        ((pictureBox == ShipPictureBox) && (m_attacker.ShipTypeID == 0)) ||
@@ -222,7 +222,7 @@ namespace EVEMon.Controls
             if (e.Cancel)
                 return;
 
-            string text = m_selectedItem is Ship ? "Ship" : m_selectedItem != null ? "Item" : string.Empty;
+            var text = m_selectedItem is Ship ? "Ship" : m_selectedItem != null ? "Item" : string.Empty;
 
             if (!string.IsNullOrWhiteSpace(text))
                 showInBrowserMenuItem.Text = $"Show In {text} Browser...";
@@ -240,7 +240,7 @@ namespace EVEMon.Controls
             if (m_selectedItem == null)
                 return;
 
-            PlanWindow planWindow = PlanWindow.ShowPlanWindow(KillLog.Character);
+            var planWindow = PlanWindow.ShowPlanWindow(KillLog.Character);
 
             if (m_selectedItem is Ship)
                 planWindow.ShowShipInBrowser(m_selectedItem);

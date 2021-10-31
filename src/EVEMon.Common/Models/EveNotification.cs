@@ -24,7 +24,7 @@ namespace EVEMon.Common.Models
         /// <param name="src">The source.</param>
         internal EveNotification(CCPCharacter ccpCharacter, EsiNotificationsListItem src)
         {
-            string typeCode = src.Type;
+            var typeCode = src.Type;
             CCPCharacter = ccpCharacter;
             NotificationID = src.NotificationID;
             TypeID = EveNotificationType.GetID(typeCode);
@@ -101,12 +101,12 @@ namespace EVEMon.Common.Models
         {
             get
             {
-                int type = TypeID;
+                var type = TypeID;
                 if (string.IsNullOrWhiteSpace(m_title) || m_title.Contains(EveMonConstants.
                     UnknownText))
                 {
                     // Determine subject layout, if applicable
-                    string subjectLayout = EveNotificationType.GetSubjectLayout(type);
+                    var subjectLayout = EveNotificationType.GetSubjectLayout(type);
                     m_title = string.IsNullOrWhiteSpace(subjectLayout) ? EveNotificationType.
                         GetName(type) : EVENotificationText.Parse(subjectLayout);
                     // If the title was not properly parsed, leave it blank

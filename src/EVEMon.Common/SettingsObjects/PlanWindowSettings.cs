@@ -130,7 +130,7 @@ namespace EVEMon.Common.SettingsObjects
         {
             get
             {
-                PlanColumn[] defaultColumns = new[]
+                var defaultColumns = new[]
                                                   {
                                                       PlanColumn.Priority,
                                                       PlanColumn.SkillName,

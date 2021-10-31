@@ -28,13 +28,13 @@ namespace EVEMon.XmlGenerator.Utils
         /// <param name="filename">The filename.</param>
         internal static void SerializeXml<T>(T datafile, string filename)
         {
-            string path = Path.Combine(GetSolutionDirectory(), @"src\EVEMon.Common\Resources", filename);
+            var path = Path.Combine(GetSolutionDirectory(), @"src\EVEMon.Common\Resources", filename);
 
-            FileStream stream = Common.Util.GetFileStream(path, FileMode.Create, FileAccess.Write);
+            var stream = Common.Util.GetFileStream(path, FileMode.Create, FileAccess.Write);
 
-            using (GZipStream zstream = new GZipStream(stream, CompressionMode.Compress))
+            using (var zstream = new GZipStream(stream, CompressionMode.Compress))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                var serializer = new XmlSerializer(typeof(T));
                 serializer.Serialize(zstream, datafile);
                 zstream.Flush();
             }
@@ -47,7 +47,7 @@ namespace EVEMon.XmlGenerator.Utils
             Copy(path, Path.Combine(GetSolutionDirectory(), @"src\EVEMon.Common\", GetOutputPath(), "Resources", filename));
 
             // Update the file in the settings directory
-            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             Copy(path, Path.Combine(appData, "EVEMon", filename));
 
             Console.WriteLine();
@@ -62,10 +62,10 @@ namespace EVEMon.XmlGenerator.Utils
         /// <param name="filename">The filename.</param>
         internal static void SerializeXmlTo<T>(T serial, string xmlRootName, string filename)
         {
-            string path = Path.Combine(GetSolutionDirectory(), @"src\EVEMon.Common\Serialization", filename);
-            using (FileStream stream = Common.Util.GetFileStream(path, FileMode.Create, FileAccess.Write))
+            var path = Path.Combine(GetSolutionDirectory(), @"src\EVEMon.Common\Serialization", filename);
+            using (var stream = Common.Util.GetFileStream(path, FileMode.Create, FileAccess.Write))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(T), new XmlRootAttribute(xmlRootName));
+                var serializer = new XmlSerializer(typeof(T), new XmlRootAttribute(xmlRootName));
                 serializer.Serialize(stream, serial);
                 stream.Flush();
             }
@@ -85,18 +85,18 @@ namespace EVEMon.XmlGenerator.Utils
 
             Console.WriteLine();
 
-            string resourcesPath = Path.Combine(GetSolutionDirectory(), @"src\EVEMon.Common\Resources");
-            string md5SumsFileFullPath = Path.Combine(resourcesPath, filename);
+            var resourcesPath = Path.Combine(GetSolutionDirectory(), @"src\EVEMon.Common\Resources");
+            var md5SumsFileFullPath = Path.Combine(resourcesPath, filename);
 
-            using (StreamWriter md5SumsFile = File.CreateText(md5SumsFileFullPath))
+            using (var md5SumsFile = File.CreateText(md5SumsFileFullPath))
             {
-                foreach (string file in Datafile.GetFilesFrom(resourcesPath, Datafile.DatafilesExtension))
+                foreach (var file in Datafile.GetFilesFrom(resourcesPath, Datafile.DatafilesExtension))
                 {
-                    FileInfo datafile = new FileInfo(file);
+                    var datafile = new FileInfo(file);
                     if (!datafile.Exists)
                         throw new FileNotFoundException($"{file} not found!");
 
-                    string line = $"{Common.Util.CreateMD5From(file)} *{datafile.Name}";
+                    var line = $"{Common.Util.CreateMD5From(file)} *{datafile.Name}";
                     md5SumsFile.WriteLine(line);
                 }
             }
@@ -114,7 +114,7 @@ namespace EVEMon.XmlGenerator.Utils
         {
             try
             {
-                FileInfo fi = new FileInfo(destFile);
+                var fi = new FileInfo(destFile);
                 if (fi.Directory == null)
                     return;
 
@@ -200,8 +200,8 @@ namespace EVEMon.XmlGenerator.Utils
         internal static void UpdatePercentDone(double totalCount)
         {
             s_counter++;
-            double percent = totalCount > 0d ? s_counter / totalCount : 0d;
-            int percentRounded = (int)(percent * 100);
+            var percent = totalCount > 0d ? s_counter / totalCount : 0d;
+            var percentRounded = (int)(percent * 100);
 
             if (s_counter != 1 && s_percentOld >= percentRounded)
                 return;

@@ -31,7 +31,7 @@ namespace EVEMon.Common.Models.Collections
             Items.Clear();
 
             // Import the medals from the API
-            foreach (EsiMedalsListItem srcMedal in src)
+            foreach (var srcMedal in src)
             {
                 MedalGroup group;
                 if (!isCharMedal)
@@ -44,7 +44,7 @@ namespace EVEMon.Common.Models.Collections
             }
 
             // Assign the 'number of times awarded'
-            foreach (Medal medal in Items.ToList())
+            foreach (var medal in Items.ToList())
                 medal.TimesAwarded = Items.Count(x => x.ID == medal.ID);
         }
     }

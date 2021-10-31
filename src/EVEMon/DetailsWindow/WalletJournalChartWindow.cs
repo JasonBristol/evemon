@@ -128,7 +128,7 @@ namespace EVEMon.DetailsWindow
         /// </summary>
         private void InitializeAmountChart()
         {
-            foreach (ChartArea chartArea in AmountChart.ChartAreas)
+            foreach (var chartArea in AmountChart.ChartAreas)
             {
                 // Configure the chart area
                 chartArea.BorderColor = Color.Black;
@@ -152,7 +152,7 @@ namespace EVEMon.DetailsWindow
             AmountChart.ChartAreas[1].AxisX.MajorTickMark.Enabled = false;
             AmountChart.ChartAreas[1].AxisX.LabelStyle.Enabled = false;
 
-            foreach (Series series in AmountChart.Series)
+            foreach (var series in AmountChart.Series)
             {
                 // Configure series
                 series.CustomProperties = "PixelPointWidth=5";
@@ -175,9 +175,9 @@ namespace EVEMon.DetailsWindow
             BalanceChart.Series[0].Points.Clear();
 
             // Set the data points
-            foreach (WalletJournal journal in m_ccpCharacter.WalletJournal.OrderByDescending(journal => journal.Date))
+            foreach (var journal in m_ccpCharacter.WalletJournal.OrderByDescending(journal => journal.Date))
             {
-                using (DataPoint dataPoint = new DataPoint())
+                using (var dataPoint = new DataPoint())
                 {
                     dataPoint.SetValueXY(journal.Date.ToLocalTime(), journal.Balance);
                     dataPoint.ToolTip = $"{journal.Date.ToLocalTime():G}{Environment.NewLine}{journal.Balance:N2} ISK";
@@ -196,9 +196,9 @@ namespace EVEMon.DetailsWindow
             AmountChart.Series[1].Points.Clear();
 
             // Set the data points for the first chart
-            foreach (WalletJournal journal in m_ccpCharacter.WalletJournal.OrderByDescending(journal => journal.Date))
+            foreach (var journal in m_ccpCharacter.WalletJournal.OrderByDescending(journal => journal.Date))
             {
-                using (DataPoint dataPoint = new DataPoint())
+                using (var dataPoint = new DataPoint())
                 {
                     dataPoint.SetValueXY(journal.Date.ToLocalTime(), journal.Amount);
                     dataPoint.Color = journal.Amount < 0 ? Color.DarkRed : Color.DarkGreen;
@@ -210,9 +210,9 @@ namespace EVEMon.DetailsWindow
             }
 
             // Set the data points for the second chart
-            using (DataPoint positiveSumDataPoint = new DataPoint())
+            using (var positiveSumDataPoint = new DataPoint())
             {
-                decimal positiveSum =
+                var positiveSum =
                     m_ccpCharacter.WalletJournal.Where(journal => journal.Amount > 0).Sum(journal => journal.Amount);
                 positiveSumDataPoint.SetValueXY(0, positiveSum);
                 positiveSumDataPoint.Color = Color.DarkGreen;
@@ -221,9 +221,9 @@ namespace EVEMon.DetailsWindow
                 AmountChart.Series[1].Points.Add(positiveSumDataPoint.Clone());
             }
 
-            using (DataPoint negativeSumDataPoint = new DataPoint())
+            using (var negativeSumDataPoint = new DataPoint())
             {
-                decimal negativeSum =
+                var negativeSum =
                     m_ccpCharacter.WalletJournal.Where(journal => journal.Amount < 0).Sum(journal => journal.Amount);
                 negativeSumDataPoint.SetValueXY(0, negativeSum);
                 negativeSumDataPoint.Color = Color.DarkRed;

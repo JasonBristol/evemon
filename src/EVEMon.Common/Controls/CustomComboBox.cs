@@ -54,7 +54,7 @@ namespace EVEMon.Common.Controls
             {
                 get
                 {
-                    string newStrValue = ccbParent.Text;
+                    var newStrValue = ccbParent.Text;
                     if ((oldStrValue.Length > 0) && (newStrValue.Length > 0))
                         return oldStrValue.CompareTo(newStrValue) != 0;
                     else
@@ -136,7 +136,7 @@ namespace EVEMon.Common.Controls
             {
                 //Debug.WriteLine("OnDeactivate");
                 base.OnDeactivate(e);
-                CustomComboBoxEventArgs ce = e as CustomComboBoxEventArgs;
+                var ce = e as CustomComboBoxEventArgs;
                 if (ce != null)
                     CloseDropdown(ce.Validate);
                 else
@@ -235,10 +235,10 @@ namespace EVEMon.Common.Controls
         {
             if (!dropdown.Visible)
             {
-                Rectangle rect = RectangleToScreen(this.ClientRectangle);
+                var rect = RectangleToScreen(this.ClientRectangle);
                 dropdown.Location = new Point(rect.X, rect.Y + this.Size.Height);
                 this.content.Refresh();
-                Size preferedSize = this.content.GetPreferredSize(new Size(this.Width, 600));
+                var preferedSize = this.content.GetPreferredSize(new Size(this.Width, 600));
                 dropdown.ClientSize = new Size(Math.Max(preferedSize.Width, this.Width), Math.Max(96, preferedSize.Height));
                 dropdown.Show(this);
             }

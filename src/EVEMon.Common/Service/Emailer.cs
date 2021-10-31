@@ -55,17 +55,17 @@ namespace EVEMon.Common.Service
 
             skill.ThrowIfNull(nameof(skill));
 
-            CCPCharacter ccpCharacter = character as CCPCharacter;
+            var ccpCharacter = character as CCPCharacter;
 
             // Current character isn't a CCP character, so can't have a Queue.
             if (ccpCharacter == null)
                 return;
 
-            string skillLevelText = $"{skill.SkillName} {Skill.GetRomanFromInt(skill.Level)}";
-            string subjectText = $"{character.Name} has finished training {skillLevelText}.";
+            var skillLevelText = $"{skill.SkillName} {Skill.GetRomanFromInt(skill.Level)}";
+            var subjectText = $"{character.Name} has finished training {skillLevelText}.";
 
             // Message's first line
-            StringBuilder body = new StringBuilder();
+            var body = new StringBuilder();
             body
                 .AppendLine(subjectText)
                 .AppendLine();
@@ -73,10 +73,10 @@ namespace EVEMon.Common.Service
             // Next skills in queue
             if (queueList[0] != null)
             {
-                string plural = queueList.Count > 1 ? "s" : string.Empty;
+                var plural = queueList.Count > 1 ? "s" : string.Empty;
                 body.AppendLine($"Next skill{plural} in queue:");
 
-                foreach (QueuedSkill qskill in queueList)
+                foreach (var qskill in queueList)
                 {
                     body.AppendLine($"- {qskill}");
                 }
@@ -90,15 +90,15 @@ namespace EVEMon.Common.Service
             // Skill queue less than a day
             if (ccpCharacter.SkillQueue.LessThanWarningThreshold)
             {
-                TimeSpan skillQueueEndTime = ccpCharacter.SkillQueue.EndTime.Subtract(DateTime.UtcNow);
-                TimeSpan timeLeft = SkillQueue.WarningThresholdTimeSpan.Subtract(skillQueueEndTime);
+                var skillQueueEndTime = ccpCharacter.SkillQueue.EndTime.Subtract(DateTime.UtcNow);
+                var timeLeft = SkillQueue.WarningThresholdTimeSpan.Subtract(skillQueueEndTime);
 
                 // Skill queue empty?
                 if (timeLeft > SkillQueue.WarningThresholdTimeSpan)
                     body.AppendLine("Skill queue is empty.");
                 else
                 {
-                    string timeLeftText = skillQueueEndTime < TimeSpan.FromMinutes(1)
+                    var timeLeftText = skillQueueEndTime < TimeSpan.FromMinutes(1)
                         ? skillQueueEndTime.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas)
                         : skillQueueEndTime.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas, false);
 
@@ -123,21 +123,21 @@ namespace EVEMon.Common.Service
                     .AppendLine();
             }
 
-            foreach (Plan plan in character.Plans)
+            foreach (var plan in character.Plans)
             {
                 if (plan.Count <= 0)
                     continue;
 
                 // Print plan name
-                CharacterScratchpad scratchpad = new CharacterScratchpad(character);
+                var scratchpad = new CharacterScratchpad(character);
                 body.AppendLine($"{plan.Name}:");
 
                 // Scroll through entries
-                int i = 0;
-                int minDays = 1;
-                foreach (PlanEntry entry in plan)
+                var i = 0;
+                var minDays = 1;
+                foreach (var entry in plan)
                 {
-                    TimeSpan trainTime = scratchpad.GetTrainingTime(entry.Skill, entry.Level,
+                    var trainTime = scratchpad.GetTrainingTime(entry.Skill, entry.Level,
                         TrainingOrigin.FromPreviousLevelOrCurrent);
 
                     // Only print the first three skills, and the very long skills
@@ -220,11 +220,11 @@ namespace EVEMon.Common.Service
             // Trace something to the logs so we can identify the time the message was sent
             EveMonClient.Trace($"(Subject - {subject}; Server - {settings.EmailSmtpServerAddress}:{settings.EmailPortNumber})");
 
-            string sender = string.IsNullOrEmpty(settings.EmailFromAddress)
+            var sender = string.IsNullOrEmpty(settings.EmailFromAddress)
                 ? "no-reply@evemon.net"
                 : settings.EmailFromAddress;
 
-            List<string> toAddresses = settings.EmailToAddress.Split(
+            var toAddresses = settings.EmailToAddress.Split(
                 new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
             try
@@ -257,7 +257,7 @@ namespace EVEMon.Common.Service
         /// <returns></returns>
         private static SmtpClient GetClient(NotificationSettings settings)
         {
-            SmtpClient client = new SmtpClient
+            var client = new SmtpClient
             {
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 Timeout = (int)TimeSpan.FromSeconds(Settings.Updates.HttpTimeout).TotalMilliseconds,

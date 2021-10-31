@@ -40,7 +40,7 @@ namespace EVEMon.CharacterMonitoring
         {
             get
             {
-                ResearchSettings settings = new ResearchSettings();
+                var settings = new ResearchSettings();
                 return settings.DefaultColumns;
             }
         }

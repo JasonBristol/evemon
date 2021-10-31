@@ -44,7 +44,7 @@ namespace EVEMon.Common.Service
         /// <returns></returns>
         private T CreateInstanceFrom<T>(string codeText) where T : class
         {
-            Type type = Compile(codeText)?.GetExportedTypes()
+            var type = Compile(codeText)?.GetExportedTypes()
                 .FirstOrDefault(exportedType => exportedType.IsSubclassOf(typeof(T)));
 
             if (type == null)

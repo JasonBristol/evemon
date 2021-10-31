@@ -70,11 +70,11 @@ namespace EVEMon.Common.Extensions
         {
             item.ThrowIfNull(nameof(item));
 
-            MemberInfo[] members = item.GetType().GetMember(item.ToString());
+            var members = item.GetType().GetMember(item.ToString());
             if (members.Length <= 0)
                 return null;
 
-            object[] attrs = members[0].GetCustomAttributes(typeof(TAttribute), false);
+            var attrs = members[0].GetCustomAttributes(typeof(TAttribute), false);
             if (attrs.Length > 0)
                 return (TAttribute)attrs[0];
 
@@ -103,11 +103,11 @@ namespace EVEMon.Common.Extensions
         /// <returns></returns>
         public static IEnumerable<TEnum> GetBitValues<TEnum>()
         {
-            foreach (object value in Enum.GetValues(typeof(TEnum)))
+            foreach (var value in Enum.GetValues(typeof(TEnum)))
             {
                 // Check it matches a power of two 
-                bool found = false;
-                for (int i = 0; i < 32; i++)
+                var found = false;
+                for (var i = 0; i < 32; i++)
                 {
                     if ((int)value != 1 << i)
                         continue;
@@ -157,7 +157,7 @@ namespace EVEMon.Common.Extensions
         /// <returns>The skill point accrual rate (1.0 = base) modifier</returns>
         public static float GetTrainingRate(this AccountStatus status)
         {
-            float rate = trainingRateUnknown;
+            var rate = trainingRateUnknown;
             switch (status)
             {
             case AccountStatus.Alpha:

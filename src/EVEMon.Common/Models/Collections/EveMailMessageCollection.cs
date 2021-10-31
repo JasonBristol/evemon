@@ -50,8 +50,8 @@ namespace EVEMon.Common.Models.Collections
                 return;
 
             Items.Clear();
-            List<string> ids = eveMailMessagesIDs.Split(',').ToList();
-            foreach (long id in ids.Select(long.Parse))
+            var ids = eveMailMessagesIDs.Split(',').ToList();
+            foreach (var id in ids.Select(long.Parse))
             {
                 Items.Add(new EveMailMessage(m_ccpCharacter,
                     new SerializableMailMessagesListItem
@@ -71,18 +71,18 @@ namespace EVEMon.Common.Models.Collections
         internal void Import(IEnumerable<SerializableMailMessagesListItem> src)
         {
             NewMessages = 0;
-            List<EveMailMessage> newMessages = new List<EveMailMessage>();
+            var newMessages = new List<EveMailMessage>();
 
             // Import the mail messages from the API
             // To distinguish new EVE mails from old EVE mails that have been added to the API list
             // due to deletion of some EVE mails in-game, we need to sort the received data 
-            foreach (SerializableMailMessagesListItem srcEVEMailMessage in src.OrderBy(x => x.MessageID))
+            foreach (var srcEVEMailMessage in src.OrderBy(x => x.MessageID))
             {
                 // Is it an Inbox message ?
                 if (m_ccpCharacter.CharacterID != srcEVEMailMessage.SenderID)
                 {
                     // If it's a newly mail message and not an old mail message added to the API list, increase the counter
-                    EveMailMessage message = Items.FirstOrDefault(x => x.MessageID == srcEVEMailMessage.MessageID);
+                    var message = Items.FirstOrDefault(x => x.MessageID == srcEVEMailMessage.MessageID);
                     if (message == null && srcEVEMailMessage.MessageID > m_highestID)
                     {
                         NewMessages++;

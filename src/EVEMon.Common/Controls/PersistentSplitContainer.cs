@@ -32,7 +32,7 @@ namespace EVEMon.Common.Controls
 
                     if (Settings.UI.Splitters.ContainsKey(m_rememberDistanceKey))
                     {
-                        int d = Settings.UI.Splitters[m_rememberDistanceKey];
+                        var d = Settings.UI.Splitters[m_rememberDistanceKey];
                         d = VerifyValidSplitterDistance(d);
                         SplitterDistance = d;
                     }
@@ -64,7 +64,7 @@ namespace EVEMon.Common.Controls
         {
             if (!string.IsNullOrEmpty(m_rememberDistanceKey))
             {
-                int d = SplitterDistance;
+                var d = SplitterDistance;
                 if (VerifyValidSplitterDistance(d) == d)
                     Settings.UI.Splitters[m_rememberDistanceKey] = d;
             }
@@ -79,7 +79,7 @@ namespace EVEMon.Common.Controls
         /// <returns></returns>
         private int VerifyValidSplitterDistance(int d)
         {
-            int defaultDistance = SplitterDistance;
+            var defaultDistance = SplitterDistance;
 
             if ((d < Panel1MinSize) || (d + Panel2MinSize > Width))
                 return defaultDistance;

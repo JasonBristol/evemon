@@ -14,7 +14,7 @@ namespace EVEMon.Common.EmailProvider
         /// </summary>
         public static void Initialize()
         {
-            foreach (IEmailProvider provider in Assembly.GetExecutingAssembly().GetTypes().Where(
+            foreach (var provider in Assembly.GetExecutingAssembly().GetTypes().Where(
                 type => typeof(IEmailProvider).IsAssignableFrom(type) && type.GetConstructor(Type.EmptyTypes) != null).Select(
                     type => Activator.CreateInstance(type) as IEmailProvider).OrderBy(provider => provider.Name))
             {

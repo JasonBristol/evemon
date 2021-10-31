@@ -245,7 +245,7 @@ namespace EVEMon.Common.Models
             // Order is from a serialized object, so populate the missing info
             if (Item == null)
                 PopulateOrderInfo(src, issuedFor);
-            OrderState state = GetState(src);
+            var state = GetState(src);
             if (m_state == OrderState.Modified || state == m_state)
                 return true;
             // It has either expired or fulfilled

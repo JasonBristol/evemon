@@ -118,7 +118,7 @@ namespace EVEMon.ApiCredentialsManagement
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 Close();
                 // General > Network...
-                using (SettingsForm form = new SettingsForm(0, 1))
+                using (var form = new SettingsForm(0, 1))
                 {
                     form.ShowDialog(this);
                 }
@@ -148,7 +148,7 @@ namespace EVEMon.ApiCredentialsManagement
         /// <param name="newPage">The page selected.</param>
         private void UpdateButtons(MultiPanelPage newPage)
         {
-            bool nextPrev = false;
+            var nextPrev = false;
             if (newPage == CredentialsPage)
                 StartServer();
             else
@@ -208,7 +208,7 @@ namespace EVEMon.ApiCredentialsManagement
         private void GoToResults(AccessResponse response)
         {
             // Fail if an empty response is received
-            bool failed = string.IsNullOrEmpty(response?.AccessToken) || string.IsNullOrEmpty(
+            var failed = string.IsNullOrEmpty(response?.AccessToken) || string.IsNullOrEmpty(
                 response?.RefreshToken);
             // If the arguments have not been invalidated since the last time...
             if (m_creationArgs != null)
@@ -225,7 +225,7 @@ namespace EVEMon.ApiCredentialsManagement
             }
             else
             {
-                long newID = DateTime.UtcNow.ToFileTime();
+                var newID = DateTime.UtcNow.ToFileTime();
                 // Are we updating existing API key?
                 if (m_updateMode)
                     m_esiKey.TryUpdateAsync(response, OnUpdated);
@@ -260,7 +260,7 @@ namespace EVEMon.ApiCredentialsManagement
             // Updates the picture and label for key type
             if (error != null)
             {
-                string message = error.ErrorMessage;
+                var message = error.ErrorMessage;
                 KeyPicture.Image = Resources.KeyWrong32;
                 KeyLabel.Text = message;
                 CharactersGroupBox.Text = "Error report";

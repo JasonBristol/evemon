@@ -20,7 +20,7 @@ namespace EVEMon.Common.Controls
         {
             control.ThrowIfNull(nameof(control));
 
-            ListViewExtendedStyles styles =
+            var styles =
                 (ListViewExtendedStyles)NativeMethods.SendMessage(control.Handle, (int)ListViewMessages.GetExtendedStyle,
                                                                   IntPtr.Zero, IntPtr.Zero);
             styles |= exStyle;
@@ -37,7 +37,7 @@ namespace EVEMon.Common.Controls
             control.ThrowIfNull(nameof(control));
 
             // read current style
-            ListViewExtendedStyles styles =
+            var styles =
                 (ListViewExtendedStyles)NativeMethods.SendMessage(control.Handle, (int)ListViewMessages.GetExtendedStyle,
                                                                   IntPtr.Zero, IntPtr.Zero);
 
@@ -57,7 +57,7 @@ namespace EVEMon.Common.Controls
             control.ThrowIfNull(nameof(control));
 
             // read current style
-            ListViewExtendedStyles styles =
+            var styles =
                 (ListViewExtendedStyles)NativeMethods.SendMessage(control.Handle, (int)ListViewMessages.GetExtendedStyle,
                                                                   IntPtr.Zero, IntPtr.Zero);
             // disable double buffer and border select

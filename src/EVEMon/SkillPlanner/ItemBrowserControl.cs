@@ -75,7 +75,7 @@ namespace EVEMon.SkillPlanner
         private void propertiesList_DoubleClick(object sender, EventArgs e)
         {
             // Is it a skill?
-            Skill skill = PropertiesList.FocusedItem?.Tag as Skill;
+            var skill = PropertiesList.FocusedItem?.Tag as Skill;
 
             if (skill != null)
             {
@@ -84,7 +84,7 @@ namespace EVEMon.SkillPlanner
             }
 
             // Is it an item?
-            Item item = PropertiesList.FocusedItem?.Tag as Item;
+            var item = PropertiesList.FocusedItem?.Tag as Item;
 
             if (item != null)
                 PlanWindow.ShowPlanWindow(SelectControl.Character, Plan)?.ShowItemInBrowser(item);
@@ -98,11 +98,11 @@ namespace EVEMon.SkillPlanner
         private void ShipAttributeContextMenu_Opening(object sender, CancelEventArgs e)
         {
             // Is it a skill?
-            Skill skill = PropertiesList.FocusedItem?.Tag as Skill;
+            var skill = PropertiesList.FocusedItem?.Tag as Skill;
             showInSkillBrowser.Visible = skill != null;
 
             // Is it an item?
-            Item item = PropertiesList.FocusedItem?.Tag as Item;
+            var item = PropertiesList.FocusedItem?.Tag as Item;
             showInItemBrowser.Visible = item != null;
 
             showInMenuSeparator.Visible = skill != null || item != null;
@@ -149,8 +149,8 @@ namespace EVEMon.SkillPlanner
             requiredSkillsControl.Plan = Plan;
 
             // We recalculate the right panels minimum size
-            int reqSkillControlMinWidth = requiredSkillsControl.MinimumSize.Width;
-            int reqSkillPanelMinWidth = scDetails.Panel2MinSize;
+            var reqSkillControlMinWidth = requiredSkillsControl.MinimumSize.Width;
+            var reqSkillPanelMinWidth = scDetails.Panel2MinSize;
             scDetails.Panel2MinSize = reqSkillPanelMinWidth > reqSkillControlMinWidth
                 ? reqSkillPanelMinWidth
                 : reqSkillControlMinWidth;

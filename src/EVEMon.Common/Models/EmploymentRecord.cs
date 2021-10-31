@@ -104,8 +104,8 @@ namespace EVEMon.Common.Models
         /// </summary>
         private async Task GetImageAsync()
         {
-            Uri uri = ImageHelper.GetCorporationImageURL(m_corporationId);
-            Image img = await ImageService.GetImageAsync(uri).ConfigureAwait(false);
+            var uri = ImageHelper.GetCorporationImageURL(m_corporationId);
+            var img = await ImageService.GetImageAsync(uri).ConfigureAwait(false);
             if (img != null)
             {
                 m_image = img;
@@ -123,7 +123,7 @@ namespace EVEMon.Common.Models
         /// </summary>
         public SerializableEmploymentHistory Export()
         {
-            SerializableEmploymentHistory serial = new SerializableEmploymentHistory
+            var serial = new SerializableEmploymentHistory
             {
                 CorporationID = m_corporationId,
                 CorporationName = CorporationName,

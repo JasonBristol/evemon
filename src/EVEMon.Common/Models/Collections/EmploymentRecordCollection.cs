@@ -35,7 +35,7 @@ namespace EVEMon.Common.Models.Collections
             Items.Clear();
 
             // Import the employment history from the API
-            foreach (SerializableEmploymentHistoryListItem srcEmploymentRecord in src)
+            foreach (var srcEmploymentRecord in src)
             {
                 Items.Add(new EmploymentRecord(m_character, srcEmploymentRecord));
             }
@@ -49,7 +49,7 @@ namespace EVEMon.Common.Models.Collections
         {
             Items.Clear();
 
-            foreach (SerializableEmploymentHistory srcEmploymentRecord in src)
+            foreach (var srcEmploymentRecord in src)
             {
                 Items.Add(new EmploymentRecord(m_character, srcEmploymentRecord));
             }

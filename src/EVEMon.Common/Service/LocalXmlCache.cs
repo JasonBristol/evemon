@@ -44,7 +44,7 @@ namespace EVEMon.Common.Service
 
             EveMonClient.EnsureCacheDirInit();
 
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.Load(Path.Combine(EveMonClient.EVEMonXmlCacheDir, $"{character.Name}.xml"));
             return doc;
         }
@@ -106,17 +106,17 @@ namespace EVEMon.Common.Service
 
             EveMonClient.EnsureCacheDirInit();
 
-            XmlDocument xmlDoc = (XmlDocument)xdoc;
-            XmlNode characterNode = xmlDoc.SelectSingleNode("//name");
+            var xmlDoc = (XmlDocument)xdoc;
+            var characterNode = xmlDoc.SelectSingleNode("//name");
             filename = characterNode?.InnerText ?? filename;
 
             // Writes in the target file
-            string fileName = Path.Combine(EveMonClient.EVEMonXmlCacheDir, $"{filename}.xml");
-            string content = Util.GetXmlStringRepresentation(xdoc);
+            var fileName = Path.Combine(EveMonClient.EVEMonXmlCacheDir, $"{filename}.xml");
+            var content = Util.GetXmlStringRepresentation(xdoc);
             await FileHelper.OverwriteOrWarnTheUserAsync(fileName,
                 async fs =>
                 {
-                    using (StreamWriter writer = new StreamWriter(fs, Encoding.UTF8))
+                    using (var writer = new StreamWriter(fs, Encoding.UTF8))
                     {
                         await writer.WriteAsync(content);
                         await writer.FlushAsync();
@@ -136,7 +136,7 @@ namespace EVEMon.Common.Service
             EveMonClient.EnsureCacheDirInit();
 
             // Writes in the target file
-            string fileName = Path.Combine(EveMonClient.EVEMonXmlCacheDir, $"{filename}.xml");
+            var fileName = Path.Combine(EveMonClient.EVEMonXmlCacheDir, $"{filename}.xml");
             FileHelper.DeleteFile(fileName);
         }
 
@@ -152,8 +152,8 @@ namespace EVEMon.Common.Service
         internal static bool CheckFileUpToDate(string filename, DateTime updateTime,
             TimeSpan period)
         {
-            FileInfo file = GetFileInfo(filename);
-            DateTime previousUpdateTime = updateTime.Subtract(period);
+            var file = GetFileInfo(filename);
+            var previousUpdateTime = updateTime.Subtract(period);
 
             // File is already downloaded ?
             if (!File.Exists(file.FullName))

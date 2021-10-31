@@ -124,7 +124,7 @@ namespace EVEMon.Common.Models
         private decimal GetCredit()
         {
 
-            decimal credit = Quantity * Price;
+            var credit = Quantity * Price;
             return TransactionType == TransactionType.Buy ? -credit : credit;
         }
 

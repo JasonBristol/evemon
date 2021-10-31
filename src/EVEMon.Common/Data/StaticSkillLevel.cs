@@ -101,8 +101,8 @@ namespace EVEMon.Common.Data
         {
             get
             {
-                SkillLevelSet<StaticSkillLevel> set = new SkillLevelSet<StaticSkillLevel>();
-                List<StaticSkillLevel> list = new List<StaticSkillLevel>();
+                var set = new SkillLevelSet<StaticSkillLevel>();
+                var list = new List<StaticSkillLevel>();
 
                 // Fill the set and list
                 list.FillDependencies(set, this, false);

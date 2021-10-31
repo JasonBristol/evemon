@@ -75,7 +75,7 @@ namespace EVEMon.Common.Models.Collections
         /// <returns></returns>
         public ImplantSet Add(string name)
         {
-            ImplantSet set = new ImplantSet(m_character, name);
+            var set = new ImplantSet(m_character, name);
             m_customSets.Add(set);
             EveMonClient.OnCharacterUpdated(m_character);
             return set;
@@ -99,12 +99,12 @@ namespace EVEMon.Common.Models.Collections
         {
             yield return ActiveClone;
 
-            foreach (ImplantSet set in m_cloneSets)
+            foreach (var set in m_cloneSets)
             {
                 yield return set;
             }
 
-            foreach (ImplantSet set in m_customSets)
+            foreach (var set in m_customSets)
             {
                 yield return set;
             }
@@ -122,12 +122,12 @@ namespace EVEMon.Common.Models.Collections
             // Jump clones
             foreach (var clone in serial.JumpClones)
             {
-                int cloneID = clone.JumpCloneID;
+                var cloneID = clone.JumpCloneID;
                 var set = new ImplantSet(m_character, GetCloneName(clone.Name, clone.
                     LocationID));
                 // Jump clone implants
                 var jcImplants = new LinkedList<SerializableNewImplant>();
-                foreach (int implant in clone.Implants)
+                foreach (var implant in clone.Implants)
                     jcImplants.AddLast(new SerializableNewImplant()
                     {
                         ID = implant,
@@ -151,17 +151,17 @@ namespace EVEMon.Common.Models.Collections
             ActiveClone.Import(serial.ActiveClone);
 
             m_cloneSets.Clear();
-            foreach (SerializableSettingsImplantSet serialSet in serial.JumpClones)
+            foreach (var serialSet in serial.JumpClones)
             {
-                ImplantSet set = new ImplantSet(m_character, serialSet.Name);
+                var set = new ImplantSet(m_character, serialSet.Name);
                 set.Import(serialSet);
                 m_cloneSets.Add(set);
             }
 
             m_customSets.Clear();
-            foreach (SerializableSettingsImplantSet serialSet in serial.CustomSets)
+            foreach (var serialSet in serial.CustomSets)
             {
-                ImplantSet set = new ImplantSet(m_character, serialSet.Name);
+                var set = new ImplantSet(m_character, serialSet.Name);
                 set.Import(serialSet);
                 m_customSets.Add(set);
             }
@@ -185,7 +185,7 @@ namespace EVEMon.Common.Models.Collections
             ActiveClone.Import(serial.Implants);
 
             m_cloneSets.Clear();
-            foreach (SerializableCharacterJumpClone jumpClone in serial.JumpClones)
+            foreach (var jumpClone in serial.JumpClones)
             {
                 var cloneImplants = serial.JumpCloneImplants.Where(x => x.JumpCloneID ==
                     jumpClone.JumpCloneID).Select(cloneImplant => new SerializableNewImplant
@@ -193,7 +193,7 @@ namespace EVEMon.Common.Models.Collections
                         ID = cloneImplant.TypeID,
                         Name = cloneImplant.TypeName
                     });
-                ImplantSet set = new ImplantSet(m_character, GetCloneName(jumpClone.CloneName,
+                var set = new ImplantSet(m_character, GetCloneName(jumpClone.CloneName,
                     jumpClone.LocationID));
                 set.Import(cloneImplants);
                 m_cloneSets.Add(set);
@@ -229,7 +229,7 @@ namespace EVEMon.Common.Models.Collections
         /// </summary>
         public SerializableImplantSetCollection Export()
         {
-            SerializableImplantSetCollection serial = new SerializableImplantSetCollection {
+            var serial = new SerializableImplantSetCollection {
                 ActiveClone = ActiveClone.Export()
             };
             serial.JumpClones.AddRange(m_cloneSets.Select(x => x.Export()));

@@ -48,7 +48,7 @@ namespace EVEMon.Common.SettingsObjects
         {
             get
             {
-                AssetColumn[] defaultColumns = new[]
+                var defaultColumns = new[]
                                                    {
                                                        AssetColumn.ItemName,
                                                        AssetColumn.Quantity,

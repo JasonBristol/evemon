@@ -28,7 +28,7 @@ namespace EVEMon.Common.QueryMonitor
             // Character may have been set to not be monitored
             if (character.Monitored)
             {
-                bool hasData = result.HasData;
+                var hasData = result.HasData;
                 if (character.ShouldNotifyError(result, method))
                     onFailure.Invoke(character, result);
                 if (!result.HasError && (ifNoData || hasData))

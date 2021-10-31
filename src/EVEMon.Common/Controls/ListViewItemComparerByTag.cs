@@ -30,10 +30,10 @@ namespace EVEMon.Common.Controls
         /// <returns></returns>
         public int Compare(object x, object y)
         {
-            ListViewItem itemX = (ListViewItem)x;
-            ListViewItem itemY = (ListViewItem)y;
-            T tagX = (T)itemX.Tag;
-            T tagY = (T)itemY.Tag;
+            var itemX = (ListViewItem)x;
+            var itemY = (ListViewItem)y;
+            var tagX = (T)itemX.Tag;
+            var tagY = (T)itemY.Tag;
 
             return m_comparer.Compare(tagX, tagY);
         }

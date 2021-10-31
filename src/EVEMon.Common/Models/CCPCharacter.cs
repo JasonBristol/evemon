@@ -306,8 +306,8 @@ namespace EVEMon.Common.Models
                     (order.State == OrderState.Active || order.State == OrderState.Modified) &&
                     order.IssuedFor == IssuedFor.Character).ToList();
 
-                decimal additionalToCover = activeBuyOrders.Sum(x => x.TotalPrice) -
-                    activeBuyOrders.Sum(order => order.Escrow);
+                var additionalToCover = activeBuyOrders.Sum(x => x.TotalPrice) -
+                                        activeBuyOrders.Sum(order => order.Escrow);
 
                 return Balance >= additionalToCover;
             }
@@ -342,7 +342,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         public override SerializableSettingsCharacter Export()
         {
-            SerializableCCPCharacter serial = new SerializableCCPCharacter();
+            var serial = new SerializableCCPCharacter();
             Export(serial);
 
             // Skill queue
@@ -388,12 +388,12 @@ namespace EVEMon.Common.Models
             // Until we can determine what data the character's API keys can query,
             // we have to keep the data unprocessed. Once we know, we filter them
 
-            IEnumerable<SerializableOrderBase> corporationMarketOrdersExport =
+            var corporationMarketOrdersExport =
                 EveMonClient.ESIKeys.Any(apiKey => !apiKey.IsProcessed) || m_corporationDataQuerying != null
                     ? CorporationMarketOrders.ExportOnlyIssuedByCharacter()
                     : new List<SerializableOrderBase>();
 
-            IEnumerable<SerializableOrderBase> characterMarketOrdersExport =
+            var characterMarketOrdersExport =
                 EveMonClient.ESIKeys.Any(apiKey => !apiKey.IsProcessed) || m_characterDataQuerying != null
                     ? CharacterMarketOrders.Export()
                     : new List<SerializableOrderBase>();
@@ -411,12 +411,12 @@ namespace EVEMon.Common.Models
             // Until we can determine what data the character's API keys can query,
             // we have to keep the data unprocessed. Once we know, we filter them
 
-            IEnumerable<SerializableContract> corporationContractsExport =
+            var corporationContractsExport =
                 EveMonClient.ESIKeys.Any(apiKey => !apiKey.IsProcessed) || m_corporationDataQuerying != null
                     ? CorporationContracts.ExportOnlyIssuedByCharacter()
                     : new List<SerializableContract>();
 
-            IEnumerable<SerializableContract> characterContractsExport =
+            var characterContractsExport =
                 EveMonClient.ESIKeys.Any(apiKey => !apiKey.IsProcessed) || m_characterDataQuerying != null
                     ? CharacterContracts.Export().Where(charContract => corporationContractsExport.All(
                         corpContract => corpContract.ContractID != charContract.ContractID))
@@ -434,12 +434,12 @@ namespace EVEMon.Common.Models
             // Until we can determine what data the character's API keys can query,
             // we have to keep the data unprocessed. Once we know, we filter them
 
-            IEnumerable<SerializableJob> corporationIndustryJobsExport =
+            var corporationIndustryJobsExport =
                 EveMonClient.ESIKeys.Any(apiKey => !apiKey.IsProcessed) || m_corporationDataQuerying != null
                     ? CorporationIndustryJobs.ExportOnlyIssuedByCharacter()
                     : new List<SerializableJob>();
 
-            IEnumerable<SerializableJob> characterIndustryJobsExport =
+            var characterIndustryJobsExport =
                 EveMonClient.ESIKeys.Any(apiKey => !apiKey.IsProcessed) || m_characterDataQuerying != null
                     ? CharacterIndustryJobs.Export()
                     : new List<SerializableJob>();
@@ -675,7 +675,7 @@ namespace EVEMon.Common.Models
         {
             if (Contracts.Any(contract => contract.State == ContractState.Assigned))
             {
-                int assignedContracts = Contracts.Count(contracts => contracts.State == ContractState.Assigned);
+                var assignedContracts = Contracts.Count(contracts => contracts.State == ContractState.Assigned);
                 EveMonClient.Notifications.NotifyCharacterContractsAssigned(this, assignedContracts);
                 return;
             }
@@ -714,13 +714,13 @@ namespace EVEMon.Common.Models
         /// <param name="lastUpdates">The last updates.</param>
         private void ResetLastAPIUpdates(IEnumerable<SerializableAPIUpdate> lastUpdates)
         {
-            foreach (SerializableAPIUpdate lastUpdate in lastUpdates)
+            foreach (var lastUpdate in lastUpdates)
             {
-                Enum method = ESIMethods.Methods.FirstOrDefault(apiMethod => apiMethod.ToString() == lastUpdate.Method);
+                var method = ESIMethods.Methods.FirstOrDefault(apiMethod => apiMethod.ToString() == lastUpdate.Method);
                 if (method == null)
                     continue;
 
-                IQueryMonitorEx monitor = QueryMonitors[method] as IQueryMonitorEx;
+                var monitor = QueryMonitors[method] as IQueryMonitorEx;
                 monitor?.Reset(lastUpdate.Time);
             }
         }
@@ -935,7 +935,7 @@ namespace EVEMon.Common.Models
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void EveMonClient_EveIDToNameUpdated(object sender, EventArgs e)
         {
-            bool updated = false;
+            var updated = false;
             string cname = CorporationName, aname = AllianceName, fname = FactionName;
 
             // If the corp, alliance, or faction was unknown, update it

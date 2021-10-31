@@ -26,7 +26,7 @@ namespace EVEMon.Common.Serialization.Esi
             if (Recipients != null)
                 foreach (var recipient in Recipients)
                 {
-                    long id = recipient.RecipientID;
+                    var id = recipient.RecipientID;
                     switch (recipient.RecipientType)
                     {
                     case "corporation":

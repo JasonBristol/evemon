@@ -22,7 +22,7 @@ namespace EVEMon.Common.Data
             if (src == null)
                 return;
 
-            foreach (SerializableBlueprint blueprint in src)
+            foreach (var blueprint in src)
             {
                 Items.Add(new Blueprint(group, blueprint));
             }

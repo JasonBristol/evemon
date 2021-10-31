@@ -121,7 +121,7 @@ namespace EVEMon.DetailsWindow
         /// <param name="e">The <see cref="EVEMon.Common.Notifications.NotificationEventArgs"/> instance containing the event data.</param>
         private void EveMonClient_NotificationSent(object sender, NotificationEventArgs e)
         {
-            APIErrorNotificationEventArgs notification = e as APIErrorNotificationEventArgs;
+            var notification = e as APIErrorNotificationEventArgs;
             if (notification != null)
             {
                 var eveMailBodiesResult = notification.Result as CCPAPIResult<

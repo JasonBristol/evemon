@@ -166,7 +166,7 @@ namespace EVEMon.LogitechG15
         private static void UpdateG15Data()
         {
             // First character to complete a skill
-            CCPCharacter nextChar = EveMonClient.MonitoredCharacters.OfType<CCPCharacter>().Where(
+            var nextChar = EveMonClient.MonitoredCharacters.OfType<CCPCharacter>().Where(
                 x => x.IsTraining).OrderBy(x => x.CurrentlyTrainingSkill.EndTime).FirstOrDefault();
 
             if (nextChar != null)
@@ -226,7 +226,7 @@ namespace EVEMon.LogitechG15
         /// </summary>
         private static void LcdDisplay_APIUpdateRequested(object sender, CharacterChangedEventArgs e)
         {
-            CCPCharacter ccpCharacter = e.Character as CCPCharacter;
+            var ccpCharacter = e.Character as CCPCharacter;
             ccpCharacter?.QueryMonitors.Query(new Enum[]
             {
                 ESIAPICharacterMethods.CharacterSheet,

@@ -92,7 +92,7 @@ namespace EVEMon.SettingsUI
             throbber.State = ThrobberState.Rotating;
             throbber.Visible = true;
 
-            Task resetSettingsAsync = Provider?.ResetSettingsAsync();
+            var resetSettingsAsync = Provider?.ResetSettingsAsync();
             if (resetSettingsAsync != null)
                 await resetSettingsAsync;
         }

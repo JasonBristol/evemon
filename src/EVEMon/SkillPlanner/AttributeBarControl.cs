@@ -145,7 +145,7 @@ namespace EVEMon.SkillPlanner
                     return;
 
                 m_points = value;
-                int width = m_tileWidth * m_points + 3;
+                var width = m_tileWidth * m_points + 3;
                 Size = new Size(width, Height);
             }
         }
@@ -218,7 +218,7 @@ namespace EVEMon.SkillPlanner
             m_tileWidth = (Width - 3) / m_points;
 
             // Calculate width of control from width of tiles
-            int width = m_tileWidth * m_points + 3;
+            var width = m_tileWidth * m_points + 3;
             if (Width != width)
                 Size = new Size(width, Height);
         }
@@ -246,7 +246,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="newHighlight">Index of the new highlighted tile. Can be -1 if no one is highlighted.</param>
         private void ChangeHighlight(long newHighlight)
         {
-            long previousHighlighted = m_highlightedItem;
+            var previousHighlighted = m_highlightedItem;
             m_highlightedItem = newHighlight;
 
             if (previousHighlighted < 0 && m_highlightedItem < 0)
@@ -272,7 +272,7 @@ namespace EVEMon.SkillPlanner
                 return;
 
             // Change cursor if required
-            int value = GetValueAt(e.Location);
+            var value = GetValueAt(e.Location);
             Cursor = value == -1 ? Cursors.Arrow : Cursors.Hand;
 
             HighlightedValue = value;
@@ -335,14 +335,14 @@ namespace EVEMon.SkillPlanner
         {
             base.OnPaint(e);
 
-            using (Graphics g = e.Graphics)
+            using (var g = e.Graphics)
             {
                 // Draw the borders
                 g.DrawRectangle(m_outerBorderPen, 0, 0, Width - 1, Height - 1);
                 g.DrawRectangle(m_borderPen, 1, 1, Width - 3, Height - 3);
 
                 // Draw the tiles
-                for (int iTile = 0; iTile < m_points; iTile++)
+                for (var iTile = 0; iTile < m_points; iTile++)
                 {
                     DrawTile(g, iTile);
                 }
@@ -368,7 +368,7 @@ namespace EVEMon.SkillPlanner
                     {
                         base.OnMouseClick(m_mouseEvent);
 
-                        int newValue = GetValueAt(m_mouseEvent.Location);
+                        var newValue = GetValueAt(m_mouseEvent.Location);
 
                         if (newValue == -1)
                             return;
@@ -426,7 +426,7 @@ namespace EVEMon.SkillPlanner
                 brush = ShiftBrushColor(brush.Color, Shift);
             }
 
-            int x = 1 + iTile * m_tileWidth;
+            var x = 1 + iTile * m_tileWidth;
 
             // Draw the tile
             g.FillRectangle(brush, x, 2, m_tileWidth, m_tileHeight);
@@ -446,7 +446,7 @@ namespace EVEMon.SkillPlanner
         /// <returns></returns>
         private static SolidBrush ShiftBrushColor(Color brushColor, int shift)
         {
-            Color color = Color.FromArgb(Math.Min(brushColor.R + shift, 255),
+            var color = Color.FromArgb(Math.Min(brushColor.R + shift, 255),
                                          Math.Min(brushColor.G + shift, 255),
                                          Math.Min(brushColor.B + shift, 255));
             return new SolidBrush(color);

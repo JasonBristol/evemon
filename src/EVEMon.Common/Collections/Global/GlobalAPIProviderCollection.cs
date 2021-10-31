@@ -84,7 +84,7 @@ namespace EVEMon.Common.Collections.Global
         {
             yield return APIProvider.DefaultProvider;
 
-            foreach (APIProvider provider in m_customProviders)
+            foreach (var provider in m_customProviders)
             {
                 yield return provider;
             }

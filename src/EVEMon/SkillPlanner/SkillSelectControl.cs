@@ -80,7 +80,7 @@ namespace EVEMon.SkillPlanner
                     return;
 
                 // Should we be transforming a Data Browser to a Skill Planner?
-                bool transformToPlanner = (value != null) && (m_plan == null) && (m_character != null);
+                var transformToPlanner = (value != null) && (m_plan == null) && (m_character != null);
 
                 if (value == null)
                     return;
@@ -336,7 +336,7 @@ namespace EVEMon.SkillPlanner
             }
 
             // Set the selected skill in plan editor's skill selector
-            PlanWindow planWindow = ParentForm as PlanWindow;
+            var planWindow = ParentForm as PlanWindow;
             planWindow?.SetSkillBrowserSkillSelectorSelectedSkill(m_selectedSkill);
         }
 
@@ -398,18 +398,18 @@ namespace EVEMon.SkillPlanner
         /// <returns></returns>
         private ImageList GetIconSet(int index)
         {
-            string groupname = string.Empty;
+            var groupname = string.Empty;
 
             if (index > 0 && index < IconSettings.Default.Properties.Count)
             {
-                SettingsProperty settingsProperty = IconSettings.Default.Properties["Group" + index];
+                var settingsProperty = IconSettings.Default.Properties["Group" + index];
                 if (settingsProperty != null)
                     groupname = settingsProperty.DefaultValue.ToString();
             }
 
-            string groupDirectory = $"{AppDomain.CurrentDomain.BaseDirectory}Resources\\Skill_Select\\Group";
-            string defaultResourcesPath = $"{groupDirectory}0\\Default.resources";
-            string groupResourcesPath = $"{groupDirectory}{index}\\{groupname}.resources";
+            var groupDirectory = $"{AppDomain.CurrentDomain.BaseDirectory}Resources\\Skill_Select\\Group";
+            var defaultResourcesPath = $"{groupDirectory}0\\Default.resources";
+            var groupResourcesPath = $"{groupDirectory}{index}\\{groupname}.resources";
 
             if (!File.Exists(defaultResourcesPath) ||
                 (!string.IsNullOrEmpty(groupname) && !File.Exists(groupResourcesPath)))
@@ -543,7 +543,7 @@ namespace EVEMon.SkillPlanner
                 skills = skills.Where(skill => skill.IsPublic);
 
             // Filter
-            Func<Skill, bool> predicate = GetFilter();
+            var predicate = GetFilter();
             skills = skills.Where(predicate);
 
             // Text search
@@ -576,11 +576,11 @@ namespace EVEMon.SkillPlanner
             lblFilterBy.Enabled = cbFilterByAttributes.Enabled = (skillFilter ==
                 SkillFilter.ByAttributes);
 
-            EveAttribute primary = EveAttribute.None;
-            EveAttribute secondary = EveAttribute.None;
+            var primary = EveAttribute.None;
+            var secondary = EveAttribute.None;
             if (cbFilterByAttributes.Enabled)
             {
-                string[] attributes = cbFilterByAttributes.SelectedItem.ToString().Split('-');
+                var attributes = cbFilterByAttributes.SelectedItem.ToString().Split('-');
                 Enum.TryParse(attributes.First().Trim(), out primary);
                 Enum.TryParse(attributes.Last().Trim(), out secondary);
             }
@@ -628,10 +628,10 @@ namespace EVEMon.SkillPlanner
         private void UpdateTree(IEnumerable<Skill> skills)
         {
             // Store the selected node (if any) to restore it after the update
-            int selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
+            var selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
 
             // Update the image list choice
-            int iconGroupIndex = Settings.UI.SkillBrowser.IconsGroupIndex;
+            var iconGroupIndex = Settings.UI.SkillBrowser.IconsGroupIndex;
             if (iconGroupIndex == 0)
                 iconGroupIndex = 1;
 
@@ -641,7 +641,7 @@ namespace EVEMon.SkillPlanner
                 : GetIconSet(iconGroupIndex);
 
             // Rebuild the nodes
-            int numberOfItems = 0;
+            var numberOfItems = 0;
             tvItems.BeginUpdate();
             try
             {
@@ -654,7 +654,7 @@ namespace EVEMon.SkillPlanner
                 // Restore the selected node (if any)
                 if (selectedItemHash > 0)
                 {
-                    foreach (TreeNode node in tvItems.GetAllNodes()
+                    foreach (var node in tvItems.GetAllNodes()
                         .Where(node => node.Tag.GetHashCode() == selectedItemHash))
                     {
                         tvItems.SelectNodeWithTag(node.Tag);
@@ -691,22 +691,22 @@ namespace EVEMon.SkillPlanner
         /// <returns></returns>
         private int AddNodes(IEnumerable<Skill> skills, int numberOfItems)
         {
-            string key = Settings.UI.SafeForWork
+            var key = Settings.UI.SafeForWork
                 ? "book_old"
                 : m_character == null
                     ? "Skills"
                     : "book";
 
-            int groupImageIndex =  tvItems.ImageList.Images.IndexOfKey(key);
+            var groupImageIndex =  tvItems.ImageList.Images.IndexOfKey(key);
 
             // When we display the skill browser as EVE data browser
-            int dataBrowserSkillImageIndex = Settings.UI.SafeForWork
+            var dataBrowserSkillImageIndex = Settings.UI.SafeForWork
                 ? groupImageIndex
                 : tvItems.ImageList.Images.IndexOfKey("Skill");
 
-            foreach (IGrouping<SkillGroup, Skill> group in skills.GroupBy(x => x.Group).OrderBy(x => x.Key.Name))
+            foreach (var group in skills.GroupBy(x => x.Group).OrderBy(x => x.Key.Name))
             {
-                TreeNode groupNode = new TreeNode
+                var groupNode = new TreeNode
                 {
                     Text = group.Key.Name,
                     ImageIndex = groupImageIndex,
@@ -715,7 +715,7 @@ namespace EVEMon.SkillPlanner
                 };
 
                 // Add nodes for skills in this group
-                foreach (Skill skill in group)
+                foreach (var skill in group)
                 {
                     int imageIndex;
                     if (m_character != null)
@@ -736,7 +736,7 @@ namespace EVEMon.SkillPlanner
                         imageIndex = dataBrowserSkillImageIndex;
                     
                     // Create node and adds it
-                    TreeNode node = new TreeNode
+                    var node = new TreeNode
                     {
                         Text = $"{skill.Name} ({skill.Rank})",
                         ImageIndex = imageIndex,
@@ -777,13 +777,13 @@ namespace EVEMon.SkillPlanner
         private void UpdateListBox(IEnumerable<Skill> skills)
         {
             // Store the selected node (if any) to restore it after the update
-            int selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
+            var selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
 
             lbSearchList.BeginUpdate();
             try
             {
                 lbSearchList.Items.Clear();
-                foreach (Skill skill in skills)
+                foreach (var skill in skills)
                 {
                     lbSearchList.Items.Add(skill);
 
@@ -805,11 +805,11 @@ namespace EVEMon.SkillPlanner
         private void UpdateListView(IList<Skill> skills)
         {
             // Store the selected node (if any) to restore it after the update
-            int selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
+            var selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
 
             // Retrieve the data to fetch into the list
             IEnumerable<string> labels = null;
-            string column = GetSortedListData(ref skills, ref labels);
+            var column = GetSortedListData(ref skills, ref labels);
             if (labels == null)
                 return;
 
@@ -819,16 +819,16 @@ namespace EVEMon.SkillPlanner
             {
                 lvSortedSkillList.Items.Clear();
 
-                using (IEnumerator<string> labelsEnumerator = labels.GetEnumerator())
+                using (var labelsEnumerator = labels.GetEnumerator())
                 {
-                    foreach (Skill skill in skills)
+                    foreach (var skill in skills)
                     {
                         // Retrieves the label for the second column (sort key)
                         labelsEnumerator.MoveNext();
-                        string label = labelsEnumerator.Current;
+                        var label = labelsEnumerator.Current;
 
                         // Creates the item and adds it
-                        ListViewItem lvi = new ListViewItem(skill.Name);
+                        var lvi = new ListViewItem(skill.Name);
                         lvi.SubItems.Add(label);
                         lvi.Tag = skill;
 
@@ -859,7 +859,7 @@ namespace EVEMon.SkillPlanner
         /// <returns></returns>
         private string GetSortedListData(ref IList<Skill> skills, ref IEnumerable<string> labels)
         {
-            SkillSort skillSort =
+            var skillSort =
                 (SkillSort)
                     (EnumExtensions.GetValueFromDescription<SkillSort>((string)cbSorting.SelectedItem) ??
                      SkillSort.None);
@@ -872,18 +872,18 @@ namespace EVEMon.SkillPlanner
 
                 // Time to next level
                 case SkillSort.TimeToNextLevel:
-                    IEnumerable<TimeSpan> times = skills
+                    var times = skills
                         .Select(x => m_character.GetTrainingTimeToMultipleSkills(x.Prerequisites)
                             .Add(x.GetLeftTrainingTimeToNextLevel));
 
-                    TimeSpan[] timesArray = times.ToArray();
-                    Skill[] skillsArray = skills.ToArray();
+                    var timesArray = times.ToArray();
+                    var skillsArray = skills.ToArray();
                     Array.Sort(timesArray, skillsArray);
 
-                    string[] labelsArray = new string[skillsArray.Length];
-                    for (int i = 0; i < labelsArray.Length; i++)
+                    var labelsArray = new string[skillsArray.Length];
+                    for (var i = 0; i < labelsArray.Length; i++)
                     {
-                        TimeSpan time = timesArray[i];
+                        var time = timesArray[i];
                         labelsArray[i] = time == TimeSpan.Zero
                             ? "-"
                             : $"{Skill.GetRomanFromInt(skillsArray[i].Level + 1)}: " +
@@ -906,9 +906,9 @@ namespace EVEMon.SkillPlanner
                     Array.Sort(timesArray, skillsArray);
 
                     labelsArray = new string[skillsArray.Length];
-                    for (int i = 0; i < labelsArray.Length; i++)
+                    for (var i = 0; i < labelsArray.Length; i++)
                     {
-                        TimeSpan time = timesArray[i];
+                        var time = timesArray[i];
                         labelsArray[i] = time == TimeSpan.Zero
                             ? "-"
                             : time.ToDescriptiveText(DescriptiveTextOptions.None);
@@ -1245,12 +1245,12 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void tvItems_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            TreeNode node = tvItems.SelectedNode;
+            var node = tvItems.SelectedNode;
 
             if (node?.Nodes.Count != 0)
                 return;
 
-            Skill skill = node.Tag as Skill;
+            var skill = node.Tag as Skill;
             if (skill == null || m_plan == null || m_plan.GetPlannedLevel(skill) == 5 || skill.Level == 5)
                 return;
 
@@ -1280,7 +1280,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void cmSkills_Opening(object sender, CancelEventArgs e)
         {
-            ContextMenuStrip contextMenu = sender as ContextMenuStrip;
+            var contextMenu = sender as ContextMenuStrip;
 
             e.Cancel = contextMenu?.SourceControl == null || (!contextMenu.SourceControl.Visible && m_selectedSkill == null);
 
@@ -1290,7 +1290,7 @@ namespace EVEMon.SkillPlanner
             contextMenu.SourceControl.Cursor = Cursors.Default;
 
             Skill skill = null;
-            TreeNode node = tvItems.SelectedNode;
+            var node = tvItems.SelectedNode;
             if (node != null)
                 skill = node.Tag as Skill;
 
@@ -1325,7 +1325,7 @@ namespace EVEMon.SkillPlanner
                 return;
 
             cmiPlanToLevel.Enabled = false;
-            for (int i = 0; i <= 5; i++)
+            for (var i = 0; i <= 5; i++)
             {
                 cmiPlanToLevel.Enabled |= m_plan.UpdatesRegularPlanToMenu(cmiPlanToLevel.DropDownItems[i], m_selectedSkill, i);
             }
@@ -1347,7 +1347,7 @@ namespace EVEMon.SkillPlanner
             if (m_selectedSkill == null || m_plan == null)
                 return;
 
-            for (int i = 0; i <= 5; i++)
+            for (var i = 0; i <= 5; i++)
             {
                 m_plan.UpdatesRegularPlanToMenu(cmiLvPlanTo.DropDownItems[i], m_selectedSkill, i);
             }
@@ -1360,12 +1360,12 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void planToLevelMenuItem_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem levelItem = (ToolStripMenuItem)sender;
-            IPlanOperation operation = levelItem.Tag as IPlanOperation;
+            var levelItem = (ToolStripMenuItem)sender;
+            var operation = levelItem.Tag as IPlanOperation;
             if (operation == null)
                 return;
 
-            PlanWindow planWindow = ParentForm as PlanWindow;
+            var planWindow = ParentForm as PlanWindow;
             if (planWindow == null)
                 return;
 

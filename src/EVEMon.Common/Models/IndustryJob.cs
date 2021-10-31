@@ -296,7 +296,7 @@ namespace EVEMon.Common.Models
         /// <returns>True if import sucessful otherwise, false.</returns>
         internal bool TryImport(EsiJobListItem src, IssuedFor issuedFor, CCPCharacter character)
         {
-            bool matches = MatchesWith(src);
+            var matches = MatchesWith(src);
             // Note that, before a match is found, all jobs have been marked for deletion:
             // m_markedForDeletion == true
             if (matches)

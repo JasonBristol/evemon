@@ -88,14 +88,14 @@ namespace EVEMon.ApiCredentialsManagement
             }
             m_pendingUpdate = false;
 
-            int scrollBarPosition = TopIndex;
-            ESIKey oldSelection = SelectedItem as ESIKey;
+            var scrollBarPosition = TopIndex;
+            var oldSelection = SelectedItem as ESIKey;
 
             BeginUpdate();
             try
             {
                 Items.Clear();
-                foreach (ESIKey apiKey in ESIKeys)
+                foreach (var apiKey in ESIKeys)
                 {
                     Items.Add(apiKey);
                     if (apiKey == oldSelection)
@@ -131,20 +131,20 @@ namespace EVEMon.ApiCredentialsManagement
             ItemHeight = m_boldFont.Height + m_middleFont.Height + m_smallBoldFont.Height * 2;
 
             // Background
-            Graphics g = e.Graphics;
-            bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
-            Brush fontBrush = isSelected ? SystemBrushes.HighlightText : SystemBrushes.ControlText;
+            var g = e.Graphics;
+            var isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+            var fontBrush = isSelected ? SystemBrushes.HighlightText : SystemBrushes.ControlText;
             e.DrawBackground();
 
             if (e.Index < 0 || e.Index >= Items.Count)
                 return;
 
-            ESIKey esiKey = (ESIKey)Items[e.Index];
-            Image icon = GetIcon(esiKey);
+            var esiKey = (ESIKey)Items[e.Index];
+            var icon = GetIcon(esiKey);
 
             Margin = new Padding((ItemHeight - icon.Height) / 2);
-            int left = e.Bounds.Left + Margin.Left;
-            int top = e.Bounds.Top + Margin.Top / 4;
+            var left = e.Bounds.Left + Margin.Left;
+            var top = e.Bounds.Top + Margin.Top / 4;
 
             // Draws the checbox
             CheckBoxRenderer.DrawCheckBox(g, new Point(left, (ItemHeight - CheckBoxSize.Height) / 2),
@@ -175,12 +175,12 @@ namespace EVEMon.ApiCredentialsManagement
             left += icon.Width + Margin.Left;
 
             // Api key ID
-            string apiKeyId = esiKey.ID.ToString(CultureConstants.InvariantCulture);
+            var apiKeyId = esiKey.ID.ToString(CultureConstants.InvariantCulture);
             g.DrawString(apiKeyId, m_boldFont, fontBrush, new Point(left, top + 2));
-            int indentedLeft = left + g.MeasureString(apiKeyId, m_boldFont).ToSize().Width + Margin.Left * 2;
+            var indentedLeft = left + g.MeasureString(apiKeyId, m_boldFont).ToSize().Width + Margin.Left * 2;
 
             // Api key verification code
-            string tokenText = string.IsNullOrEmpty(esiKey.AccessToken) ? "No access token" : "Access token present";
+            var tokenText = string.IsNullOrEmpty(esiKey.AccessToken) ? "No access token" : "Access token present";
             g.DrawString(tokenText, Font, fontBrush, new Point(indentedLeft, top));
             indentedLeft += g.MeasureString(esiKey.AccessToken, Font).ToSize().Width + Margin.Left * 2;
 
@@ -229,9 +229,9 @@ namespace EVEMon.ApiCredentialsManagement
             // Draws the texts on the lower third
             top += g.MeasureString(accountCreated, m_middleFont).ToSize().Height;
 #endif
-            bool isFirst = true;
+            var isFirst = true;
 
-            foreach (CharacterIdentity identity in esiKey.CharacterIdentities)
+            foreach (var identity in esiKey.CharacterIdentities)
             {
                 // Draws "; " between ids
                 if (!isFirst)
@@ -242,8 +242,8 @@ namespace EVEMon.ApiCredentialsManagement
                 isFirst = false;
 
                 // Selects font
-                Font font = m_smallFont;
-                CCPCharacter ccpCharacter = identity.CCPCharacter;
+                var font = m_smallFont;
+                var ccpCharacter = identity.CCPCharacter;
                 if (ccpCharacter != null && ccpCharacter.Monitored)
                     font = m_smallBoldFont;
 

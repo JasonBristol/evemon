@@ -86,7 +86,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         public override SerializableSettingsCharacter Export()
         {
-            SerializableUriCharacter serial = new SerializableUriCharacter();
+            var serial = new SerializableUriCharacter();
             Export(serial);
 
             serial.Address = m_uri.AbsoluteUri;

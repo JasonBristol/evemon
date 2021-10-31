@@ -155,7 +155,7 @@ namespace EVEMon.SettingsUI
 
             await Settings.SaveImmediateAsync();
 
-            Task uploadSettingsFileAsync = Provider?.UploadSettingsFileAsync();
+            var uploadSettingsFileAsync = Provider?.UploadSettingsFileAsync();
             if (uploadSettingsFileAsync != null)
                 await uploadSettingsFileAsync;
         }
@@ -176,7 +176,7 @@ namespace EVEMon.SettingsUI
             throbber.State = ThrobberState.Rotating;
             throbber.Visible = true;
 
-            Task downloadSettingsFileAsync = Provider?.DownloadSettingsFileAsync();
+            var downloadSettingsFileAsync = Provider?.DownloadSettingsFileAsync();
             if (downloadSettingsFileAsync != null)
                 await downloadSettingsFileAsync;
         }

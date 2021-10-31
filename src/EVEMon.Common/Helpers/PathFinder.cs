@@ -42,11 +42,11 @@ namespace EVEMon.Common.Helpers
         public static IEnumerable<SolarSystem> FindBestPath(SolarSystem start, SolarSystem target, PathSearchCriteria criteria,
             float minSecurityLevel, float maxSecurityLevel)
         {
-            PathFinder result = FindBestPathCore(start, target, criteria, minSecurityLevel, maxSecurityLevel);
+            var result = FindBestPathCore(start, target, criteria, minSecurityLevel, maxSecurityLevel);
 
             // Transforms the result into a list
-            List<SolarSystem> list = new List<SolarSystem>();
-            for (PathFinder item = result; item != null; item = item.m_parent)
+            var list = new List<SolarSystem>();
+            for (var item = result; item != null; item = item.m_parent)
             {
                 list.Insert(0, item.m_system);
             }
@@ -66,9 +66,9 @@ namespace EVEMon.Common.Helpers
         private static PathFinder FindBestPathCore(SolarSystem start, SolarSystem target, PathSearchCriteria criteria,
             float minSecurityLevel, float maxSecurityLevel)
         {
-            Dictionary<SolarSystem, int> bestDepths = new Dictionary<SolarSystem, int>();
-            SortedList<int, PathFinder> paths = new SortedList<int, PathFinder>();
-            PathFinder root = new PathFinder(start);
+            var bestDepths = new Dictionary<SolarSystem, int>();
+            var paths = new SortedList<int, PathFinder>();
+            var root = new PathFinder(start);
             bestDepths.Add(start, -1);
             paths.Add(0, root);
 
@@ -102,13 +102,13 @@ namespace EVEMon.Common.Helpers
 
                 // Gets the subpaths for the best path so far
                 depth++;
-                foreach (PathFinder child in best.GetChildren(depth, bestDepths))
+                foreach (var child in best.GetChildren(depth, bestDepths))
                 {
                     // Gets the heuristic key based on path search criteria
-                    int criteriaValue = criteria == PathSearchCriteria.ShortestDistance
+                    var criteriaValue = criteria == PathSearchCriteria.ShortestDistance
                         ? child.m_system.GetSquareDistanceWith(target)
                         : 1;
-                    int key = criteriaValue * depth * depth;
+                    var key = criteriaValue * depth * depth;
                     if (child.m_system.SecurityLevel < minSecurityLevel || child.m_system.SecurityLevel > maxSecurityLevel)
                         key *= 100;
 
@@ -130,7 +130,7 @@ namespace EVEMon.Common.Helpers
         private IEnumerable<PathFinder> GetChildren(int depth, IDictionary<SolarSystem, int> bestDepths)
         {
             // Check this system is not already present with a lesser range
-            foreach (SolarSystem neighbor in m_system.Neighbors)
+            foreach (var neighbor in m_system.Neighbors)
             {
                 // Checks the best depth so far
                 int bestDepth;
@@ -152,8 +152,8 @@ namespace EVEMon.Common.Helpers
         {
             get
             {
-                int count = 0;
-                for (PathFinder parent = m_parent; parent != null; parent = parent.m_parent)
+                var count = 0;
+                for (var parent = m_parent; parent != null; parent = parent.m_parent)
                 {
                     count++;
                 }

@@ -56,14 +56,14 @@ namespace EVEMon.Common.Data
             m_z = src.Z;
 
             if (src.Stations != null)
-                foreach (SerializableStation srcStation in src.Stations)
+                foreach (var srcStation in src.Stations)
                     Items.Add(new Station(this, srcStation));
 
             if (src.Planets != null)
             {
                 // Add planets
                 m_planets = new FastList<Planet>(src.Planets.Count);
-                foreach (SerializablePlanet srcPlanet in src.Planets)
+                foreach (var srcPlanet in src.Planets)
                     m_planets.Add(new Planet(this, srcPlanet));
             }
             else
@@ -148,7 +148,7 @@ namespace EVEMon.Common.Data
         {
             get
             {
-                double secLevel = Math.Round(SecurityLevel, 1);
+                var secLevel = Math.Round(SecurityLevel, 1);
                 return secLevel > 0 && secLevel < 0.5;
             }
         }
@@ -194,9 +194,9 @@ namespace EVEMon.Common.Data
         {
             other.ThrowIfNull(nameof(other));
 
-            int dx = m_x - other.m_x;
-            int dy = m_y - other.m_y;
-            int dz = m_z - other.m_z;
+            var dx = m_x - other.m_x;
+            var dy = m_y - other.m_y;
+            var dz = m_z - other.m_z;
 
             return dx * dx + dy * dy + dz * dz;
         }

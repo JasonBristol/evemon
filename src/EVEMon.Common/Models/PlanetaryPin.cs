@@ -48,7 +48,7 @@ namespace EVEMon.Common.Models
             if (contents != null && contents.Count > 0)
             {
                 var firstItem = contents[0];
-                int typeID = firstItem.TypeID;
+                var typeID = firstItem.TypeID;
                 ContentQuantity = firstItem.Amount;
                 ContentTypeID = typeID;
                 ContentTypeName = StaticItems.GetItemName(typeID);
@@ -240,10 +240,10 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         private string GetPinName(string typeName)
         {
-            int lenght = m_baseString.Length - 1;
-            string pinNameID = string.Empty;
+            var lenght = m_baseString.Length - 1;
+            var pinNameID = string.Empty;
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
                 pinNameID += m_baseString[(int)(ID / Math.Pow(lenght, i) % lenght)];
             }
@@ -270,7 +270,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         private double GetVolume()
         {
-            Item item = StaticItems.GetItemByID(ContentTypeID);
+            var item = StaticItems.GetItemByID(ContentTypeID);
             return item != null && m_volumeProperty != null ? m_volumeProperty.
                 GetNumericValue(item) * ContentQuantity : 0.0;
         }

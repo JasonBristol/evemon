@@ -157,7 +157,7 @@ namespace EVEMon.Common.Controls
             m_imageTypeAttributes = new Dictionary<ImageType, ImageTypeData>();
 
             // Ships
-            ArrayList validSizes = new ArrayList { EveImageSize.x32, EveImageSize.x64, EveImageSize.x128, EveImageSize.x256 };
+            var validSizes = new ArrayList { EveImageSize.x32, EveImageSize.x64, EveImageSize.x128, EveImageSize.x256 };
             m_imageTypeAttributes.Add(ImageType.Ship,
                 new ImageTypeData("Ships", "icons", ImageNameFrom.TypeID, validSizes));
 
@@ -210,13 +210,13 @@ namespace EVEMon.Common.Controls
         private void ShowBlankImage()
         {
             Bitmap bmp;
-            using (Bitmap tempBitmap = new Bitmap(pbImage.ClientSize.Width, pbImage.ClientSize.Height))
+            using (var tempBitmap = new Bitmap(pbImage.ClientSize.Width, pbImage.ClientSize.Height))
             {
                 bmp = (Bitmap)tempBitmap.Clone();
             }
 
-            using (Graphics g = Graphics.FromImage(bmp))
-            using (SolidBrush brush = new SolidBrush(BackColor))
+            using (var g = Graphics.FromImage(bmp))
+            using (var brush = new SolidBrush(BackColor))
             {
                 g.FillRectangle(brush, new Rectangle(0, 0, bmp.Width, bmp.Height));
             }
@@ -237,8 +237,8 @@ namespace EVEMon.Common.Controls
             if (m_item == null)
                 return;
 
-            ImageType imageType = GetImageType(m_item);
-            ImageTypeData typeData = m_imageTypeAttributes[imageType];
+            var imageType = GetImageType(m_item);
+            var typeData = m_imageTypeAttributes[imageType];
 
             // Only display an image if the correct size is available
             if (!typeData.ValidSizes.Contains(m_imageSize))
@@ -262,7 +262,7 @@ namespace EVEMon.Common.Controls
         {
             while (true)
             {
-                Image img = await ImageService.GetImageAsync(GetImageUrl()).ConfigureAwait(false);
+                var img = await ImageService.GetImageAsync(GetImageUrl()).ConfigureAwait(false);
                 GotImage(m_item.ID, img);
                 break;
             }
@@ -274,8 +274,8 @@ namespace EVEMon.Common.Controls
         /// <returns></returns>
         private Uri GetImageUrl()
         {
-            int size = (int)m_imageSize;
-            string path = string.Format(CultureConstants.InvariantCulture, (size > 64 ?
+            var size = (int)m_imageSize;
+            var path = string.Format(CultureConstants.InvariantCulture, (size > 64 ?
                 NetworkConstants.CCPTypeRender : NetworkConstants.CCPTypeImage), m_item.ID,
                 size);
             return ImageService.GetImageServerBaseUri(path);
@@ -334,9 +334,9 @@ namespace EVEMon.Common.Controls
                         break;
                 }
 
-                Image image = (Image)pbImage.Image.Clone();
+                var image = (Image)pbImage.Image.Clone();
 
-                using (Graphics graph = Graphics.FromImage(image))
+                using (var graph = Graphics.FromImage(image))
                 {
                     graph.DrawImage(overlayIcon, 0, 0, (int)m_imageSize / 4, (int)m_imageSize / 4);
                 }

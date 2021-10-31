@@ -143,10 +143,10 @@ namespace EVEMon.CharacterMonitoring
             get
             {
                 // Add the visible columns; matching the display order
-                List<AssetColumnSettings> newColumns = new List<AssetColumnSettings>();
-                foreach (ColumnHeader header in lvAssets.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
+                var newColumns = new List<AssetColumnSettings>();
+                foreach (var header in lvAssets.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
                 {
-                    AssetColumnSettings columnSetting = m_columns.First(x => x.Column == (AssetColumn)header.Tag);
+                    var columnSetting = m_columns.First(x => x.Column == (AssetColumn)header.Tag);
                     if (columnSetting.Width > -1)
                         columnSetting.Width = header.Width;
 
@@ -314,9 +314,9 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void AddColumns()
         {
-            foreach (AssetColumnSettings column in m_columns.Where(x => x.Visible))
+            foreach (var column in m_columns.Where(x => x.Visible))
             {
-                ColumnHeader header = lvAssets.Columns.Add(column.Column.GetHeader(), column.Width);
+                var header = lvAssets.Columns.Add(column.Column.GetHeader(), column.Width);
                 header.Tag = column.Column;
 
                 switch (column.Column)
@@ -340,10 +340,10 @@ namespace EVEMon.CharacterMonitoring
             if (!Visible)
                 return;
 
-            int scrollBarPosition = lvAssets.GetVerticalScrollBarPosition();
+            var scrollBarPosition = lvAssets.GetVerticalScrollBarPosition();
 
             // Store the selected item (if any) to restore it after the update
-            int selectedItem = lvAssets.SelectedItems.Count > 0 ? lvAssets.SelectedItems[0].
+            var selectedItem = lvAssets.SelectedItems.Count > 0 ? lvAssets.SelectedItems[0].
                 Tag.GetHashCode() : 0;
 
             lvAssets.BeginUpdate();
@@ -370,7 +370,7 @@ namespace EVEMon.CharacterMonitoring
                 // Restore the selected item (if any)
                 if (selectedItem > 0)
                 {
-                    foreach (ListViewItem lvItem in lvAssets.Items.Cast<ListViewItem>().Where(
+                    foreach (var lvItem in lvAssets.Items.Cast<ListViewItem>().Where(
                         lvItem => lvItem.Tag.GetHashCode() == selectedItem))
                     {
                         lvItem.Selected = true;
@@ -435,62 +435,62 @@ namespace EVEMon.CharacterMonitoring
                     await UpdateNoGroupContentAsync(assets);
                     break;
                 case AssetGrouping.Group:
-                    IOrderedEnumerable<IGrouping<string, Asset>> groups1 =
+                    var groups1 =
                         assets.GroupBy(x => x.Item.GroupName).OrderBy(x => x.Key);
                     await UpdateContentAsync(groups1);
                     break;
                 case AssetGrouping.GroupDesc:
-                    IOrderedEnumerable<IGrouping<string, Asset>> groups2 =
+                    var groups2 =
                         assets.GroupBy(x => x.Item.GroupName).OrderByDescending(x => x.Key);
                     await UpdateContentAsync(groups2);
                     break;
                 case AssetGrouping.Category:
-                    IOrderedEnumerable<IGrouping<string, Asset>> groups3 =
+                    var groups3 =
                         assets.GroupBy(x => x.Item.CategoryName).OrderBy(x => x.Key);
                     await UpdateContentAsync(groups3);
                     break;
                 case AssetGrouping.CategoryDesc:
-                    IOrderedEnumerable<IGrouping<string, Asset>> groups4 =
+                    var groups4 =
                         assets.GroupBy(x => x.Item.CategoryName).OrderByDescending(x => x.Key);
                     await UpdateContentAsync(groups4);
                     break;
                 case AssetGrouping.Container:
-                    IOrderedEnumerable<IGrouping<string, Asset>> groups5 =
+                    var groups5 =
                         assets.GroupBy(x => x.Container).OrderBy(x => x.Key);
                     await UpdateContentAsync(groups5);
                     break;
                 case AssetGrouping.ContainerDesc:
-                    IOrderedEnumerable<IGrouping<string, Asset>> groups6 =
+                    var groups6 =
                         assets.GroupBy(x => x.Container).OrderByDescending(x => x.Key);
                     await UpdateContentAsync(groups6);
                     break;
                 case AssetGrouping.Location:
-                    IOrderedEnumerable<IGrouping<string, Asset>> groups7 =
+                    var groups7 =
                         assets.GroupBy(x => x.Location).OrderBy(x => x.Key);
                     await UpdateContentAsync(groups7);
                     break;
                 case AssetGrouping.LocationDesc:
-                    IOrderedEnumerable<IGrouping<string, Asset>> groups8 =
+                    var groups8 =
                         assets.GroupBy(x => x.Location).OrderByDescending(x => x.Key);
                     await UpdateContentAsync(groups8);
                     break;
                 case AssetGrouping.Region:
-                    IOrderedEnumerable<IGrouping<Region, Asset>> groups9 =
+                    var groups9 =
                         assets.GroupBy(x => x.SolarSystem.Constellation.Region).OrderBy(x => x.Key);
                     await UpdateContentAsync(groups9);
                     break;
                 case AssetGrouping.RegionDesc:
-                    IOrderedEnumerable<IGrouping<Region, Asset>> groups10 =
+                    var groups10 =
                         assets.GroupBy(x => x.SolarSystem.Constellation.Region).OrderByDescending(x => x.Key);
                     await UpdateContentAsync(groups10);
                     break;
                 case AssetGrouping.Jumps:
-                    IOrderedEnumerable<IGrouping<int, Asset>> groups11 =
+                    var groups11 =
                         assets.GroupBy(x => x.Jumps).OrderBy(x => x.Key);
                     await UpdateContentAsync(groups11);
                     break;
                 case AssetGrouping.JumpsDesc:
-                    IOrderedEnumerable<IGrouping<int, Asset>> groups12 =
+                    var groups12 =
                         assets.GroupBy(x => x.Jumps).OrderByDescending(x => x.Key);
                     await UpdateContentAsync(groups12);
                     break;
@@ -535,7 +535,7 @@ namespace EVEMon.CharacterMonitoring
                 var listOfItems = new List<ListViewItem>();
 
                 // Add the groups
-                foreach (IGrouping<TKey, Asset> group in groups)
+                foreach (var group in groups)
                 {
                     string groupText;
                     if (@group.Key is int) // Really ugly way but couldn't figured another way
@@ -543,10 +543,10 @@ namespace EVEMon.CharacterMonitoring
                     else
                         groupText = @group.Key?.ToString() ?? string.Empty;
 
-                    ListViewGroup listGroup = new ListViewGroup(groupText);
+                    var listGroup = new ListViewGroup(groupText);
                     listOfGroups.Add(listGroup);
 
-                    ListViewItem[] items = @group.Select(asset => new
+                    var items = @group.Select(asset => new
                     {
                         asset,
                         item = new ListViewItem(asset.Item.Name, listGroup)
@@ -584,7 +584,7 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Creates the subitems
-            for (int i = 0; i < lvAssets.Columns.Count; i++)
+            for (var i = 0; i < lvAssets.Columns.Count; i++)
             {
                 SetColumn(asset, item.SubItems[i], (AssetColumn)lvAssets.Columns[i].Tag);
             }
@@ -613,14 +613,14 @@ namespace EVEMon.CharacterMonitoring
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (lvAssets.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += lvAssets.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -645,9 +645,9 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void UpdateSortVisualFeedback()
         {
-            foreach (ColumnHeader columnHeader in lvAssets.Columns.Cast<ColumnHeader>())
+            foreach (var columnHeader in lvAssets.Columns.Cast<ColumnHeader>())
             {
-                AssetColumn column = (AssetColumn)columnHeader.Tag;
+                var column = (AssetColumn)columnHeader.Tag;
                 if (m_sortCriteria == column)
                     columnHeader.ImageIndex = m_sortAscending ? 0 : 1;
                 else
@@ -663,7 +663,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="column"></param>
         private static void SetColumn(Asset asset, ListViewItem.ListViewSubItem item, AssetColumn column)
         {
-            bool numberFormat = Settings.UI.MainWindow.Assets.NumberAbsFormat;
+            var numberFormat = Settings.UI.MainWindow.Assets.NumberAbsFormat;
 
             switch (column)
             {
@@ -763,20 +763,20 @@ namespace EVEMon.CharacterMonitoring
             if (!item.Selected || lvAssets.SelectedItems.Count < 2)
                 return string.Empty;
 
-            List<ListViewItem> selectedItems = lvAssets.SelectedItems.Cast<ListViewItem>().ToList();
+            var selectedItems = lvAssets.SelectedItems.Cast<ListViewItem>().ToList();
             if (selectedItems.Any(selectedItem => selectedItem.Text != item.Text))
                 return string.Empty;
 
-            List<Asset> selectedAssets = selectedItems.Select(selectedItem => selectedItem.Tag).OfType<Asset>().ToList();
-            long sumQuantity = selectedAssets.Sum(selectedAsset => selectedAsset.Quantity);
-            double sumVolume = selectedAssets.Sum(selectedAsset => selectedAsset.TotalVolume);
-            int uniqueLocations = selectedAssets.Select(asset => asset.Location).Distinct().Count();
-            int minJumps = selectedAssets.Min(asset => asset.Jumps);
-            int maxJumps = selectedAssets.Max(asset => asset.Jumps);
-            Asset closestAsset = selectedAssets.First(asset => asset.Jumps == minJumps);
-            Asset farthestAsset = selectedAssets.Last(asset => asset.Jumps == maxJumps);
+            var selectedAssets = selectedItems.Select(selectedItem => selectedItem.Tag).OfType<Asset>().ToList();
+            var sumQuantity = selectedAssets.Sum(selectedAsset => selectedAsset.Quantity);
+            var sumVolume = selectedAssets.Sum(selectedAsset => selectedAsset.TotalVolume);
+            var uniqueLocations = selectedAssets.Select(asset => asset.Location).Distinct().Count();
+            var minJumps = selectedAssets.Min(asset => asset.Jumps);
+            var maxJumps = selectedAssets.Max(asset => asset.Jumps);
+            var closestAsset = selectedAssets.First(asset => asset.Jumps == minJumps);
+            var farthestAsset = selectedAssets.Last(asset => asset.Jumps == maxJumps);
 
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.Append($"{item.Text} ({selectedAssets.First().Volume:N2} m³)")
                 .AppendLine()
                 .Append($"Total Quantity: {sumQuantity:N0} in {uniqueLocations:N0} " +
@@ -861,7 +861,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            AssetColumn column = (AssetColumn)lvAssets.Columns[e.Column].Tag;
+            var column = (AssetColumn)lvAssets.Columns[e.Column].Tag;
             if (m_sortCriteria == column)
                 m_sortAscending = !m_sortAscending;
             else
@@ -903,7 +903,7 @@ namespace EVEMon.CharacterMonitoring
 
             lvAssets.Cursor = CustomCursors.ContextMenu;
 
-            ListViewItem item = lvAssets.GetItemAt(e.Location.X, e.Location.Y);
+            var item = lvAssets.GetItemAt(e.Location.X, e.Location.Y);
             if (item == null)
             {
                 m_tooltip.Hide();
@@ -946,11 +946,11 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
         private void contextMenu_Opening(object sender, CancelEventArgs e)
         {
-            bool visible = lvAssets.SelectedItems.Count > 0 &&
-                  lvAssets.SelectedItems
-                      .Cast<ListViewItem>()
-                      .All(item => item != null &&
-                                   item.Text == ((Asset)lvAssets.SelectedItems[0]?.Tag)?.Item.Name);
+            var visible = lvAssets.SelectedItems.Count > 0 &&
+                          lvAssets.SelectedItems
+                              .Cast<ListViewItem>()
+                              .All(item => item != null &&
+                                           item.Text == ((Asset)lvAssets.SelectedItems[0]?.Tag)?.Item.Name);
 
             showInBrowserMenuItem.Visible =
                 showInBrowserMenuSeparator.Visible = visible;
@@ -958,19 +958,19 @@ namespace EVEMon.CharacterMonitoring
             if (!visible)
                 return;
 
-            Asset asset = lvAssets.SelectedItems[0]?.Tag as Asset;
+            var asset = lvAssets.SelectedItems[0]?.Tag as Asset;
 
             if (asset?.Item == null)
                 return;
 
-            Blueprint blueprint = StaticBlueprints.GetBlueprintByID(asset.Item.ID);
-            Ship ship = asset.Item as Ship;
-            Skill skill = Character.Skills[asset.Item.ID];
+            var blueprint = StaticBlueprints.GetBlueprintByID(asset.Item.ID);
+            var ship = asset.Item as Ship;
+            var skill = Character.Skills[asset.Item.ID];
 
             if (skill == Skill.UnknownSkill)
                 skill = null;
 
-            string text = ship != null ? "Ship" : blueprint != null ? "Blueprint" : skill != null ? "Skill" : "Item";
+            var text = ship != null ? "Ship" : blueprint != null ? "Blueprint" : skill != null ? "Skill" : "Item";
 
             showInBrowserMenuItem.Text = $"Show In {text} Browser...";
         }
@@ -982,19 +982,19 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void showInBrowserMenuItem_Click(object sender, EventArgs e)
         {
-            Asset asset = lvAssets.SelectedItems[0]?.Tag as Asset;
+            var asset = lvAssets.SelectedItems[0]?.Tag as Asset;
 
             if (asset?.Item == null)
                 return;
 
-            Ship ship = asset.Item as Ship;
-            Blueprint blueprint = StaticBlueprints.GetBlueprintByID(asset.Item.ID);
-            Skill skill = Character.Skills[asset.Item.ID];
+            var ship = asset.Item as Ship;
+            var blueprint = StaticBlueprints.GetBlueprintByID(asset.Item.ID);
+            var skill = Character.Skills[asset.Item.ID];
 
             if (skill == Skill.UnknownSkill)
                 skill = null;
 
-            PlanWindow planWindow = PlanWindow.ShowPlanWindow(Character);
+            var planWindow = PlanWindow.ShowPlanWindow(Character);
 
             if (ship != null)
                 planWindow.ShowShipInBrowser(ship);

@@ -33,7 +33,7 @@ namespace EVEMon.Common.Helpers
             const string Separator = "=======================================================================";
             const string SubSeparator = "-----------------------------------------------------------------------";
 
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder
                 .AppendLine("BASIC INFO")
                 .AppendLine(Separator)
@@ -60,7 +60,7 @@ namespace EVEMon.Common.Helpers
             {
                 builder.AppendLine("AUGMENTATIONS");
                 builder.AppendLine(Separator);
-                foreach (Implant implant in implants)
+                foreach (var implant in implants)
                 {
                     builder.AppendLine($"+{implant.Bonus} {implant.Slot.GetDescription().PadRight(22)} : {implant.Name}");
                 }
@@ -70,7 +70,7 @@ namespace EVEMon.Common.Helpers
             // Skill groups
             builder.AppendLine("SKILLS");
             builder.AppendLine(Separator);
-            foreach (SkillGroup skillGroup in character.SkillGroups)
+            foreach (var skillGroup in character.SkillGroups)
             {
                 AddSkillGroups(character, plan, builder, skillGroup);
 
@@ -89,12 +89,12 @@ namespace EVEMon.Common.Helpers
         /// <param name="skillGroup">The skill group.</param>
         private static void AddSkillGroups(Character character, Plan plan, StringBuilder builder, SkillGroup skillGroup)
         {
-            int count = skillGroup
+            var count = skillGroup
                 .Where(x => x.IsKnown || (plan != null && plan.IsPlanned(x)))
                 .Select(x => GetMergedSkill(plan, x))
                 .Count();
 
-            long skillGroupTotalSP = skillGroup
+            var skillGroupTotalSP = skillGroup
                 .Where(x => x.IsKnown || (plan != null && plan.IsPlanned(x)))
                 .Select(x => GetMergedSkill(plan, x))
                 .Sum(x => x.Skillpoints);
@@ -105,7 +105,7 @@ namespace EVEMon.Common.Helpers
                                FormattableString.Invariant($"{skillGroupTotalSP:N0} Points"));
 
             // Skills
-            foreach (Skill skill in skillGroup.Where(x => x.IsKnown || (plan != null && plan.IsPlanned(x))))
+            foreach (var skill in skillGroup.Where(x => x.IsKnown || (plan != null && plan.IsPlanned(x))))
             {
                 AddSkills(character, plan, builder, skill);
             }
@@ -120,11 +120,11 @@ namespace EVEMon.Common.Helpers
         /// <param name="skill">The skill.</param>
         private static void AddSkills(Character character, Plan plan, StringBuilder builder, Skill skill)
         {
-            SerializableCharacterSkill mergedSkill = GetMergedSkill(plan, skill);
+            var mergedSkill = GetMergedSkill(plan, skill);
 
-            string skillPointsText = FormattableString.Invariant($"{mergedSkill.Skillpoints:N0}");
-            string pointToLevelFiveText = FormattableString.Invariant($"{skill.StaticData.GetPointsRequiredForLevel(5):N0}");
-            string skillDesc = $"{skill} ({skill.Rank})";
+            var skillPointsText = FormattableString.Invariant($"{mergedSkill.Skillpoints:N0}");
+            var pointToLevelFiveText = FormattableString.Invariant($"{skill.StaticData.GetPointsRequiredForLevel(5):N0}");
+            var skillDesc = $"{skill} ({skill.Rank})";
             builder.AppendLine($"  {skillDesc.PadRight(45)} " +
                                $"L{mergedSkill.Level} ".PadLeft(5) +
                                $"{skillPointsText}/{pointToLevelFiveText} Points");
@@ -133,8 +133,8 @@ namespace EVEMon.Common.Helpers
             if (!skill.IsTraining)
                 return;
 
-            string levelText = Skill.GetRomanFromInt(character.CurrentlyTrainingSkill.Level);
-            string adjustedEndTimeText = character.CurrentlyTrainingSkill.EndTime.DateTimeToTimeString();
+            var levelText = Skill.GetRomanFromInt(character.CurrentlyTrainingSkill.Level);
+            var adjustedEndTimeText = character.CurrentlyTrainingSkill.EndTime.DateTimeToTimeString();
             builder.AppendLine($":  (Currently training to level {levelText}, completes {adjustedEndTimeText} UTC)");
         }
 
@@ -145,9 +145,9 @@ namespace EVEMon.Common.Helpers
         /// <param name="plan"></param>
         private static string ExportAsEFTCHR(Character character, Plan plan)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
 
-            foreach (SerializableCharacterSkill skill in character.Skills
+            foreach (var skill in character.Skills
                 .Where(x => x.IsPublic &&
                             x.Group.ID != DBConstants.CorporationManagementSkillsGroupID &&
                             x.Group.ID != DBConstants.SocialSkillsGroupID &&
@@ -157,7 +157,7 @@ namespace EVEMon.Common.Helpers
                 builder.AppendLine($"{skill.Name}={skill.Level}");
             }
 
-            ESIKey apiKey = character.Identity.FindAPIKeyWithAccess(ESIAPICharacterMethods.CharacterSheet);
+            var apiKey = character.Identity.FindAPIKeyWithAccess(ESIAPICharacterMethods.CharacterSheet);
 
             if (apiKey == null)
                 return builder.ToString();
@@ -178,7 +178,7 @@ namespace EVEMon.Common.Helpers
         private static string ExportAsHTML(Character character, Plan plan)
         {
             // Retrieves a XML representation of this character
-            OutputCharacter serial = new OutputCharacter
+            var serial = new OutputCharacter
             {
                 Name = character.Name,
                 Balance = character.Balance.ToNumericString(2, CultureConstants.InvariantCulture),
@@ -199,10 +199,10 @@ namespace EVEMon.Common.Helpers
             CompleteSerialization(character, plan, serial);
 
             // Serializes to XML and apply a XSLT to generate the HTML doc
-            XmlDocument doc = (XmlDocument)Util.SerializeToXmlDocument(serial);
+            var doc = (XmlDocument)Util.SerializeToXmlDocument(serial);
 
-            XslCompiledTransform xslt = Util.LoadXslt(Properties.Resources.XmlToHtmlXslt);
-            XmlDocument htmlDoc = (XmlDocument)Util.Transform(doc, xslt);
+            var xslt = Util.LoadXslt(Properties.Resources.XmlToHtmlXslt);
+            var htmlDoc = (XmlDocument)Util.Transform(doc, xslt);
 
             // Returns the string representation of the generated doc
             return Util.GetXmlStringRepresentation(htmlDoc);
@@ -217,7 +217,7 @@ namespace EVEMon.Common.Helpers
         private static void CompleteSerialization(Character character, Plan plan, OutputCharacter serial)
         {
             // Attributes enhancers
-            foreach (Implant implant in character.CurrentImplants)
+            foreach (var implant in character.CurrentImplants)
             {
                 serial.AttributeEnhancers.Add(new OutputAttributeEnhancer
                 {
@@ -229,11 +229,11 @@ namespace EVEMon.Common.Helpers
             }
 
             // Skills (grouped by skill groups)
-            foreach (SkillGroup skillGroup in character.SkillGroups)
+            foreach (var skillGroup in character.SkillGroups)
             {
-                OutputSkillGroup outGroup = AddSkillGroup(plan, skillGroup);
+                var outGroup = AddSkillGroup(plan, skillGroup);
 
-                foreach (Skill skill in skillGroup.Where(x => x.IsKnown || (plan != null && plan.IsPlanned(x))))
+                foreach (var skill in skillGroup.Where(x => x.IsKnown || (plan != null && plan.IsPlanned(x))))
                 {
                     AddSkill(plan, outGroup, skill);
                 }
@@ -251,17 +251,17 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         private static OutputSkillGroup AddSkillGroup(Plan plan, SkillGroup skillGroup)
         {
-            int count = skillGroup
+            var count = skillGroup
                 .Where(x => x.IsKnown || (plan != null && plan.IsPlanned(x)))
                 .Select(x => GetMergedSkill(plan, x))
                 .Count();
 
-            long skillGroupTotalSP = skillGroup
+            var skillGroupTotalSP = skillGroup
                 .Where(x => x.IsKnown || (plan != null && plan.IsPlanned(x)))
                 .Select(x => GetMergedSkill(plan, x))
                 .Sum(x => x.Skillpoints);
 
-            OutputSkillGroup outGroup = new OutputSkillGroup
+            var outGroup = new OutputSkillGroup
             {
                 Name = skillGroup.Name,
                 SkillsCount = count,
@@ -278,7 +278,7 @@ namespace EVEMon.Common.Helpers
         /// <param name="skill">The skill.</param>
         private static void AddSkill(Plan plan, OutputSkillGroup outGroup, Skill skill)
         {
-            SerializableCharacterSkill mergedSkill = GetMergedSkill(plan, skill);
+            var mergedSkill = GetMergedSkill(plan, skill);
 
             outGroup.Skills.Add(new OutputSkill
             {
@@ -298,7 +298,7 @@ namespace EVEMon.Common.Helpers
         /// <param name="plan"></param>
         private static string ExportAsEVEMonXML(Character character, Plan plan)
         {
-            SerializableSettingsCharacter serial = character.Export();
+            var serial = character.Export();
 
             if (plan != null)
             {
@@ -307,7 +307,7 @@ namespace EVEMon.Common.Helpers
                     .Select(skill => GetMergedSkill(plan, skill)));
             }
 
-            XmlDocument doc = (XmlDocument)Util.SerializeToXmlDocument(serial);
+            var doc = (XmlDocument)Util.SerializeToXmlDocument(serial);
             return doc != null ? Util.GetXmlStringRepresentation(doc) : null;
         }
 
@@ -318,7 +318,7 @@ namespace EVEMon.Common.Helpers
         private static string ExportAsCCPXML(Character character)
         {
             // Try to use the last XML character sheet downloaded from CCP
-            XmlDocument doc = (XmlDocument)LocalXmlCache.GetCharacterXml(character);
+            var doc = (XmlDocument)LocalXmlCache.GetCharacterXml(character);
             return doc != null ? Util.GetXmlStringRepresentation(doc) : null;
         }
 
@@ -331,7 +331,7 @@ namespace EVEMon.Common.Helpers
         {
             character.ThrowIfNull(nameof(character));
 
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
 
             result
                 .AppendLine($"[b]{character.Name}[/b]")
@@ -355,10 +355,10 @@ namespace EVEMon.Common.Helpers
                             "[/td][/tr]")
                 .AppendLine("[/table]");
 
-            foreach (SkillGroup skillGroup in character.SkillGroups)
+            foreach (var skillGroup in character.SkillGroups)
             {
-                bool skillGroupAppended = false;
-                foreach (Skill skill in skillGroup.Where(skill => skill.Level > 0))
+                var skillGroupAppended = false;
+                foreach (var skill in skillGroup.Where(skill => skill.Level > 0))
                 {
                     if (!skillGroupAppended)
                     {
@@ -386,7 +386,7 @@ namespace EVEMon.Common.Helpers
                     $"Total Number of Skills: {character.KnownSkillCount}".PadLeft(5))
                 .AppendLine();
 
-            for (int i = 0; i <= 5; i++)
+            for (var i = 0; i <= 5; i++)
             {
                 result
                     .AppendLine($"Skills at Level {i}: " +
@@ -405,7 +405,7 @@ namespace EVEMon.Common.Helpers
         /// <returns>The skill properties after the merge</returns>
         private static SerializableCharacterSkill GetMergedSkill(Plan plan, Skill skill)
         {
-            SerializableCharacterSkill mergedSkill = new SerializableCharacterSkill
+            var mergedSkill = new SerializableCharacterSkill
             {
                 ID = skill.ID,
                 Name = skill.Name,

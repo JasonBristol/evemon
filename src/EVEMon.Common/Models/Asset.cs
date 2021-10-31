@@ -32,7 +32,7 @@ namespace EVEMon.Common.Models
         {
             src.ThrowIfNull(nameof(src));
 
-            int flagID = EveFlag.GetFlagID(src.EVEFlag);
+            var flagID = EveFlag.GetFlagID(src.EVEFlag);
             LocationID = src.LocationID;
             Quantity = src.Quantity;
             Item = StaticItems.GetItemByID(src.TypeID);
@@ -226,7 +226,7 @@ namespace EVEMon.Common.Models
                     m_solarSystem = station.SolarSystem;
                     m_fullLocation = station.FullLocation;
                 }
-                string locationStr = m_locationID.ToString(CultureConstants.InvariantCulture);
+                var locationStr = m_locationID.ToString(CultureConstants.InvariantCulture);
                 Location = (station == null ? (m_solarSystem == null ? locationStr :
                     m_solarSystem.Name) : station.Name);
             }

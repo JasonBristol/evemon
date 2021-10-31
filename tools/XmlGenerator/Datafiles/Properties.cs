@@ -38,7 +38,7 @@ namespace EVEMon.XmlGenerator.Datafiles
         /// </summary>
         internal static void GenerateDatafile()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             Util.ResetCounters();
 
             Console.WriteLine();
@@ -46,7 +46,7 @@ namespace EVEMon.XmlGenerator.Datafiles
 
             ConfigureNullCategoryProperties();
 
-            IEnumerable<SerializablePropertyCategory> categories = ExportAttributeCategories();
+            var categories = ExportAttributeCategories();
 
             // Sort groups
             string[] orderedGroupNames =
@@ -59,7 +59,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             };
 
             // Serialize
-            PropertiesDatafile datafile = new PropertiesDatafile();
+            var datafile = new PropertiesDatafile();
             datafile.Categories.AddRange(categories.OrderBy(x => orderedGroupNames.IndexOf(x.Name)));
 
             Util.DisplayEndTime(stopwatch);
@@ -73,10 +73,10 @@ namespace EVEMon.XmlGenerator.Datafiles
         private static void ConfigureNullCategoryProperties()
         {
             // Create EVEMon custom units
-            int newUnitID = Database.EveUnitsTable.Last().ID;
+            var newUnitID = Database.EveUnitsTable.Last().ID;
             s_injectedUnits = new List<EveUnits>();
 
-            EveUnits warpSpeedUnit = new EveUnits
+            var warpSpeedUnit = new EveUnits
             {
                 ID = ++newUnitID,
                 Name = "Warp Speed",
@@ -85,7 +85,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             };
             s_injectedUnits.Add(warpSpeedUnit);
 
-            EveUnits perHourUnit = new EveUnits
+            var perHourUnit = new EveUnits
             {
                 ID = ++newUnitID,
                 Name = DBConstants.ConsumptionRatePropertyName,
@@ -95,7 +95,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             s_injectedUnits.Add(perHourUnit);
 
             // Create EVEMon custom properties
-            int newPropID = Database.DgmAttributeTypesTable.Last().ID;
+            var newPropID = Database.DgmAttributeTypesTable.Last().ID;
             PackagedVolumePropertyID = ++newPropID;
             UnitsToRefinePropertyID = ++newPropID;
             BasePricePropertyID = ++newPropID;
@@ -158,7 +158,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             };
 
             // Set attributes with CategoryID 'NULL" to NULL category
-            foreach (DgmAttributeTypes attribute in Database.DgmAttributeTypesTable.Where(x => x.CategoryID == null))
+            foreach (var attribute in Database.DgmAttributeTypesTable.Where(x => x.CategoryID == null))
             {
                 attribute.CategoryID = attribute.Published
                     ? DBConstants.MiscellaneousAttributeCategoryID
@@ -248,7 +248,7 @@ namespace EVEMon.XmlGenerator.Datafiles
             Database.DgmAttributeTypesTable[DBConstants.ModuleReactivationDelayPropertyID].HigherIsBetter = false;
 
             // Changing the categoryID for those attributes that their names do not start with a capital letter 
-            foreach (DgmAttributeTypes attribute in Database.DgmAttributeTypesTable.Where(x => x.CategoryID != null)
+            foreach (var attribute in Database.DgmAttributeTypesTable.Where(x => x.CategoryID != null)
                 .Select(attribute =>
                     new
                     {
@@ -271,14 +271,14 @@ namespace EVEMon.XmlGenerator.Datafiles
         /// <returns></returns>
         private static IEnumerable<SerializablePropertyCategory> ExportAttributeCategories()
         {
-            List<SerializablePropertyCategory> categories = new List<SerializablePropertyCategory>();
+            var categories = new List<SerializablePropertyCategory>();
 
             // Export attribute categories
-            List<SerializableProperty> gProperties = new List<SerializableProperty>();
-            foreach (DgmAttributeCategories srcCategory in Database.DgmAttributeCategoriesTable)
+            var gProperties = new List<SerializableProperty>();
+            foreach (var srcCategory in Database.DgmAttributeCategoriesTable)
             {
-                List<SerializableProperty> properties = new List<SerializableProperty>();
-                SerializablePropertyCategory category = new SerializablePropertyCategory
+                var properties = new List<SerializableProperty>();
+                var category = new SerializablePropertyCategory
                 {
                     ID = srcCategory.ID,
                     Description = srcCategory.Description,
@@ -287,12 +287,12 @@ namespace EVEMon.XmlGenerator.Datafiles
                 categories.Add(category);
 
                 // Export attributes
-                foreach (DgmAttributeTypes srcProp in Database.DgmAttributeTypesTable.Concat(s_injectedProperties).Where(
+                foreach (var srcProp in Database.DgmAttributeTypesTable.Concat(s_injectedProperties).Where(
                     x => x.CategoryID == category.ID))
                 {
                     Util.UpdatePercentDone(Database.PropertiesTotalCount);
 
-                    SerializableProperty prop = new SerializableProperty();
+                    var prop = new SerializableProperty();
                     properties.Add(prop);
 
                     prop.ID = srcProp.ID;
@@ -323,10 +323,10 @@ namespace EVEMon.XmlGenerator.Datafiles
             }
 
             // New category ID
-            int newCategoryID = Database.DgmAttributeCategoriesTable.Last().ID;
+            var newCategoryID = Database.DgmAttributeCategoriesTable.Last().ID;
 
             // We insert custom categories
-            SerializablePropertyCategory general = new SerializablePropertyCategory
+            var general = new SerializablePropertyCategory
             {
                 ID = ++newCategoryID,
                 Name = DBConstants.GeneralCategoryName,
@@ -348,7 +348,7 @@ namespace EVEMon.XmlGenerator.Datafiles
         private static void ReorderProperties(IList<SerializableProperty> gProperties,
             SerializableProperty prop, IHasID srcProp, IList<SerializableProperty> properties)
         {
-            int index = properties.IndexOf(prop);
+            var index = properties.IndexOf(prop);
 
             if (srcProp.ID == PackagedVolumePropertyID)
             {

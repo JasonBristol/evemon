@@ -47,7 +47,7 @@ namespace EVEMon.Common.Controls
                         break;
                     case Keys.Delete:
                         // Delete unckecks all, [Shift + Delete] checks all.
-                        for (int i = 0; i < Items.Count; i++)
+                        for (var i = 0; i < Items.Count; i++)
                         {
                             SetItemChecked(i, e.Shift);
                         }
@@ -63,7 +63,7 @@ namespace EVEMon.Common.Controls
             protected override void OnMouseMove(MouseEventArgs e)
             {
                 base.OnMouseMove(e);
-                int index = IndexFromPoint(e.Location);
+                var index = IndexFromPoint(e.Location);
                 //Debug.WriteLine("Mouse over item: " + (index >= 0 ? GetItemText(Items[index]) : "None"));
                 if ((index >= 0) && (index != m_curSelIndex))
                 {
@@ -171,8 +171,8 @@ namespace EVEMon.Common.Controls
                 return CustomTextBuilder(this);
             else
             {
-                StringBuilder sb = new StringBuilder("");
-                for (int i = 0; i < listBox.CheckedItems.Count; i++)
+                var sb = new StringBuilder("");
+                for (var i = 0; i < listBox.CheckedItems.Count; i++)
                 {
                     if (i != 0)
                         sb.Append(ValueSeparator);
@@ -188,7 +188,7 @@ namespace EVEMon.Common.Controls
             if (!validate)
             {
                 // Caller cancelled selection - need to restore the checked items to their original state.
-                for (int i = 0; i < listBox.Items.Count; i++)
+                for (var i = 0; i < listBox.Items.Count; i++)
                 {
                     SetItemChecked(i, oldStates[i]);
                 }
@@ -201,7 +201,7 @@ namespace EVEMon.Common.Controls
         {
             // Make a copy of the checked state of each item, in cace caller cancels selection.
             oldStates = new bool[Items.Count];
-            for (int i = 0; i < Items.Count; i++)
+            for (var i = 0; i < Items.Count; i++)
             {
                 oldStates[i] = GetItemChecked(i);
             }
@@ -211,9 +211,9 @@ namespace EVEMon.Common.Controls
 
         private void FitDropDownToContent()
         {
-            Size preferedSize = listBox.GetPreferredSize(new Size(Width, 600));
-            int width = Math.Max(preferedSize.Width, Width);
-            int height = Math.Max(96, preferedSize.Height);
+            var preferedSize = listBox.GetPreferredSize(new Size(Width, 600));
+            var width = Math.Max(preferedSize.Width, Width);
+            var height = Math.Max(96, preferedSize.Height);
             dropdown.MaximumSize = new Size(Width, height + 20);
             dropdown.ClientSize = new Size(width, height);
             listBox.Refresh();
@@ -301,8 +301,8 @@ namespace EVEMon.Common.Controls
                 using (Brush foreBrush = new SolidBrush(ForeColor))
                 {
                     const float offset = 3.0f;
-                    SizeF size = e.Graphics.MeasureString(displayText, Font);
-                    RectangleF rect = new RectangleF(offset, (Bounds.Height - size.Height) * 0.5f, e.Bounds.Width - offset,
+                    var size = e.Graphics.MeasureString(displayText, Font);
+                    var rect = new RectangleF(offset, (Bounds.Height - size.Height) * 0.5f, e.Bounds.Width - offset,
                                                      size.Height);
                     e.Graphics.DrawString(displayText, Font, foreBrush, rect, StringFormat.GenericTypographic);
                 }

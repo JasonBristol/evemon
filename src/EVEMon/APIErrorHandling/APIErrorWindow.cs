@@ -44,7 +44,7 @@ namespace EVEMon.ApiErrorHandling
                 if (value != null)
                 {
                     var exception = value.Result?.Exception;
-                    string errorText = GetErrorLabelText(value);
+                    var errorText = GetErrorLabelText(value);
                     m_notification = value;
                     ErrorLabel.Text = errorText;
                     // Several clients are getting TrustFailure for badly configured SSL
@@ -193,7 +193,7 @@ namespace EVEMon.ApiErrorHandling
         /// <param name="e">The <see cref="System.Windows.Forms.LinkLabelLinkClickedEventArgs"/> instance containing the event data.</param>
         private void CopyToClipboardLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
 
             builder.Append("EVEMon ");
             builder.AppendLine(EveMonClient.FileVersionInfo.FileVersion);

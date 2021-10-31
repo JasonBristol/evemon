@@ -50,7 +50,7 @@ namespace EVEMon.Common.SettingsObjects
         {
             get
             {
-                ContractColumn[] defaultColumns = new[]
+                var defaultColumns = new[]
                                                          {
                                                              ContractColumn.Status,
                                                              ContractColumn.ContractText,

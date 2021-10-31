@@ -48,7 +48,7 @@ namespace EVEMon.Common.Models.Collections
                 // for every event!
                 foreach (EsiAPICalendarEvent srcEvent in events)
                 {
-                    long id = srcEvent.EventID;
+                    var id = srcEvent.EventID;
                     if (EsiErrors.IsErrorCountExceeded)
                         break;
                     // Query each individual event; maintaining etags/expiration for all of
@@ -66,7 +66,7 @@ namespace EVEMon.Common.Models.Collections
         private void OnCalendarEventDownloaded(EsiResult<EsiAPICalendarEvent> result, object forID)
         {
             var target = m_character;
-            long id = (forID as long?) ?? 0L;
+            var id = (forID as long?) ?? 0L;
 
             // If character is still around and monitored
             if (target != null && target.Monitored)

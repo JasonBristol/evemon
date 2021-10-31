@@ -74,7 +74,7 @@ namespace EVEMon.PieChart
             // Check there are enough colors or create them
             if (Settings.UI.SkillPieChart.Colors.Count < m_character.SkillGroups.Count)
             {
-                List<Color> newColors = new List<Color>();
+                var newColors = new List<Color>();
                 while (newColors.Count < m_character.SkillGroups.Count)
                 {
                     newColors.Add(Color.FromArgb(Alpha, Color.Red));
@@ -88,7 +88,7 @@ namespace EVEMon.PieChart
 
             // Initialize plans combox Box                        
             planSelector.SelectedIndex = 0;
-            foreach (Plan plan in m_character.Plans)
+            foreach (var plan in m_character.Plans)
             {
                 planSelector.Items.Add(plan.Name);
             }
@@ -107,7 +107,7 @@ namespace EVEMon.PieChart
 
             // Store colors to settings
             Settings.UI.SkillPieChart.Colors.Clear();
-            foreach (Color c in skillPieChartControl.Colors)
+            foreach (var c in skillPieChartControl.Colors)
             {
                 Settings.UI.SkillPieChart.Colors.Add((SerializableColor)c);
             }
@@ -136,16 +136,16 @@ namespace EVEMon.PieChart
             if (planSelector.SelectedIndex < 0)
                 return;
 
-            int groupCount = StaticSkills.AllGroups.Count();
-            CharacterScratchpad scratchpad = new CharacterScratchpad(m_character);
+            var groupCount = StaticSkills.AllGroups.Count();
+            var scratchpad = new CharacterScratchpad(m_character);
 
             // Retrieve the selected Plan
             if (planSelector.SelectedIndex > 0)
             {
-                Plan plan = m_character.Plans[planSelector.SelectedIndex - 1];
+                var plan = m_character.Plans[planSelector.SelectedIndex - 1];
 
                 // Updates the scratchpad
-                foreach (PlanEntry entry in plan)
+                foreach (var entry in plan)
                 {
                     scratchpad.Train(entry);
                 }
@@ -153,29 +153,29 @@ namespace EVEMon.PieChart
 
 
             // Get group to index map and groups list
-            List<SkillGroup> groups = new List<SkillGroup>();
-            Dictionary<StaticSkillGroup, int> indices = new Dictionary<StaticSkillGroup, int>();
-            foreach (StaticSkillGroup group in StaticSkills.AllGroups)
+            var groups = new List<SkillGroup>();
+            var indices = new Dictionary<StaticSkillGroup, int>();
+            foreach (var group in StaticSkills.AllGroups)
             {
                 indices[group] = groups.Count;
                 groups.Add(m_character.SkillGroups[group.ID]);
             }
 
             // Get start SP, before plan
-            decimal[] srcSkillPoints = new decimal[groupCount];
-            foreach (SkillGroup skillGroup in groups)
+            var srcSkillPoints = new decimal[groupCount];
+            foreach (var skillGroup in groups)
             {
-                int groupIndex = indices[skillGroup.StaticData];
+                var groupIndex = indices[skillGroup.StaticData];
                 srcSkillPoints[groupIndex] = skillGroup.TotalSP;
             }
 
             // Get target SP and skills count, after plan
-            int[] skillCounts = new int[groupCount];
-            decimal[] targetSkillPoints = new decimal[groupCount];
-            foreach (StaticSkill skill in StaticSkills.AllSkills)
+            var skillCounts = new int[groupCount];
+            var targetSkillPoints = new decimal[groupCount];
+            foreach (var skill in StaticSkills.AllSkills)
             {
-                long sp = scratchpad.GetSkillPoints(skill);
-                int groupIndex = indices[skill.Group];
+                var sp = scratchpad.GetSkillPoints(skill);
+                var groupIndex = indices[skill.Group];
 
                 targetSkillPoints[groupIndex] += sp;
                 if (sp != 0)
@@ -183,17 +183,17 @@ namespace EVEMon.PieChart
             }
 
             // Get groups names and descriptions
-            string[] names = new string[groupCount];
-            string[] descriptions = new string[groupCount];
-            for (int i = 0; i < srcSkillPoints.Length; i++)
+            var names = new string[groupCount];
+            var descriptions = new string[groupCount];
+            for (var i = 0; i < srcSkillPoints.Length; i++)
             {
                 names[i] = groups[i].Name;
                 descriptions[i] = groups[i].Name;
 
-                decimal srcSP = srcSkillPoints[i];
-                decimal destSP = targetSkillPoints[i];
+                var srcSP = srcSkillPoints[i];
+                var destSP = targetSkillPoints[i];
 
-                StringBuilder description = new StringBuilder();
+                var description = new StringBuilder();
                 description.Append($"{names[i]} ({skillCounts[i]} skills, {srcSP:N0} skillpoints");
                 if (srcSP != destSP)
                     description.Append($" / {destSP:N0} after plan completion");
@@ -207,9 +207,9 @@ namespace EVEMon.PieChart
                 Merge(ref targetSkillPoints, ref names, ref descriptions);
 
             // Compute the slices displacements
-            int tinyGroups = 0;
-            float[] slicesDiscplacements = new float[targetSkillPoints.Length];
-            for (int i = 0; i < targetSkillPoints.Length; i++)
+            var tinyGroups = 0;
+            var slicesDiscplacements = new float[targetSkillPoints.Length];
+            for (var i = 0; i < targetSkillPoints.Length; i++)
             {
                 slicesDiscplacements[i] = targetSkillPoints[i] < 100000 ? 0.06F + 0.008F * ++tinyGroups : 0.05F;
             }
@@ -231,21 +231,21 @@ namespace EVEMon.PieChart
         private static void Merge(ref decimal[] targetSkillPoints, ref string[] names, ref string[] descriptions)
         {
             // Gets total SP and threshold (1% of total SP)
-            decimal totalSP = targetSkillPoints.Sum();
-            decimal threshold = totalSP / 100;
+            var totalSP = targetSkillPoints.Sum();
+            var threshold = totalSP / 100;
 
             // Gathers group indices to merge
-            List<int> mergedGroupIndices = new List<int>();
-            for (int i = 0; i < targetSkillPoints.Length; i++)
+            var mergedGroupIndices = new List<int>();
+            for (var i = 0; i < targetSkillPoints.Length; i++)
             {
                 if (targetSkillPoints[i] < threshold)
                     mergedGroupIndices.Add(i);
             }
 
             // Prepare the merging lists
-            List<decimal> newTargetSkillPoints = new List<decimal>();
-            List<string> newDescriptions = new List<string>();
-            List<string> newNames = new List<string>();
+            var newTargetSkillPoints = new List<decimal>();
+            var newDescriptions = new List<string>();
+            var newNames = new List<string>();
 
             if (mergedGroupIndices.Count != 0)
             {
@@ -255,8 +255,8 @@ namespace EVEMon.PieChart
             }
 
             // Merge
-            bool isFirstMerged = true;
-            for (int i = 0; i < targetSkillPoints.Length; i++)
+            var isFirstMerged = true;
+            for (var i = 0; i < targetSkillPoints.Length; i++)
             {
                 // Is Merged ?
                 if (mergedGroupIndices.Contains(i))
@@ -295,7 +295,7 @@ namespace EVEMon.PieChart
         /// <param name="e"></param>
         private void skillPieChartControl_AngleChange(object sender, EventArgs e)
         {
-            AngleChangeEventArgs angleChangeEventArgs = e as AngleChangeEventArgs;
+            var angleChangeEventArgs = e as AngleChangeEventArgs;
             if (angleChangeEventArgs != null)
                 pieAngle.Value = (decimal)angleChangeEventArgs.NewAngle;
         }
@@ -338,9 +338,9 @@ namespace EVEMon.PieChart
         private void skillPieChartControl_DoubleClick(object sender, EventArgs e)
         {
             // Retrieve the clicked segment
-            MouseEventArgs ev = (MouseEventArgs)e;
-            PieChart3D pieChart3D = skillPieChartControl.PieChart;
-            int index = pieChart3D.FindPieSliceUnderPoint(new PointF(ev.X, ev.Y));
+            var ev = (MouseEventArgs)e;
+            var pieChart3D = skillPieChartControl.PieChart;
+            var index = pieChart3D.FindPieSliceUnderPoint(new PointF(ev.X, ev.Y));
 
             // If none clicked, we return. Otherwise we open the color picker.
             if (index == -1)
@@ -352,14 +352,14 @@ namespace EVEMon.PieChart
             // The user picked a new color, we update our colors list.
             if (sortBySizeCheck.Checked)
             {
-                int realIndex = skillPieChartControl.GetIndex(index);
-                Color[] colors = skillPieChartControl.Colors.ToArray();
+                var realIndex = skillPieChartControl.GetIndex(index);
+                var colors = skillPieChartControl.Colors.ToArray();
                 colors[realIndex] = Color.FromArgb(Alpha, m_colorDialog.Color);
                 skillPieChartControl.Colors = colors;
             }
             else
             {
-                Color[] colors = skillPieChartControl.Colors.ToArray();
+                var colors = skillPieChartControl.Colors.ToArray();
                 colors[index] = Color.FromArgb(Alpha, m_colorDialog.Color);
                 skillPieChartControl.Colors = colors;
             }
@@ -375,12 +375,12 @@ namespace EVEMon.PieChart
         /// <param name="e"></param>
         private void saveButton_Click(object sender, EventArgs e)
         {
-            using (Bitmap pie = new Bitmap(skillPieChartControl.Width, skillPieChartControl.Height))
+            using (var pie = new Bitmap(skillPieChartControl.Width, skillPieChartControl.Height))
             {
-                Rectangle bounds = new Rectangle(0, 0, skillPieChartControl.Width, skillPieChartControl.Height);
+                var bounds = new Rectangle(0, 0, skillPieChartControl.Width, skillPieChartControl.Height);
                 skillPieChartControl.DrawToBitmap(pie, bounds);
 
-                DialogResult savePieResult = savePieDialog.ShowDialog();
+                var savePieResult = savePieDialog.ShowDialog();
                 if (savePieResult == DialogResult.OK)
                     pie.Save(savePieDialog.FileName, ImageFormat.Png);
             }

@@ -46,7 +46,7 @@ namespace EVEMon.Common.Controls
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void BrowseButton_Click(object sender, EventArgs e)
         {
-            DialogResult dr = OpenDirFolderBrowserDialog.ShowDialog();
+            var dr = OpenDirFolderBrowserDialog.ShowDialog();
             if (dr != DialogResult.OK)
                 return;
 

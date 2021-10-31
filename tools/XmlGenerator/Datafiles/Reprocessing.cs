@@ -16,19 +16,19 @@ namespace EVEMon.XmlGenerator.Datafiles
         /// </summary>
         internal static void GenerateDatafile()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             Util.ResetCounters();
 
             Console.WriteLine();
             Console.Write(@"Generating reprocessing datafile... ");
 
-            List<SerializableItemMaterials> types = new List<SerializableItemMaterials>();
+            var types = new List<SerializableItemMaterials>();
 
-            foreach (int typeID in Database.InvTypesTable.Where(x => x.Generated).Select(x => x.ID))
+            foreach (var typeID in Database.InvTypesTable.Where(x => x.Generated).Select(x => x.ID))
             {
                 Util.UpdatePercentDone(Database.ReprocessingTotalCount);
 
-                List<SerializableMaterialQuantity> materials = Database.InvTypeMaterialsTable.Where(
+                var materials = Database.InvTypeMaterialsTable.Where(
                     x => x.ID == typeID).Select(
                         srcMaterial => new SerializableMaterialQuantity
                         {
@@ -39,13 +39,13 @@ namespace EVEMon.XmlGenerator.Datafiles
                 if (!materials.Any())
                     continue;
 
-                SerializableItemMaterials itemMaterials = new SerializableItemMaterials { ID = typeID };
+                var itemMaterials = new SerializableItemMaterials { ID = typeID };
                 itemMaterials.Materials.AddRange(materials.OrderBy(x => x.ID));
                 types.Add(itemMaterials);
             }
 
             // Serialize
-            ReprocessingDatafile datafile = new ReprocessingDatafile();
+            var datafile = new ReprocessingDatafile();
             datafile.Items.AddRange(types);
 
             Util.DisplayEndTime(stopwatch);

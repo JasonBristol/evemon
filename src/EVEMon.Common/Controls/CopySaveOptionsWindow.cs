@@ -78,7 +78,7 @@ namespace EVEMon.Common.Controls
         {
             foreach (Control control in parent.Controls)
             {
-                CheckBox checkBox = control as CheckBox;
+                var checkBox = control as CheckBox;
                 if (checkBox != null && checkBox != cbRememberOptions)
                     checkBox.CheckedChanged += checkBox_CheckedChanged;
 

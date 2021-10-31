@@ -58,7 +58,7 @@ namespace EVEMon.Common.Collections
         /// <param name="targetIndex"></param>
         public void MoveTo(T item, int targetIndex)
         {
-            int oldIndex = m_items.IndexOf(item);
+            var oldIndex = m_items.IndexOf(item);
             if (oldIndex == -1)
                 throw new InvalidOperationException("The item was not found in the collection.");
 
@@ -78,16 +78,16 @@ namespace EVEMon.Common.Collections
             items.ThrowIfNull(nameof(items));
 
             // Removing old items
-            foreach (T item in m_items)
+            foreach (var item in m_items)
             {
                 OnRemoving(item);
             }
             m_items.Clear();
 
             // Adding new items
-            foreach (T item in items)
+            foreach (var item in items)
             {
-                T copy = item;
+                var copy = item;
                 OnAdding(ref copy);
                 m_items.Add(copy);
             }
@@ -122,7 +122,7 @@ namespace EVEMon.Common.Collections
         /// <param name="index"></param>
         public void RemoveAt(int index)
         {
-            T item = m_items[index];
+            var item = m_items[index];
 
             OnRemoving(item);
             m_items.RemoveAt(index);
@@ -139,7 +139,7 @@ namespace EVEMon.Common.Collections
             get { return m_items[index]; }
             set
             {
-                T item = m_items[index];
+                var item = m_items[index];
 
                 OnRemoving(item);
                 OnAdding(ref value);
@@ -173,9 +173,9 @@ namespace EVEMon.Common.Collections
         {
             items.ThrowIfNull(nameof(items));
 
-            foreach (T item in items)
+            foreach (var item in items)
             {
-                T copy = item;
+                var copy = item;
                 OnAdding(ref copy);
                 m_items.Add(copy);
             }
@@ -203,7 +203,7 @@ namespace EVEMon.Common.Collections
         /// </summary>
         public void Clear()
         {
-            foreach (T item in m_items)
+            foreach (var item in m_items)
             {
                 OnRemoving(item);
             }

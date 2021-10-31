@@ -76,9 +76,9 @@ namespace EVEMon.Common.Serialization.PatchXml
             {
                 m_changedDatafiles.Clear();
 
-                foreach (Datafile datafile in EveMonClient.Datafiles)
+                foreach (var datafile in EveMonClient.Datafiles)
                 {
-                    foreach (SerializableDatafile dfv in Datafiles.Where(dfv => dfv.Name == datafile.Filename))
+                    foreach (var dfv in Datafiles.Where(dfv => dfv.Name == datafile.Filename))
                     {
                         if (datafile.MD5Sum != dfv.MD5Sum)
                             m_changedDatafiles.Add(dfv);

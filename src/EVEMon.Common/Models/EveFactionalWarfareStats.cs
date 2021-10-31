@@ -303,8 +303,8 @@ namespace EVEMon.Common.Models
             if (s_isImporting)
                 return Enumerable.Empty<int>();
 
-            List<int> againstIDs = new List<int>();
-            foreach (EveFactionWar factionWar in s_eveFactionWars.Where(faction => faction.FactionID == factionID))
+            var againstIDs = new List<int>();
+            foreach (var factionWar in s_eveFactionWars.Where(faction => faction.FactionID == factionID))
             {
                 if (factionWar.AgainstID == factionWar.PrimeAgainstID)
                 {

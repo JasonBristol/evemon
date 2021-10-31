@@ -152,7 +152,7 @@ namespace EVEMon.PatchXmlCreator
         internal static void EnsurePrerequisites()
         {
             string text;
-            string eveMonExecFilePath = Path.Combine(GetSourceFilesDirectory, EVEMonExecFilename);
+            var eveMonExecFilePath = Path.Combine(GetSourceFilesDirectory, EVEMonExecFilename);
 
             // Ensure that a release version of EVEMon has been created
             if (!File.Exists(eveMonExecFilePath))

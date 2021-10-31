@@ -22,7 +22,7 @@ namespace EVEMon.Common.Data
             Name = serial.Name;
             Description = serial.Description;
 
-            foreach (SerializableProperty serialProp in serial.Properties)
+            foreach (var serialProp in serial.Properties)
             {
                 Items.Add(new EveProperty(this, serialProp));
             }

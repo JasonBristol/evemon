@@ -21,7 +21,7 @@ namespace EVEMon.Common.Notifications
             skills.ThrowIfNull(nameof(skills));
 
             Skills = new Collection<QueuedSkill>();
-            foreach (QueuedSkill skill in skills)
+            foreach (var skill in skills)
                 Skills.Add(skill);
             UpdateDescription();
         }
@@ -43,7 +43,7 @@ namespace EVEMon.Common.Notifications
         public override void Append(NotificationEventArgs other)
         {
             var skills = ((SkillCompletionNotificationEventArgs)other).Skills;
-            foreach (QueuedSkill skill in skills)
+            foreach (var skill in skills)
                 if (!Skills.Contains(skill))
                     Skills.Add(skill);
             UpdateDescription();

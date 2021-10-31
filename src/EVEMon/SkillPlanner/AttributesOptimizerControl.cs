@@ -96,9 +96,9 @@ namespace EVEMon.SkillPlanner
             lbOptimizedTime.Text = remapping.BestDuration.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas);
 
             // Update the time benefit control
-            string bestDurationTimeText = remapping.BaseDuration.Subtract(remapping.BestDuration)
+            var bestDurationTimeText = remapping.BaseDuration.Subtract(remapping.BestDuration)
                 .ToDescriptiveText(DescriptiveTextOptions.IncludeCommas);
-            string worseDurationTimeText = remapping.BestDuration.Subtract(remapping.BaseDuration)
+            var worseDurationTimeText = remapping.BestDuration.Subtract(remapping.BaseDuration)
                 .ToDescriptiveText(DescriptiveTextOptions.IncludeCommas);
 
             lbGain.ForeColor = remapping.BestDuration < remapping.BaseDuration
@@ -118,7 +118,7 @@ namespace EVEMon.SkillPlanner
 
             // Spare points
             long sparePoints = EveConstants.SpareAttributePointsOnRemap;
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
                 sparePoints -= remapping.BestScratchpad[(EveAttribute)i].Base - EveConstants.CharacterBaseAttributePoints;
             }
@@ -143,10 +143,10 @@ namespace EVEMon.SkillPlanner
                                              AttributeBarControl pbImplants)
         {
             // Compute base and effective attributes
-            long effectiveAttribute = remapping.BestScratchpad[attrib].EffectiveValue;
-            long oldBaseAttribute = remapping.BaseScratchpad[attrib].Base;
-            long remappableAttribute = remapping.BestScratchpad[attrib].Base;
-            long implantsBonus = remapping.BestScratchpad[attrib].ImplantBonus;
+            var effectiveAttribute = remapping.BestScratchpad[attrib].EffectiveValue;
+            var oldBaseAttribute = remapping.BaseScratchpad[attrib].Base;
+            var remappableAttribute = remapping.BestScratchpad[attrib].Base;
+            var implantsBonus = remapping.BestScratchpad[attrib].ImplantBonus;
 
             // Update the label
             label.Text = $"{effectiveAttribute} (new : {remappableAttribute} ; old : {oldBaseAttribute})";
@@ -161,7 +161,7 @@ namespace EVEMon.SkillPlanner
         /// </summary>
         private void Recalculate()
         {
-            CharacterScratchpad scratchpad = m_remapping.BaseScratchpad.Clone();
+            var scratchpad = m_remapping.BaseScratchpad.Clone();
             scratchpad.Memory.Base = pbMEMRemappable.Value + EveConstants.CharacterBaseAttributePoints;
             scratchpad.Charisma.Base = pbCHARemappable.Value + EveConstants.CharacterBaseAttributePoints;
             scratchpad.Willpower.Base = pbWILRemappable.Value + EveConstants.CharacterBaseAttributePoints;
@@ -169,7 +169,7 @@ namespace EVEMon.SkillPlanner
             scratchpad.Intelligence.Base = pbINTRemappable.Value + EveConstants.CharacterBaseAttributePoints;
 
             // Get remapping for provided attributes
-            RemappingResult manualRemapping = new RemappingResult(m_remapping,
+            var manualRemapping = new RemappingResult(m_remapping,
                                                                   scratchpad);
             manualRemapping.Update();
             UpdateControls(m_character, m_plan, manualRemapping, m_description);
@@ -188,7 +188,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="e">The <see cref="AttributeValueChangingEventArgs"/> instance containing the event data.</param>
         private void pbRemappable_ValueChanging(object sender, AttributeValueChangingEventArgs e)
         {
-            AttributeBarControl control = (AttributeBarControl)sender;
+            var control = (AttributeBarControl)sender;
 
             // Adjust delta if there is no enough free points
             if (pbUnassigned.Value < e.Value)
@@ -215,7 +215,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="e">The <see cref="AttributeHighlightingEventArgs"/> instance containing the event data.</param>
         private void pbRemappable_Highlighting(object sender, AttributeHighlightingEventArgs e)
         {
-            AttributeBarControl control = (AttributeBarControl)sender;
+            var control = (AttributeBarControl)sender;
             
             // Adjust possible highlight using free points in pool
             if (e.Value - control.Value > pbUnassigned.Value)
@@ -247,7 +247,7 @@ namespace EVEMon.SkillPlanner
         private void buttonCurrent_Click(object sender, EventArgs e)
         {
             // Make unoptimized remap
-            RemappingResult zeroRemapping = new RemappingResult(m_remapping, m_remapping.BaseScratchpad.Clone());
+            var zeroRemapping = new RemappingResult(m_remapping, m_remapping.BaseScratchpad.Clone());
             zeroRemapping.Update();
 
             // Update the controls
@@ -265,7 +265,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void attributeButton_Click(object sender, EventArgs e)
         {
-            AttributeButtonControl button = sender as AttributeButtonControl;
+            var button = sender as AttributeButtonControl;
             if (button?.AttributeBar == null)
                 return;
 
@@ -301,13 +301,13 @@ namespace EVEMon.SkillPlanner
             point.ThrowIfNull(nameof(point));
 
             // Creates a scratchpad with the base values from the provided point.
-            CharacterScratchpad scratchpad = new CharacterScratchpad(m_character.After(m_plan.ChosenImplantSet));
-            for (int i = 0; i < 5; i++)
+            var scratchpad = new CharacterScratchpad(m_character.After(m_plan.ChosenImplantSet));
+            for (var i = 0; i < 5; i++)
             {
                 scratchpad[(EveAttribute)i].Base = point[(EveAttribute)i];
             }
 
-            RemappingResult remapping = new RemappingResult(m_remapping, scratchpad);
+            var remapping = new RemappingResult(m_remapping, scratchpad);
             remapping.Update();
 
             // Update the controls

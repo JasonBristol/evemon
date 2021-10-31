@@ -76,7 +76,7 @@ namespace EVEMon.Common.Models.Collections
         internal void Import(IEnumerable<SerializablePlan> plans)
         {
             // Filter plans which belong to this owner
-            List<Plan> newPlanList = plans.Where(plan => plan.Owner == m_owner.Guid).Select(
+            var newPlanList = plans.Where(plan => plan.Owner == m_owner.Guid).Select(
                 serialPlan => new Plan(m_owner, serialPlan) { IsConnected = true }).ToList();
 
             // We now add the plans

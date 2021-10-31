@@ -146,7 +146,7 @@ namespace EVEMon.Common.Controls
         /// </summary>
         private void SetAnimationSpeedContextMenuItemCheckState()
         {
-            foreach (ToolStripMenuItem item in m_tsmiSelectAnim.DropDownItems.Cast<ToolStripMenuItem>())
+            foreach (var item in m_tsmiSelectAnim.DropDownItems.Cast<ToolStripMenuItem>())
             {
                 AnimationSpeed speed;
                 if (Enum.TryParse(item.Text, out speed))
@@ -167,9 +167,9 @@ namespace EVEMon.Common.Controls
         {
             base.OnPaint(e);
 
-            Graphics gr = e.Graphics;
+            var gr = e.Graphics;
             gr.SmoothingMode = SmoothingMode.AntiAlias;
-            using (Pen pen = new Pen(SystemBrushes.ControlDark, 1))
+            using (var pen = new Pen(SystemBrushes.ControlDark, 1))
             {
                 gr.DrawLine(pen, 0, 0, 0, Height);
                 gr.DrawLine(pen, 0, Height - 1, Width - 1, Height - 1);
@@ -177,7 +177,7 @@ namespace EVEMon.Common.Controls
                 gr.DrawLine(pen, Width - 1, 0, 0, 0);
             }
 
-            int height = ExpandDirection == Direction.Up ? Height - Header.Height : 0;
+            var height = ExpandDirection == Direction.Up ? Height - Header.Height : 0;
             Header.Location = new Point(0, height);
         }
 
@@ -188,7 +188,7 @@ namespace EVEMon.Common.Controls
         /// <param name="e"></param>
         private void nfpHeader_Paint(object sender, PaintEventArgs e)
         {
-            Graphics gr = e.Graphics;
+            var gr = e.Graphics;
             gr.SmoothingMode = SmoothingMode.AntiAlias;
 
             Header.Width = Width;
@@ -202,7 +202,7 @@ namespace EVEMon.Common.Controls
                                            m_headerImage.Height));
             }
 
-            using (StringFormat hCenteredStringFormat = new StringFormat())
+            using (var hCenteredStringFormat = new StringFormat())
             {
                 hCenteredStringFormat.LineAlignment = StringAlignment.Center;
 
@@ -437,7 +437,7 @@ namespace EVEMon.Common.Controls
         /// <param name="e"></param>
         private void animationSpeedSelect_Click(object sender, EventArgs e)
         {
-            string choice = ((ToolStripItem)sender).Text;
+            var choice = ((ToolStripItem)sender).Text;
 
             switch (choice)
             {
@@ -530,12 +530,12 @@ namespace EVEMon.Common.Controls
                 if (!EnableContextMenu)
                     return;
 
-                int x = e.X;
-                int y = e.Y;
+                var x = e.X;
+                var y = e.Y;
 
                 if (sender != this)
                 {
-                    Control ctl = (Control)sender;
+                    var ctl = (Control)sender;
                     x += ctl.Bounds.X;
                     y += ctl.Bounds.Y;
                 }

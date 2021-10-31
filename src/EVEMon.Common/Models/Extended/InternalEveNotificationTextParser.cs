@@ -84,8 +84,8 @@ namespace EVEMon.Common.Models.Extended
             long valueAsLong;
             decimal amount;
             double valueAsDouble;
-            int typeID = notification.TypeID;
-            DateTime timestamp = notification.SentDate;
+            var typeID = notification.TypeID;
+            var timestamp = notification.SentDate;
             YamlSequenceNode typeIDs;
             // The value is often used as an int64 in the list below, simplify calculation
             if (!value.TryParseInv(out valueAsLong))

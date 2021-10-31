@@ -26,7 +26,7 @@ namespace EVEMon.Common.Serialization.Eve
         private static DateTime GetCacheTimerFromResponse(ResponseParams response)
         {
             DateTime cachedUntil;
-            DateTimeOffset? expires = response.Expires;
+            var expires = response.Expires;
             // If there was an error or no cache timer provided, retry after error cache time
             if (expires == null)
                 cachedUntil = GetErrorCacheTime();

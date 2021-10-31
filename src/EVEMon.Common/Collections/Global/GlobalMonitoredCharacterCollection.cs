@@ -37,7 +37,7 @@ namespace EVEMon.Common.Collections.Global
         /// <param name="targetIndex"></param>
         public void MoveTo(Character item, int targetIndex)
         {
-            int oldIndex = Items.IndexOf(item);
+            var oldIndex = Items.IndexOf(item);
             if (oldIndex == -1)
                 throw new InvalidOperationException("The item was not found in the collection.");
 
@@ -87,9 +87,9 @@ namespace EVEMon.Common.Collections.Global
                 return;
             }
 
-            foreach (MonitoredCharacterSettings characterSettings in monitoredCharacters)
+            foreach (var characterSettings in monitoredCharacters)
             {
-                Character character = EveMonClient.Characters[characterSettings.CharacterGuid.ToString()];
+                var character = EveMonClient.Characters[characterSettings.CharacterGuid.ToString()];
                 if (character == null)
                     continue;
 

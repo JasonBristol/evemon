@@ -111,7 +111,7 @@ namespace EVEMon.Common.Serialization.Esi
         {
             get
             {
-                int jumps = Range;
+                var jumps = Range;
                 if (jumps <= -1)
                     return "station";
                 if (jumps == 0)

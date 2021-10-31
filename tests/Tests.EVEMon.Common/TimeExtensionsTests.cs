@@ -39,7 +39,7 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ConvertDateTimeToCCPDateTime()
         {
-            string result = PointInTime.DateTimeToTimeString();
+            var result = PointInTime.DateTimeToTimeString();
             Assert.Equal(ValidCcpDateTime, result);
         }
 
@@ -49,7 +49,7 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ConvertValidCCPDateTimeToDateTime()
         {
-            DateTime result = ValidCcpDateTime.TimeStringToDateTime();
+            var result = ValidCcpDateTime.TimeStringToDateTime();
             Assert.Equal(PointInTime, result);
         }
 
@@ -59,7 +59,7 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ConvertInvalidCCPDateTimeToDateTime()
         {
-            DateTime result = InvalidCcpDateTime.TimeStringToDateTime();
+            var result = InvalidCcpDateTime.TimeStringToDateTime();
             Assert.Equal(default(DateTime), result);
         }
 
@@ -69,7 +69,7 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ConvertEmptyCCPDateTimeToDateTime()
         {
-            DateTime result = string.Empty.TimeStringToDateTime();
+            var result = string.Empty.TimeStringToDateTime();
             Assert.Equal(DateTime.MinValue, result);
         }
 
@@ -79,7 +79,7 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ConvertDateTimeToDotFormattedString()
         {
-            string result = PointInTime.DateTimeToDotFormattedString();
+            var result = PointInTime.DateTimeToDotFormattedString();
             Assert.Equal(ValidDotFormattedDateTimeString, result);
         }
 
@@ -89,7 +89,7 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ToRemainingTimeShortDescriptionReturnsDone()
         {
-            string result = DateTime.Now.AddHours(-1).ToRemainingTimeShortDescription(DateTimeKind.Local);
+            var result = DateTime.Now.AddHours(-1).ToRemainingTimeShortDescription(DateTimeKind.Local);
             Assert.Equal("Done", result);
         }
 
@@ -99,8 +99,8 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ToRemainingTimeShortDescriptionReturnsSecond()
         {
-            DateTime future = DateTime.Now.AddSeconds(1);
-            string result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
+            var future = DateTime.Now.AddSeconds(1);
+            var result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
             Assert.Equal("1s", result);
         }
 
@@ -110,8 +110,8 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ToRemainingTimeShortDescriptionReturnsMinute()
         {
-            DateTime future = DateTime.Now.AddMinutes(1);
-            string result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
+            var future = DateTime.Now.AddMinutes(1);
+            var result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
             Assert.Equal("1m", result);
         }
 
@@ -121,8 +121,8 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ToRemainingTimeShortDescriptionReturnsHour()
         {
-            DateTime future = DateTime.Now.AddHours(1);
-            string result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
+            var future = DateTime.Now.AddHours(1);
+            var result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
             Assert.Equal("1h", result);
         }
 
@@ -132,8 +132,8 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ToRemainingTimeShortDescriptionReturnsDay()
         {
-            DateTime future = DateTime.Now.AddDays(1);
-            string result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
+            var future = DateTime.Now.AddDays(1);
+            var result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
             Assert.Equal("1d", result);
         }
 
@@ -143,8 +143,8 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ToRemainingTimeShortDescriptionReturnsMinuteSecond()
         {
-            DateTime future = DateTime.Now.AddMinutes(1).AddSeconds(1);
-            string result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
+            var future = DateTime.Now.AddMinutes(1).AddSeconds(1);
+            var result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
             Assert.Equal("1m 1s", result);
         }
 
@@ -154,8 +154,8 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ToRemainingTimeShortDescriptionReturnsHourMinuteSecond()
         {
-            DateTime future = DateTime.Now.AddHours(1).AddMinutes(1).AddSeconds(1);
-            string result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
+            var future = DateTime.Now.AddHours(1).AddMinutes(1).AddSeconds(1);
+            var result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
             Assert.Equal("1h 1m 1s", result);
         }
 
@@ -165,8 +165,8 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ToRemainingTimeShortDescriptionReturnsDayHourMinuteSecond()
         {
-            DateTime future = DateTime.Now.AddDays(1).AddHours(1).AddMinutes(1).AddSeconds(1);
-            string result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
+            var future = DateTime.Now.AddDays(1).AddHours(1).AddMinutes(1).AddSeconds(1);
+            var result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
             Assert.Equal("1d 1h 1m 1s", result);
         }
 
@@ -176,8 +176,8 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ToRemainingTimeShortDescriptionReturnsDayMinuteSecond()
         {
-            DateTime future = DateTime.Now.AddDays(1).AddMinutes(1).AddSeconds(1);
-            string result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
+            var future = DateTime.Now.AddDays(1).AddMinutes(1).AddSeconds(1);
+            var result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
             Assert.Equal("1d 1m 1s", result);
         }
 
@@ -187,8 +187,8 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void ToRemainingTimeShortDescriptionReturnsDayMinute()
         {
-            DateTime future = DateTime.Now.AddDays(1).AddMinutes(1);
-            string result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
+            var future = DateTime.Now.AddDays(1).AddMinutes(1);
+            var result = future.ToRemainingTimeShortDescription(DateTimeKind.Local);
             Assert.Equal("1d 1m", result);
         }
 

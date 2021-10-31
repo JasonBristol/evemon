@@ -28,13 +28,13 @@ namespace EVEMon.Common.Controls
         {
             try
             {
-                string tempFile = Path.GetTempFileName();
+                var tempFile = Path.GetTempFileName();
 
-                using (MemoryStream cursorStream = new MemoryStream(resource))
-                using (FileStream fileStream = Util.GetFileStream(tempFile))
+                using (var cursorStream = new MemoryStream(resource))
+                using (var fileStream = Util.GetFileStream(tempFile))
                     cursorStream.WriteTo(fileStream);
 
-                Cursor cursor = new Cursor(NativeMethods.LoadCursorFromFile(tempFile));
+                var cursor = new Cursor(NativeMethods.LoadCursorFromFile(tempFile));
                 FileHelper.DeleteFile(tempFile);
 
                 return cursor;

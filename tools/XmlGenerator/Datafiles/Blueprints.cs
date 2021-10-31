@@ -23,7 +23,7 @@ namespace EVEMon.XmlGenerator.Datafiles
         /// </summary>
         internal static void GenerateDatafile()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             Util.ResetCounters();
 
             Console.WriteLine();
@@ -32,13 +32,13 @@ namespace EVEMon.XmlGenerator.Datafiles
             // Configure blueprints with Null market group
             ConfigureNullMarketBlueprint();
 
-            Dictionary<int, SerializableBlueprintMarketGroup> groups = new Dictionary<int, SerializableBlueprintMarketGroup>();
+            var groups = new Dictionary<int, SerializableBlueprintMarketGroup>();
 
             // Export blueprint groups           
             CreateMarketGroups(groups);
 
             // Create the parent-children groups relations
-            foreach (SerializableBlueprintMarketGroup group in groups.Values)
+            foreach (var group in groups.Values)
             {
                 IEnumerable<SerializableBlueprintMarketGroup> children = Database.InvMarketGroupsTable.Concat(
                     s_injectedMarketGroups).Where(x => x.ParentID == group.ID).Select(
@@ -60,7 +60,7 @@ namespace EVEMon.XmlGenerator.Datafiles
                 .ForEach(x => x.MarketGroupID = DBConstants.AncientRelicsMarketGroupID);
 
             // Serialize
-            BlueprintsDatafile datafile = new BlueprintsDatafile();
+            var datafile = new BlueprintsDatafile();
             datafile.MarketGroups.AddRange(blueprintGroups);
 
             Util.DisplayEndTime(stopwatch);
@@ -87,9 +87,9 @@ namespace EVEMon.XmlGenerator.Datafiles
         /// <param name="groups">The groups.</param>
         private static void CreateMarketGroups(IDictionary<int, SerializableBlueprintMarketGroup> groups)
         {
-            foreach (InvMarketGroups marketGroup in Database.InvMarketGroupsTable.Concat(s_injectedMarketGroups))
+            foreach (var marketGroup in Database.InvMarketGroupsTable.Concat(s_injectedMarketGroups))
             {
-                SerializableBlueprintMarketGroup group = new SerializableBlueprintMarketGroup
+                var group = new SerializableBlueprintMarketGroup
                 {
                     ID = marketGroup.ID,
                     Name = marketGroup.Name,
@@ -98,8 +98,8 @@ namespace EVEMon.XmlGenerator.Datafiles
                 groups[marketGroup.ID] = group;
 
                 // Add the items in this group
-                List<SerializableBlueprint> blueprints = new List<SerializableBlueprint>();
-                foreach (InvTypes item in Database.InvTypesTable.Where(
+                var blueprints = new List<SerializableBlueprint>();
+                foreach (var item in Database.InvTypesTable.Where(
                     item => item.MarketGroupID.GetValueOrDefault() == marketGroup.ID &&
                             (Database.InvGroupsTable[item.GroupID].CategoryID == DBConstants.BlueprintCategoryID ||
                              Database.InvGroupsTable[item.GroupID].CategoryID == DBConstants.AncientRelicsCategoryID)))
@@ -197,7 +197,7 @@ namespace EVEMon.XmlGenerator.Datafiles
                 .ForEach(x => x.MarketGroupID = DBConstants.ResearchEquipmentNonMarketGroupID);
 
             // Set the market group of the blueprints with NULL MarketGroupID to custom market groups
-            foreach (InvTypes item in s_nullMarketBlueprints)
+            foreach (var item in s_nullMarketBlueprints)
             {
                 // Set some blueprints to market groups manually
                 SetMarketGroupManually(item);
@@ -376,7 +376,7 @@ namespace EVEMon.XmlGenerator.Datafiles
                 x.ActivityID == (int)BlueprintActivity.Manufacturing).Select(
                     x => x.ProductTypeID).SingleOrDefault();
 
-            int relation = Database.InvMetaTypesTable.Where(
+            var relation = Database.InvMetaTypesTable.Where(
                 x => x.ItemID == productTypeID).Select(
                     x => x.MetaGroupID).FirstOrDefault();
 
@@ -445,7 +445,7 @@ namespace EVEMon.XmlGenerator.Datafiles
 
 
             // Creates the blueprint with base informations
-            SerializableBlueprint blueprint = new SerializableBlueprint
+            var blueprint = new SerializableBlueprint
             {
                 ID = srcBlueprint.ID,
                 Name = srcBlueprint.Name,
@@ -550,7 +550,7 @@ namespace EVEMon.XmlGenerator.Datafiles
                 x.ActivityID == (int)BlueprintActivity.Manufacturing).Select(
                     x => x.ProductTypeID).SingleOrDefault();
 
-            foreach (InvMetaTypes relation in Database.InvMetaTypesTable.Where(
+            foreach (var relation in Database.InvMetaTypesTable.Where(
                 x => x.ItemID == productTypeID))
             {
                 switch (relation.MetaGroupID)
@@ -610,8 +610,8 @@ namespace EVEMon.XmlGenerator.Datafiles
         /// <param name="blueprint"></param>
         private static void GetRequirements(IHasID srcBlueprint, SerializableBlueprint blueprint)
         {
-            List<SerializablePrereqSkill> prerequisiteSkills = new List<SerializablePrereqSkill>();
-            List<SerializableRequiredMaterial> requiredMaterials = new List<SerializableRequiredMaterial>();
+            var prerequisiteSkills = new List<SerializablePrereqSkill>();
+            var requiredMaterials = new List<SerializableRequiredMaterial>();
 
             // Find required skills
             foreach (var requirement in Database.IndustryActivitySkillsTable

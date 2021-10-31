@@ -16,9 +16,9 @@ namespace Tests.EVEMon.Common
         [Fact]
         public static void EnsureNoAsyncVoidMethods()
         {
-            IEnumerable<MethodInfo> asyncVoidMethods = typeof(EveMonClient).Assembly.GetAsyncVoidMethods();
+            var asyncVoidMethods = typeof(EveMonClient).Assembly.GetAsyncVoidMethods();
 
-            List<string> messages = asyncVoidMethods.Select(method =>
+            var messages = asyncVoidMethods.Select(method =>
                 $"'{method.DeclaringType?.Name}.{method.Name}' is an async void method.")
                 .ToList();
 

@@ -56,9 +56,9 @@ namespace EVEMon.Common.Controls
         private void UpdateContent()
         {
             clbColumns.Items.Clear();
-            foreach (int key in AllKeys)
+            foreach (var key in AllKeys)
             {
-                IColumnSettings column = m_columns.First(x => x.Key == key);
+                var column = m_columns.First(x => x.Key == key);
                 clbColumns.Items.Add(GetHeader(key), column.Visible);
             }
         }
@@ -70,14 +70,14 @@ namespace EVEMon.Common.Controls
         /// <param name="e"></param>
         private void clbColumns_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            bool isChecked = e.NewValue == CheckState.Checked;
+            var isChecked = e.NewValue == CheckState.Checked;
 
             // Gets the key of the modified column
-            string header = (string)clbColumns.Items[e.Index];
-            int key = AllKeys.First(x => GetHeader(x) == header);
+            var header = (string)clbColumns.Items[e.Index];
+            var key = AllKeys.First(x => GetHeader(x) == header);
 
             // Gets the column for this key
-            IColumnSettings column = m_columns.First(x => x.Key == key);
+            var column = m_columns.First(x => x.Key == key);
 
             column.Visible = isChecked;
         }

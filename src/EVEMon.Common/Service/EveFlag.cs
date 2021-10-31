@@ -67,7 +67,7 @@ namespace EVEMon.Common.Service
             if (s_isLoaded)
                 return;
 
-            SerializableEveFlags result = Util.DeserializeXmlFromString<SerializableEveFlags>(
+            var result = Util.DeserializeXmlFromString<SerializableEveFlags>(
                 Properties.Resources.Flags, APIProvider.RowsetsTransform);
 
             Import(result);

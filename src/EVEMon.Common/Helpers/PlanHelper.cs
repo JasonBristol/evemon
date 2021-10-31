@@ -34,13 +34,13 @@ namespace EVEMon.Common.Helpers
             menu.Enabled = plan.EnablePlanTo(skill, level);
             if (menu.Enabled)
             {
-                IPlanOperation operation = plan.TryPlanTo(skill, level);
+                var operation = plan.TryPlanTo(skill, level);
                 menu.Tag = operation;
                 if (RequiresWindow(operation))
                     menu.Text += @"...";
             }
 
-            ToolStripMenuItem menuItem = menu as ToolStripMenuItem;
+            var menuItem = menu as ToolStripMenuItem;
             if (menuItem != null)
                 menuItem.Checked = plan.GetPlannedLevel(skill) == level;
 
@@ -88,7 +88,7 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         public static DialogResult Perform(Form operationForm, IWin32Window parentForm)
         {
-            using (Form window = operationForm)
+            using (var window = operationForm)
             {
                 window.ShowDialog(parentForm);
                 return window.DialogResult;

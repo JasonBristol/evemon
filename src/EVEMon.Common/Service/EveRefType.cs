@@ -22,13 +22,13 @@ namespace EVEMon.Common.Service
             if (s_loaded)
                 return;
 
-            CCPAPIResult<SerializableAPIRefTypes> result =
+            var result =
                 Util.DeserializeAPIResultFromString<SerializableAPIRefTypes>(Properties.Resources.RefTypes,
                 APIProvider.RowsetsTransform);
 
             foreach (var type in result.Result.RefTypes)
             {
-                int id = type.ID;
+                var id = type.ID;
                 if (!s_refTypes.ContainsKey(id))
                     s_refTypes.Add(id, type);
             }

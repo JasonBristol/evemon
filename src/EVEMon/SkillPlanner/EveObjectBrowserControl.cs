@@ -80,7 +80,7 @@ namespace EVEMon.SkillPlanner
             Disposed += OnDisposed;
 
             // Reposition the help text along side the treeview
-            Control[] result = SelectControl.Controls.Find("lowerPanel", true);
+            var result = SelectControl.Controls.Find("lowerPanel", true);
             if (result.Length > 0)
                 lblHelp.Location = new Point(lblHelp.Location.X, result[0].Location.Y);
 
@@ -243,7 +243,7 @@ namespace EVEMon.SkillPlanner
         private void UpdateContent()
         {
             // Updates the header and the panels visibility.
-            Item firstSelected = SelectControl.SelectedObject;
+            var firstSelected = SelectControl.SelectedObject;
             if (firstSelected == null)
             {
                 // Hide details and header
@@ -282,10 +282,10 @@ namespace EVEMon.SkillPlanner
         /// </summary>
         private void UpdatePropertiesList()
         {
-            int scrollBarPosition = PropertiesList.GetVerticalScrollBarPosition();
+            var scrollBarPosition = PropertiesList.GetVerticalScrollBarPosition();
 
             // Store the selected item (if any) to restore it after the update
-            int selectedItem = PropertiesList.SelectedItems.Count > 0
+            var selectedItem = PropertiesList.SelectedItems.Count > 0
                 ? PropertiesList.SelectedItems[0].Tag.GetHashCode()
                 : 0;
 
@@ -295,13 +295,13 @@ namespace EVEMon.SkillPlanner
                 // Refresh columns
                 PropertiesList.Columns.Clear();
                 PropertiesList.Columns.Add("Attribute");
-                foreach (Item obj in SelectControl.SelectedObjects)
+                foreach (var obj in SelectControl.SelectedObjects)
                 {
                     PropertiesList.Columns.Add(obj.Name);
                 }
 
                 // Prepare properties list
-                IEnumerable<ListViewItem> items = AddPropertyGroups();
+                var items = AddPropertyGroups();
 
                 // Fetch the new items to the list view
                 PropertiesList.Items.Clear();
@@ -314,7 +314,7 @@ namespace EVEMon.SkillPlanner
                 if (selectedItem <= 0)
                     return;
 
-                foreach (ListViewItem lvItem in PropertiesList.Items.Cast<ListViewItem>().Where(
+                foreach (var lvItem in PropertiesList.Items.Cast<ListViewItem>().Where(
                     lvItem => lvItem.Tag.GetHashCode() == selectedItem))
                 {
                     lvItem.Selected = true;
@@ -334,20 +334,20 @@ namespace EVEMon.SkillPlanner
         private IEnumerable<ListViewItem> AddPropertyGroups()
         {
             PropertiesList.Groups.Clear();
-            List<ListViewItem> items = new List<ListViewItem>();
-            foreach (EvePropertyCategory category in StaticProperties.AllCategories)
+            var items = new List<ListViewItem>();
+            foreach (var category in StaticProperties.AllCategories)
             {
-                ListViewGroup group = new ListViewGroup(category.DisplayName);
-                bool hasProps = false;
+                var group = new ListViewGroup(category.DisplayName);
+                var hasProps = false;
 
-                foreach (EveProperty prop in category)
+                foreach (var prop in category)
                 {
                     // Skip the 'moon mining amount' property
                     if (prop.ID == DBConstants.MoonMiningAmountPropertyID)
                         continue;
 
                     // Checks whether we must display this property
-                    bool visibleProperty = false;
+                    var visibleProperty = false;
 
                     // Some properties should be always visible (fitting, shields resists, etc)
                     if (this is ShipBrowserControl)
@@ -363,7 +363,7 @@ namespace EVEMon.SkillPlanner
                         visibleProperty = SelectControl.SelectedObjects.Any(
                             x =>
                             {
-                                EvePropertyValue? eveProperty = x.Properties[prop.ID];
+                                var eveProperty = x.Properties[prop.ID];
                                 return eveProperty != null && prop.DefaultValue != eveProperty.Value.Value;
                             });
                     }
@@ -415,11 +415,11 @@ namespace EVEMon.SkillPlanner
         /// <param name="prop">The property.</param>
         private void AddPropertyValue(ICollection<ListViewItem> items, ListViewGroup group, EveProperty prop)
         {
-            string[] labels = SelectControl.SelectedObjects.Select(prop.GetLabelOrDefault).ToArray();
-            double[] values = SelectControl.SelectedObjects.Select(prop.GetNumericValue).ToArray();
+            var labels = SelectControl.SelectedObjects.Select(prop.GetLabelOrDefault).ToArray();
+            var values = SelectControl.SelectedObjects.Select(prop.GetNumericValue).ToArray();
 
             // Create the list view item
-            ListViewItem item = new ListViewItem(group) { ToolTipText = prop.Description, Text = prop.Name, Tag = prop };
+            var item = new ListViewItem(group) { ToolTipText = prop.Description, Text = prop.Name, Tag = prop };
             items.Add(item);
 
             AddValueForSelectedObjects(prop, item, labels, values);
@@ -436,7 +436,7 @@ namespace EVEMon.SkillPlanner
         {
             double min = 0f;
             double max = 0f;
-            bool allEqual = true;
+            var allEqual = true;
 
             if (values.Any())
             {
@@ -445,17 +445,17 @@ namespace EVEMon.SkillPlanner
                 allEqual = values.All(x => Math.Abs(x - min) < float.Epsilon);
                 if (prop != null && !prop.HigherIsBetter)
                 {
-                    double temp = min;
+                    var temp = min;
                     min = max;
                     max = temp;
                 }
             }
 
             // Add the value for every selected item
-            for (int index = 0; index < SelectControl.SelectedObjects.Count(); index++)
+            for (var index = 0; index < SelectControl.SelectedObjects.Count(); index++)
             {
                 // Create the subitem and choose its forecolor
-                ListViewItem.ListViewSubItem subItem = new ListViewItem.ListViewSubItem(item, labels[index]);
+                var subItem = new ListViewItem.ListViewSubItem(item, labels[index]);
                 if (!allEqual)
                 {
                     if (Math.Abs(values[index] - max) < float.Epsilon)
@@ -482,10 +482,10 @@ namespace EVEMon.SkillPlanner
         /// <param name="group">The listGroup.</param>
         private void AddFittingSlotProperty(ICollection<ListViewItem> items, ListViewGroup group)
         {
-            string[] labels = SelectControl.SelectedObjects.Select(x => x.FittingSlot.ToString()).ToArray();
+            var labels = SelectControl.SelectedObjects.Select(x => x.FittingSlot.ToString()).ToArray();
 
             // Create the list view item
-            ListViewItem item = new ListViewItem(group)
+            var item = new ListViewItem(group)
             { ToolTipText = "The slot that this item fits in", Text = @"Fitting Slot", Tag = Text };
             items.Add(item);
 
@@ -502,21 +502,21 @@ namespace EVEMon.SkillPlanner
             if (SelectControl.SelectedObjects.All(x => !x.ControlTowerFuel.Any()))
                 return;
 
-            EveProperty prop = StaticProperties.GetPropertyByName(DBConstants.ConsumptionRatePropertyName);
+            var prop = StaticProperties.GetPropertyByName(DBConstants.ConsumptionRatePropertyName);
             IList<SerializableControlTowerFuel> fuelMaterials = SelectControl.SelectedObjects.Where(
                 x => x.ControlTowerFuel.Any()).SelectMany(x => x.ControlTowerFuel).ToList();
 
-            foreach (string purpose in fuelMaterials.Select(x => x.Purpose).Distinct())
+            foreach (var purpose in fuelMaterials.Select(x => x.Purpose).Distinct())
             {
-                string groupName = $"Fuel Requirements - {purpose}";
-                ListViewGroup group = new ListViewGroup(groupName);
+                var groupName = $"Fuel Requirements - {purpose}";
+                var group = new ListViewGroup(groupName);
 
-                foreach (Item item in StaticItems.AllItems.OrderBy(x => x.ID))
+                foreach (var item in StaticItems.AllItems.OrderBy(x => x.ID))
                 {
                     if (fuelMaterials.Where(x => x.Purpose == purpose).All(x => x.ID != item.ID))
                         continue;
 
-                    IEnumerable<Material> materials = GetMaterials(fuelMaterials, item);
+                    var materials = GetMaterials(fuelMaterials, item);
 
                     AddListViewItem(prop, items, group, item, materials);
                 }
@@ -534,8 +534,8 @@ namespace EVEMon.SkillPlanner
         private IEnumerable<Material> GetMaterials(IEnumerable<SerializableControlTowerFuel> fuelMaterials, Item item)
         {
             // Create the list of materials we need to scroll through
-            List<Material> materials = new List<Material>();
-            foreach (Item obj in SelectControl.SelectedObjects)
+            var materials = new List<Material>();
+            foreach (var obj in SelectControl.SelectedObjects)
             {
                 // Compensate for missing entries
                 if (!obj.ControlTowerFuel.Any())
@@ -560,17 +560,17 @@ namespace EVEMon.SkillPlanner
             if (SelectControl.SelectedObjects.All(x => !x.ReactionMaterial.Any()))
                 return;
 
-            EveProperty prop = StaticProperties.GetPropertyByID(DBConstants.ConsumptionQuantityPropertyID);
+            var prop = StaticProperties.GetPropertyByID(DBConstants.ConsumptionQuantityPropertyID);
             IList<SerializableReactionInfo> reactionMaterials = SelectControl.SelectedObjects.Where(
                 x => x.ReactionMaterial.Any()).SelectMany(x => x.ReactionMaterial).ToList();
 
             // Add resources info
-            ListViewGroup resourcesGroup = new ListViewGroup("Resources");
+            var resourcesGroup = new ListViewGroup("Resources");
             IList<SerializableReactionInfo> resources = reactionMaterials.Where(x => x.IsInput).ToList();
             AddItemsAndSubItems(prop, items, resourcesGroup, resources);
 
             // Add products info
-            ListViewGroup productsGroup = new ListViewGroup("Products");
+            var productsGroup = new ListViewGroup("Products");
             IList<SerializableReactionInfo> products = reactionMaterials.Where(x => !x.IsInput).ToList();
             AddItemsAndSubItems(prop, items, productsGroup, products);
         }
@@ -585,14 +585,14 @@ namespace EVEMon.SkillPlanner
         private void AddItemsAndSubItems(EveProperty prop, ICollection<ListViewItem> items, ListViewGroup resourcesGroup,
             IList<SerializableReactionInfo> reactionMaterials)
         {
-            foreach (Item item in StaticItems.AllItems.OrderBy(x => x.ID))
+            foreach (var item in StaticItems.AllItems.OrderBy(x => x.ID))
             {
                 if (reactionMaterials.All(x => x.ID != item.ID))
                     continue;
 
                 // Create the list of materials we need to scroll through
-                List<Material> materials = new List<Material>();
-                foreach (Item obj in SelectControl.SelectedObjects)
+                var materials = new List<Material>();
+                foreach (var obj in SelectControl.SelectedObjects)
                 {
                     // Compensate for missing entries
                     if (!obj.ReactionMaterial.Any())
@@ -621,7 +621,7 @@ namespace EVEMon.SkillPlanner
             if (SelectControl.SelectedObjects.All(x => x.ReprocessingMaterials == null))
                 return;
 
-            string groupName = "Reprocessing - Refining Info";
+            var groupName = "Reprocessing - Refining Info";
 
             if (SelectControl.SelectedObjects.Where(x => x.ReprocessingSkill != null)
                 .All(x => x.ReprocessingSkill.ID != DBConstants.ScrapMetalProcessingSkillID))
@@ -635,7 +635,7 @@ namespace EVEMon.SkillPlanner
                 groupName = "Reprocessing Info";
             }
 
-            ListViewGroup group = new ListViewGroup(groupName);
+            var group = new ListViewGroup(groupName);
 
             // Add the reprocessing skill
             AddReprocessingSkill(group, items);
@@ -655,14 +655,14 @@ namespace EVEMon.SkillPlanner
         private void AddItemsAndSubItems(ICollection<ListViewItem> items, ListViewGroup group,
             IList<Material> reprocessingMaterials)
         {
-            foreach (Item item in StaticItems.AllItems.OrderBy(x => x.ID))
+            foreach (var item in StaticItems.AllItems.OrderBy(x => x.ID))
             {
                 if (reprocessingMaterials.All(x => x.Item != item))
                     continue;
 
                 // Create the list of reprocessing materials we need to scroll through
-                List<Material> materials = new List<Material>();
-                foreach (Item obj in SelectControl.SelectedObjects)
+                var materials = new List<Material>();
+                foreach (var obj in SelectControl.SelectedObjects)
                 {
                     // Compensate for missing entries
                     if (obj.ReprocessingMaterials == null)
@@ -693,9 +693,9 @@ namespace EVEMon.SkillPlanner
             IEnumerable<Material> materials)
         {
             // Create the list of labels and values
-            List<string> labels = new List<string>();
-            List<double> values = new List<double>();
-            foreach (Material material in materials)
+            var labels = new List<string>();
+            var values = new List<double>();
+            foreach (var material in materials)
             {
                 // Add default labels and values for non existing materials
                 if (material == null)
@@ -710,7 +710,7 @@ namespace EVEMon.SkillPlanner
             }
 
             // Create the list view item
-            ListViewItem lvItem = new ListViewItem(group)
+            var lvItem = new ListViewItem(group)
             {
                 ToolTipText = item.Description,
                 Text = item.Name,
@@ -729,8 +729,8 @@ namespace EVEMon.SkillPlanner
         private void AddReprocessingSkill(ListViewGroup group, ICollection<ListViewItem> items)
         {
             // Create the list of labels
-            List<string> labels = new List<string>();
-            foreach (Item obj in SelectControl.SelectedObjects)
+            var labels = new List<string>();
+            foreach (var obj in SelectControl.SelectedObjects)
             {
                 // Add a placeholder if no materials
                 if (obj.ReprocessingMaterials == null)
@@ -739,19 +739,19 @@ namespace EVEMon.SkillPlanner
                     continue;
                 }
 
-                string skillName = obj.ReprocessingSkill?.Name ?? EveMonConstants.UnknownText;
+                var skillName = obj.ReprocessingSkill?.Name ?? EveMonConstants.UnknownText;
                 labels.Add(skillName);
             }
 
             // Create the list view item
-            EveProperty property = StaticProperties.GetPropertyByID(DBConstants.ReprocessingSkillPropertyID);
-            ListViewItem item = new ListViewItem(group);
+            var property = StaticProperties.GetPropertyByID(DBConstants.ReprocessingSkillPropertyID);
+            var item = new ListViewItem(group);
             if (property != null)
             {
                 item.ToolTipText = property.Description;
                 item.Text = property.Name;
 
-                StaticSkill skill = SelectControl.SelectedObjects.Select(obj => obj.ReprocessingSkill).FirstOrDefault();
+                var skill = SelectControl.SelectedObjects.Select(obj => obj.ReprocessingSkill).FirstOrDefault();
                 if (skill != null && SelectControl.SelectedObjects.All(obj => obj.ReprocessingSkill == skill))
                     item.Tag = Character?.Skills[skill.ID] ?? SkillCollection.Skills.FirstOrDefault(x => x.ID == skill.ID);
                 else
@@ -782,10 +782,10 @@ namespace EVEMon.SkillPlanner
                 const int ColumnPad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + ColumnPad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + ColumnPad * 2;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = PropertiesList.Columns[column.Index].ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = PropertiesList.Columns[column.Index].ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + ColumnPad + 1;
 

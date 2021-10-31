@@ -33,7 +33,7 @@ namespace EVEMon.Common.Data
             if (src.Recommendations == null || StaticItems.ShipsMarketGroup == null)
                 return;
 
-            foreach (Ship ship in src.Recommendations
+            foreach (var ship in src.Recommendations
                 .Select(recommendation => StaticItems.ShipsMarketGroup.AllItems.OfType<Ship>()
                     .FirstOrDefault(item => item.Name == recommendation.ShipName))
                 .Where(ship => ship != null))
@@ -85,11 +85,11 @@ namespace EVEMon.Common.Data
         {
             get
             {
-                long[] highestLevels = new long[StaticSkills.ArrayIndicesCount];
-                List<StaticSkillLevel> list = new List<StaticSkillLevel>();
+                var highestLevels = new long[StaticSkills.ArrayIndicesCount];
+                var list = new List<StaticSkillLevel>();
 
                 // Collect all prerequisites from skills
-                foreach (StaticSkillLevel skillPrereq in PrerequisiteSkills.SelectMany(entry => entry.Value).Where(
+                foreach (var skillPrereq in PrerequisiteSkills.SelectMany(entry => entry.Value).Where(
                     skillPrereq => skillPrereq.Skill != null && highestLevels[skillPrereq.Skill.ArrayIndex] < skillPrereq.Level))
                 {
                     highestLevels[skillPrereq.Skill.ArrayIndex] = skillPrereq.Level;
@@ -97,7 +97,7 @@ namespace EVEMon.Common.Data
                 }
 
                 // Return the result
-                foreach (StaticSkillLevel newItem in list.Where(
+                foreach (var newItem in list.Where(
                     newItem => highestLevels[newItem.Skill.ArrayIndex] != 0))
                 {
                     yield return new StaticSkillLevel(newItem.Skill, highestLevels[newItem.Skill.ArrayIndex]);

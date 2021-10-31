@@ -27,7 +27,7 @@ namespace EVEMon.Common.Net
             m_redirectsRemaining = HttpWebClientServiceState.MaxRedirects;
 
             // Pull the timeout from the settings
-            TimeSpan timeoutSetting = TimeSpan.FromSeconds(Settings.Updates.HttpTimeout);
+            var timeoutSetting = TimeSpan.FromSeconds(Settings.Updates.HttpTimeout);
             s_timeout = (timeoutSetting < TimeSpan.FromSeconds(1) || timeoutSetting >
                 TimeSpan.FromMinutes(5)) ? TimeSpan.FromSeconds(20) : timeoutSetting;
         }
@@ -100,7 +100,7 @@ namespace EVEMon.Common.Net
                     return response;
 
                 // When the address has been redirected, connects to the redirection
-                Uri target = response.Headers.Location;
+                var target = response.Headers.Location;
                 response.Dispose();
                 if (m_redirectsRemaining-- <= 0)
                     throw HttpWebClientServiceException.RedirectsExceededException(m_url);
@@ -229,7 +229,7 @@ namespace EVEMon.Common.Net
             if (postData != null && method != HttpMethod.Get)
             {
                 // Data with encoding
-                string dataContentType = param.ContentType;
+                var dataContentType = param.ContentType;
                 var content = new ByteArrayContent(postData.ToArray());
                 if (!string.IsNullOrEmpty(dataContentType))
                     content.Headers.ContentType = MediaTypeHeaderValue.Parse(dataContentType);

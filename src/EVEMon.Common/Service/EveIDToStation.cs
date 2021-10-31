@@ -100,7 +100,7 @@ namespace EVEMon.Common.Service
         /// <param name="entities">The entities.</param>
         private static void Import(IEnumerable<SerializableOutpost> entities)
         {
-            foreach (SerializableOutpost entity in entities)
+            foreach (var entity in entities)
                 s_cita.Prefill(entity.StationID, entity);
         }
 
@@ -171,7 +171,7 @@ namespace EVEMon.Common.Service
 
             protected override void FetchIDs()
             {
-                long id = 0L;
+                var id = 0L;
                 ESIKey esiKey = null;
 
                 lock (m_pendingIDs)

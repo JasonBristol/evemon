@@ -103,8 +103,8 @@ namespace EVEMon.Common.Models
                 // Remove all of the completed skills
                 while (Items.Count > 0)
                 {
-                    QueuedSkill skill = Items[0];
-                    Skill skillTrained = skill.Skill;
+                    var skill = Items[0];
+                    var skillTrained = skill.Skill;
                     if (!skill.IsCompleted)
                     {
                         // Still training, stop loop and update the skill (ESI does not move skills
@@ -176,11 +176,11 @@ namespace EVEMon.Common.Models
 
             // If the queue is paused, CCP sends empty start and end time
             // So we base the start time on when the skill queue was started
-            DateTime startTimeWhenPaused = DateTime.UtcNow;
+            var startTimeWhenPaused = DateTime.UtcNow;
 
             // Imports the queued skills and checks whether they are paused
             Items.Clear();
-            foreach (SerializableQueuedSkill serialSkill in serial)
+            foreach (var serialSkill in serial)
             {
                 if (serialSkill.IsPaused)
                     IsPaused = true;
@@ -221,18 +221,18 @@ namespace EVEMon.Common.Models
         {
             skill.ThrowIfNull(nameof(skill));
 
-            List<RectangleF> skillRects = new List<RectangleF>();
+            var skillRects = new List<RectangleF>();
 
-            TimeSpan endTimeSpan = EndTime.Subtract(DateTime.UtcNow);
-            double totalSeconds = (endTimeSpan < WarningThresholdTimeSpan
+            var endTimeSpan = EndTime.Subtract(DateTime.UtcNow);
+            var totalSeconds = (endTimeSpan < WarningThresholdTimeSpan
                 ? WarningThresholdTimeSpan
                 : endTimeSpan).TotalSeconds;
 
-            TimeSpan relativeStart = skill.StartTime.Subtract(DateTime.UtcNow);
-            TimeSpan relativeFinish = skill.EndTime.Subtract(DateTime.UtcNow);
-            double start = Math.Floor(relativeStart.TotalSeconds / totalSeconds * width);
-            double afterOneDayFinish = Math.Floor(WarningThresholdTimeSpan.TotalSeconds / totalSeconds * width);
-            double finish = Math.Floor(relativeFinish.TotalSeconds / totalSeconds * width);
+            var relativeStart = skill.StartTime.Subtract(DateTime.UtcNow);
+            var relativeFinish = skill.EndTime.Subtract(DateTime.UtcNow);
+            var start = Math.Floor(relativeStart.TotalSeconds / totalSeconds * width);
+            var afterOneDayFinish = Math.Floor(WarningThresholdTimeSpan.TotalSeconds / totalSeconds * width);
+            var finish = Math.Floor(relativeFinish.TotalSeconds / totalSeconds * width);
 
             // If the start time is before now set it to zero
             if (start < 0)
@@ -256,7 +256,7 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         public double GetOneDaySkillQueueWidth(int width)
         {
-            double totalSeconds = EndTime.Subtract(DateTime.UtcNow).TotalSeconds;
+            var totalSeconds = EndTime.Subtract(DateTime.UtcNow).TotalSeconds;
             return  Math.Floor(WarningThresholdTimeSpan.TotalSeconds / totalSeconds * width);
         }
 

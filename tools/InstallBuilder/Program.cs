@@ -69,12 +69,12 @@ namespace EVEMon.InstallBuilder
                 }
 
                 // Create the appropriate folder if it doesn't exist
-                string directory = s_isSnapshot ? SnapshotDirectory : BinariesDirectory;
+                var directory = s_isSnapshot ? SnapshotDirectory : BinariesDirectory;
                 if (!Directory.Exists(directory))
                     Directory.CreateDirectory(directory);
 
                 // Create a zip file in the appropriate folder
-                string description = s_isSnapshot ? "Snapshot" : "Binaries";
+                var description = s_isSnapshot ? "Snapshot" : "Binaries";
                 Console.WriteLine("Starting {0} Zip creation.", description);
                 if (BuildZip() != 0)
                     return 1;
@@ -263,7 +263,7 @@ namespace EVEMon.InstallBuilder
         /// <returns></returns>
         private static string FindMakeNsisExe()
         {
-            string path = Path.Combine(ProjectDirectory, @"NSIS\makensis.exe");
+            var path = Path.Combine(ProjectDirectory, @"NSIS\makensis.exe");
             return File.Exists(path) ? path : string.Empty;
         }
 
@@ -291,43 +291,43 @@ namespace EVEMon.InstallBuilder
         /// </summary>
         private static int BuildZip()
         {
-            string directory = s_isSnapshot ? SnapshotDirectory : BinariesDirectory;
+            var directory = s_isSnapshot ? SnapshotDirectory : BinariesDirectory;
 
             // Delete any existing files in directory
             DeleteFiles(directory);
 
-            string filename = s_isSnapshot
+            var filename = s_isSnapshot
                 ? string.Format(CultureInfo.InvariantCulture, "EVEMon_{0}_{1:yyyy-MM-dd}.zip",
                     s_fileVersionInfo.ProductPrivatePart, DateTime.Now)
                 : string.Format(CultureInfo.InvariantCulture, "EVEMon-binaries-{0}.zip", s_fileVersionInfo.ProductVersion);
 
-            string zipFileName = Path.Combine(directory, filename);
+            var zipFileName = Path.Combine(directory, filename);
 
-            string[] filenames = Directory.GetFiles(SourceFilesDirectory, "*", SearchOption.AllDirectories);
+            var filenames = Directory.GetFiles(SourceFilesDirectory, "*", SearchOption.AllDirectories);
 
             Stream stream = null;
             try
             {
                 stream = File.Create(zipFileName);
 
-                using (ZipOutputStream zipStream = new ZipOutputStream(stream))
+                using (var zipStream = new ZipOutputStream(stream))
                 {
                     stream = null;
                     zipStream.SetLevel(9);
                     zipStream.UseZip64 = UseZip64.Off;
 
-                    byte[] buffer = new byte[4096];
+                    var buffer = new byte[4096];
 
-                    foreach (string file in filenames.Where(file => !file.Contains("vshost") && !file.Contains(".config")))
+                    foreach (var file in filenames.Where(file => !file.Contains("vshost") && !file.Contains(".config")))
                     {
-                        string entryName = string.Format(CultureInfo.InvariantCulture, "EVEMon\\{0}",
+                        var entryName = string.Format(CultureInfo.InvariantCulture, "EVEMon\\{0}",
                             file.Remove(0, SourceFilesDirectory.Length));
                         Console.WriteLine("Zipping {0}", entryName);
-                        ZipEntry entry = new ZipEntry(entryName) { DateTime = DateTime.Now };
+                        var entry = new ZipEntry(entryName) { DateTime = DateTime.Now };
 
                         zipStream.PutNextEntry(entry);
 
-                        using (FileStream fs = File.OpenRead(file))
+                        using (var fs = File.OpenRead(file))
                         {
                             int sourceBytes;
                             do
@@ -364,36 +364,36 @@ namespace EVEMon.InstallBuilder
             int exitCode;
             try
             {
-                string nsisScript = Path.Combine(ProjectDirectory, OutputPath, "EVEMonInstallerScript.nsi");
-                string resourcesDir = Path.Combine(SolutionDirectory, @"src\\EVEMon.Common\Resources");
-                string appCopyright = ((AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(
+                var nsisScript = Path.Combine(ProjectDirectory, OutputPath, "EVEMonInstallerScript.nsi");
+                var resourcesDir = Path.Combine(SolutionDirectory, @"src\\EVEMon.Common\Resources");
+                var appCopyright = ((AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(
                     typeof(Program).Assembly, typeof(AssemblyCopyrightAttribute))).Copyright;
-                string productName = string.Format(CultureInfo.InvariantCulture, "/DPRODUCTNAME=\"{0}\"", Application.ProductName);
-                string companyName = string.Format(CultureInfo.InvariantCulture, "/DCOMPANYNAME=\"{0}\"", Application.CompanyName);
-                string copyright = string.Format(CultureInfo.InvariantCulture, "/DCOPYRIGHT=\"{0}\"", appCopyright);
-                string description = string.Format(CultureInfo.InvariantCulture, "/DDESCRIPTION=\"{0}\"", Application.ProductName);
-                string version = string.Format(CultureInfo.InvariantCulture, "/DVERSION={0}", s_fileVersionInfo.ProductVersion);
-                string fullVersion = string.Format(CultureInfo.InvariantCulture, "/DFULLVERSION={0}",
+                var productName = string.Format(CultureInfo.InvariantCulture, "/DPRODUCTNAME=\"{0}\"", Application.ProductName);
+                var companyName = string.Format(CultureInfo.InvariantCulture, "/DCOMPANYNAME=\"{0}\"", Application.CompanyName);
+                var copyright = string.Format(CultureInfo.InvariantCulture, "/DCOPYRIGHT=\"{0}\"", appCopyright);
+                var description = string.Format(CultureInfo.InvariantCulture, "/DDESCRIPTION=\"{0}\"", Application.ProductName);
+                var version = string.Format(CultureInfo.InvariantCulture, "/DVERSION={0}", s_fileVersionInfo.ProductVersion);
+                var fullVersion = string.Format(CultureInfo.InvariantCulture, "/DFULLVERSION={0}",
                     s_fileVersionInfo.FileVersion);
-                string installerDir = string.Format(CultureInfo.InvariantCulture, "/DOUTDIR={0}", InstallerDirectory);
-                string sourceDir = string.Format(CultureInfo.InvariantCulture, "/DSOURCEDIR={0}", SourceFilesDirectory);
-                string resourceDir = string.Format(CultureInfo.InvariantCulture, "/DRESOURCESDIR={0}", resourcesDir);
+                var installerDir = string.Format(CultureInfo.InvariantCulture, "/DOUTDIR={0}", InstallerDirectory);
+                var sourceDir = string.Format(CultureInfo.InvariantCulture, "/DSOURCEDIR={0}", SourceFilesDirectory);
+                var resourceDir = string.Format(CultureInfo.InvariantCulture, "/DRESOURCESDIR={0}", resourcesDir);
 
-                string param = string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}",
+                var param = string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}",
                     productName, companyName, copyright, description, version, fullVersion, installerDir, sourceDir, resourceDir,
                     nsisScript);
 
                 Console.WriteLine("NSIS script : {0}", nsisScript);
                 Console.WriteLine("Output directory : {0}", InstallerDirectory);
 
-                ProcessStartInfo psi = new ProcessStartInfo(s_nsisExe, param)
+                var psi = new ProcessStartInfo(s_nsisExe, param)
                 {
                     WorkingDirectory = ProjectDirectory,
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 };
 
-                using (Process makensisProcess = new Process())
+                using (var makensisProcess = new Process())
                 {
                     makensisProcess.StartInfo = psi;
                     makensisProcess.Start();
@@ -423,7 +423,7 @@ namespace EVEMon.InstallBuilder
         {
             Console.WriteLine("Deleting all files in {0}", directoryPath);
 
-            foreach (string file in Directory.GetFiles(directoryPath))
+            foreach (var file in Directory.GetFiles(directoryPath))
             {
                 try
                 {

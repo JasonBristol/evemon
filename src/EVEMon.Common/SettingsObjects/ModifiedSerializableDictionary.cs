@@ -71,19 +71,19 @@ namespace EVEMon.Common.SettingsObjects
             reader.Read();
             while (reader.NodeType != XmlNodeType.EndElement)
             {
-                TValue value = default(TValue);
+                var value = default(TValue);
 
                 // Does the element have attributes?
                 if (reader.HasAttributes)
                 {
-                    Type valueType = typeof(TValue);
+                    var valueType = typeof(TValue);
 
                     // Does type have properties ?
                     if (valueType.GetProperties().Length == 0)
                     {
-                        TypeConverter converter = TypeDescriptor.GetConverter(valueType);
+                        var converter = TypeDescriptor.GetConverter(valueType);
 
-                        string attribute = reader.GetAttribute(0);
+                        var attribute = reader.GetAttribute(0);
 
                         if (string.IsNullOrEmpty(attribute))
                             break;
@@ -97,20 +97,20 @@ namespace EVEMon.Common.SettingsObjects
                         value = Activator.CreateInstance<TValue>();
 
                         // Assign values to the properties
-                        foreach (PropertyInfo property in valueType.GetProperties().Where(
+                        foreach (var property in valueType.GetProperties().Where(
                             property => !Attribute.IsDefined(property, typeof(XmlIgnoreAttribute))))
                         {
-                            string propertyName =
+                            var propertyName =
                                 property.GetCustomAttributesData().First().ConstructorArguments.First().Value.ToString();
 
-                            TypeConverter converter = TypeDescriptor.GetConverter(property.PropertyType);
+                            var converter = TypeDescriptor.GetConverter(property.PropertyType);
 
-                            string attribute = reader.GetAttribute(propertyName);
+                            var attribute = reader.GetAttribute(propertyName);
 
                             if (string.IsNullOrEmpty(attribute))
                                 break;
 
-                            object propertyValue = converter.ConvertFromInvariantString(attribute);
+                            var propertyValue = converter.ConvertFromInvariantString(attribute);
 
                             property.SetValue(value, propertyValue, null);
                         }
@@ -119,12 +119,12 @@ namespace EVEMon.Common.SettingsObjects
 
                 reader.Read();
 
-                TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(TKey));
+                var typeConverter = TypeDescriptor.GetConverter(typeof(TKey));
 
-                TKey key = default(TKey);
+                var key = default(TKey);
 
                 // Assign the key
-                object keyValue = typeConverter.ConvertFrom(reader.Value);
+                var keyValue = typeConverter.ConvertFrom(reader.Value);
                 if (keyValue != null)
                     key = (TKey)keyValue;
 
@@ -148,8 +148,8 @@ namespace EVEMon.Common.SettingsObjects
         {
             writer.ThrowIfNull(nameof(writer));
 
-            Type keyType = typeof(TKey);
-            Type valueType = typeof(TValue);
+            var keyType = typeof(TKey);
+            var valueType = typeof(TValue);
 
             // Check that each type we use is serializable
             if (!keyType.IsSerializable)
@@ -159,13 +159,13 @@ namespace EVEMon.Common.SettingsObjects
                 throw new ArgumentException($"{valueType} is not serializable", valueType.ToString());
 
             // Serialize each dictionary element as Xml
-            foreach (TKey key in Keys)
+            foreach (var key in Keys)
             {
-                XmlRootAttribute rootAttribute =
+                var rootAttribute =
                     valueType.GetCustomAttributes(typeof(XmlRootAttribute), false).Cast<XmlRootAttribute>().FirstOrDefault();
 
                 // Get the name specified in XmlRootAttribute or use the type name
-                string elementName = rootAttribute != null && !string.IsNullOrWhiteSpace(rootAttribute.ElementName)
+                var elementName = rootAttribute != null && !string.IsNullOrWhiteSpace(rootAttribute.ElementName)
                     ? rootAttribute.ElementName
                     : TypeName;
 
@@ -175,7 +175,7 @@ namespace EVEMon.Common.SettingsObjects
                 // Do we have properties ?
                 if (valueType.GetProperties().Length == 0)
                 {
-                    string attributeName = TypeName;
+                    var attributeName = TypeName;
 
                     // Write the value as XmlAttribute
                     writer.WriteAttributeString(attributeName, this[key].ToString());
@@ -187,14 +187,14 @@ namespace EVEMon.Common.SettingsObjects
                     // and adjust the code accordingly using the 'NonSerializedAttribute' 
 
                     // Write each property value as XmlAttribute excluding those that have the 'XmlIgnoreAttribute'
-                    foreach (PropertyInfo property in valueType.GetProperties().Where(
+                    foreach (var property in valueType.GetProperties().Where(
                         property => !Attribute.IsDefined(property, typeof(XmlIgnoreAttribute))))
                     {
-                        Attribute attribute = property.GetCustomAttributes(false).Where(
+                        var attribute = property.GetCustomAttributes(false).Where(
                             x => x is XmlElementAttribute || x is XmlAttributeAttribute).Cast<Attribute>().FirstOrDefault();
 
-                        XmlElementAttribute xmlElement = attribute as XmlElementAttribute;
-                        XmlAttributeAttribute xmlAttribute = attribute as XmlAttributeAttribute;
+                        var xmlElement = attribute as XmlElementAttribute;
+                        var xmlAttribute = attribute as XmlAttributeAttribute;
 
                         // Get the name specified in XmlElement/XmlAttribute or use the property name
                         string attributeName;
@@ -205,10 +205,10 @@ namespace EVEMon.Common.SettingsObjects
                         else
                             attributeName = property.Name;
 
-                        object propertyValue = property.GetValue(this[key], null);
+                        var propertyValue = property.GetValue(this[key], null);
 
                         // Special condition for Boolean type (because "Boolean.ToString()" returns "True"/"False")
-                        string propertyValueString = propertyValue is bool
+                        var propertyValueString = propertyValue is bool
                             ? XmlConvert.ToString((bool)propertyValue)
                             : propertyValue.ToString();
 
@@ -231,7 +231,7 @@ namespace EVEMon.Common.SettingsObjects
         {
             get
             {
-                Type type = typeof(TValue);
+                var type = typeof(TValue);
                 if (type.Namespace != "System")
                     return type.Name.ConvertUpperToLowerCamelCase();
 

@@ -26,7 +26,7 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
         {
             get
             {
-                IDesignerHost host = (IDesignerHost)GetService(typeof(IDesignerHost));
+                var host = (IDesignerHost)GetService(typeof(IDesignerHost));
                 return MultiPanelDesignerHelper.GetDesignerVerbs(host, m_panel);
             }
         }
@@ -57,12 +57,12 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
             base.Initialize(component);
 
             // Subscribe events 
-            IComponentChangeService componentChangeService =
+            var componentChangeService =
                 (IComponentChangeService)GetService(typeof(IComponentChangeService));
             if (componentChangeService != null)
                 componentChangeService.ComponentRemoved += OnComponentRemoved;
 
-            ISelectionService selectionService = (ISelectionService)GetService(typeof(ISelectionService));
+            var selectionService = (ISelectionService)GetService(typeof(ISelectionService));
             if (selectionService != null)
                 selectionService.SelectionChanged += OnServiceSelectionChanged;
         }
@@ -91,12 +91,12 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
         /// <param name="e"></param>
         private void OnServiceSelectionChanged(object sender, EventArgs e)
         {
-            ISelectionService service = (ISelectionService)GetService(typeof(ISelectionService));
+            var service = (ISelectionService)GetService(typeof(ISelectionService));
 
             if (service?.PrimarySelection == null)
                 return;
 
-            MultiPanelPage page = GetMultiPanelPage((Control)service.PrimarySelection);
+            var page = GetMultiPanelPage((Control)service.PrimarySelection);
 
             if (page != null)
                 m_panel.SelectedPage = page;
@@ -132,7 +132,7 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
             while (true)
             {
                 // If the control is a page, return it if the parent is the represented panel, null otherwise.
-                MultiPanelPage page = ctrl as MultiPanelPage;
+                var page = ctrl as MultiPanelPage;
 
                 if (page != null)
                     return ReferenceEquals(m_panel, page.Parent) ? page : null;

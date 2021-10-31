@@ -115,10 +115,10 @@ namespace EVEMon.SkillPlanner
         {
             get
             {
-                TreeNode node = treeView.SelectedNode;
+                var node = treeView.SelectedNode;
                 while (node != null)
                 {
-                    Mastery masteryLevel = node.Tag as Mastery;
+                    var masteryLevel = node.Tag as Mastery;
                     if (masteryLevel != null)
                         return masteryLevel;
 
@@ -216,7 +216,7 @@ namespace EVEMon.SkillPlanner
 
             // Perform the selection manually since the bound's width and x are incorrect in owndraw
             TreeNode selection = null;
-            for (TreeNode node = treeView.TopNode; node != null; node = node.NextVisibleNode)
+            for (var node = treeView.TopNode; node != null; node = node.NextVisibleNode)
             {
                 if (node.Bounds.Top > e.Y || node.Bounds.Bottom < e.Y)
                     continue;
@@ -289,7 +289,7 @@ namespace EVEMon.SkillPlanner
         {
             // Multiple copies of "CPU Management IV" etc. could exist in the tree. To restore
             // the same selection, the full path to the selection must be stored
-            string path = treeView.SelectedNode?.FullPath ?? "";
+            var path = treeView.SelectedNode?.FullPath ?? "";
 
             treeView.ImageList = Settings.UI.SafeForWork ? m_emptyImageList : imageList;
             treeView.BeginUpdate();
@@ -304,7 +304,7 @@ namespace EVEMon.SkillPlanner
 
                 // Create the nodes when not done, yet
                 if (treeView.Nodes.Count == 0)
-                    foreach (Mastery masteryLevel in m_masteryShip)
+                    foreach (var masteryLevel in m_masteryShip)
                     {
                         var node = CreateNode(masteryLevel);
                         treeView.Nodes.Add(node);
@@ -321,16 +321,16 @@ namespace EVEMon.SkillPlanner
                 {
                     var nodes = treeView.Nodes;
                     // Iterate through all components in the path
-                    string[] components = path.Split(new string[] { treeView.PathSeparator },
+                    var components = path.Split(new string[] { treeView.PathSeparator },
                         StringSplitOptions.None);
-                    int nc = components.Length;
-                    for (int index = 0; index < nc && nodes != null; index++)
+                    var nc = components.Length;
+                    for (var index = 0; index < nc && nodes != null; index++)
                     {
                         TreeNode child = null;
-                        string component = components[index];
-                        int n = nodes.Count;
+                        var component = components[index];
+                        var n = nodes.Count;
                         // Search nodes for a node with the same text
-                        for (int i = 0; i < n && child == null; i++)
+                        for (var i = 0; i < n && child == null; i++)
                         {
                             var candidate = nodes[i];
                             if (candidate.Text?.Equals(component) ?? false)
@@ -382,14 +382,14 @@ namespace EVEMon.SkillPlanner
         /// <returns></returns>
         private static TreeNode CreateNode(CertificateLevel certificateLevel)
         {
-            TreeNode node = new TreeNode
+            var node = new TreeNode
             {
                 Text = certificateLevel.Certificate.Class.ToString(),
                 Tag = certificateLevel
             };
 
             // Add this certificate's prerequisites
-            foreach (SkillLevel prereqSkill in certificateLevel.PrerequisiteSkills)
+            foreach (var prereqSkill in certificateLevel.PrerequisiteSkills)
             {
                 node.Nodes.Add(CreateNode(prereqSkill));
             }
@@ -404,7 +404,7 @@ namespace EVEMon.SkillPlanner
         /// <returns></returns>
         private static TreeNode CreateNode(SkillLevel skillPrereq)
         {
-            TreeNode node = new TreeNode
+            var node = new TreeNode
             {
                 Text = skillPrereq.ToString(),
                 Tag = skillPrereq
@@ -426,8 +426,8 @@ namespace EVEMon.SkillPlanner
         /// <param name="node">The Treenode</param>
         private void UpdateNode(TreeNode node)
         {
-            Mastery masteryLevel = node.Tag as Mastery;
-            CertificateLevel certLevel = node.Tag as CertificateLevel;
+            var masteryLevel = node.Tag as Mastery;
+            var certLevel = node.Tag as CertificateLevel;
 
             // The node represents a mastery level
             if (masteryLevel != null)
@@ -452,8 +452,8 @@ namespace EVEMon.SkillPlanner
             // The node represents a skill prerequisite
             else
             {
-                SkillLevel skillPrereq = (SkillLevel)node.Tag;
-                Skill skill = m_character.Skills[skillPrereq.Skill.ID];
+                var skillPrereq = (SkillLevel)node.Tag;
+                var skill = m_character.Skills[skillPrereq.Skill.ID];
 
                 if (m_plan != null)
                 {
@@ -492,12 +492,12 @@ namespace EVEMon.SkillPlanner
                 return;
             }
 
-            string line2 = "-";
-            int supIcon = -1;
+            var line2 = "-";
+            var supIcon = -1;
             ImageList il;
 
-            Mastery masteryLevel = e.Node.Tag as Mastery;
-            CertificateLevel certLevel = e.Node.Tag as CertificateLevel;
+            var masteryLevel = e.Node.Tag as Mastery;
+            var certLevel = e.Node.Tag as CertificateLevel;
 
             // Is it a mastery level ?
             if (masteryLevel != null)
@@ -535,44 +535,44 @@ namespace EVEMon.SkillPlanner
                     supIcon = imageList.Images.IndexOfKey(SkillBookIcon);
 
                 il = imageList;
-                SkillLevel skillPrereq = (SkillLevel)e.Node.Tag;
+                var skillPrereq = (SkillLevel)e.Node.Tag;
 
                 // When not known to the require level, let's display the training time
                 if (!skillPrereq.IsTrained)
                 {
-                    TimeSpan time = skillPrereq.Skill.GetLeftTrainingTimeToLevel(skillPrereq.Level);
+                    var time = skillPrereq.Skill.GetLeftTrainingTimeToLevel(skillPrereq.Level);
                     line2 = time.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas);
                 }
             }
 
             // Choose colors according to selection
-            bool isSelected = (e.State & TreeNodeStates.Selected) == TreeNodeStates.Selected;
-            Color backColor = isSelected ? SystemColors.Highlight : treeView.BackColor;
-            Color foreColor = isSelected ? SystemColors.HighlightText : treeView.ForeColor;
-            Color lightForeColor = isSelected ? SystemColors.HighlightText : SystemColors.GrayText;
+            var isSelected = (e.State & TreeNodeStates.Selected) == TreeNodeStates.Selected;
+            var backColor = isSelected ? SystemColors.Highlight : treeView.BackColor;
+            var foreColor = isSelected ? SystemColors.HighlightText : treeView.ForeColor;
+            var lightForeColor = isSelected ? SystemColors.HighlightText : SystemColors.GrayText;
 
             // Draws the background
-            using (SolidBrush background = new SolidBrush(backColor))
+            using (var background = new SolidBrush(backColor))
             {
-                int width = treeView.ClientSize.Width - e.Bounds.Left;
+                var width = treeView.ClientSize.Width - e.Bounds.Left;
                 e.Graphics.FillRectangle(background, new Rectangle(e.Bounds.Left, e.Bounds.Top, width, e.Bounds.Height));
             }
 
             // Performs the drawing
-            using (SolidBrush foreground = new SolidBrush(foreColor))
+            using (var foreground = new SolidBrush(foreColor))
             {
                 float offset;
-                int left = e.Bounds.Left + il.ImageSize.Width + 2;
-                Size line1Size = TextRenderer.MeasureText(e.Node.Text, m_boldFont);
+                var left = e.Bounds.Left + il.ImageSize.Width + 2;
+                var line1Size = TextRenderer.MeasureText(e.Node.Text, m_boldFont);
 
                 if (!string.IsNullOrEmpty(line2))
                 {
-                    Size line2Size = TextRenderer.MeasureText(line2, Font);
+                    var line2Size = TextRenderer.MeasureText(line2, Font);
 
                     offset = (float)(e.Bounds.Height - line1Size.Height - line2Size.Height) / 2;
                     e.Graphics.DrawString(e.Node.Text, m_boldFont, foreground, new PointF(left, e.Bounds.Top + offset));
 
-                    using (SolidBrush lightForeground = new SolidBrush(lightForeColor))
+                    using (var lightForeground = new SolidBrush(lightForeColor))
                     {
                         e.Graphics.DrawString(line2, Font, lightForeground, new PointF(left, e.Bounds.Top + offset + line1Size.Height));
                     }
@@ -588,8 +588,8 @@ namespace EVEMon.SkillPlanner
             if (supIcon == -1)
                 return;
 
-            int imgOfssetX = e.Bounds.Left;
-            float imgOffsetY = Math.Max(0.0f, (e.Bounds.Height - il.ImageSize.Height) * 0.5f);
+            var imgOfssetX = e.Bounds.Left;
+            var imgOffsetY = Math.Max(0.0f, (e.Bounds.Height - il.ImageSize.Height) * 0.5f);
             e.Graphics.DrawImageUnscaled(il.Images[supIcon], imgOfssetX, (int)(e.Bounds.Top + imgOffsetY));
         }
 
@@ -605,9 +605,9 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void cmListSkills_Opening(object sender, CancelEventArgs e)
         {
-            TreeNode node = treeView.SelectedNode;
-            Mastery masteryLevel = node?.Tag as Mastery;
-            CertificateLevel certLevel = node?.Tag as CertificateLevel;
+            var node = treeView.SelectedNode;
+            var masteryLevel = node?.Tag as Mastery;
+            var certLevel = node?.Tag as CertificateLevel;
 
             planToLevel.Visible = planToLevelSeparator.Visible = m_plan != null && node != null;
 
@@ -633,7 +633,7 @@ namespace EVEMon.SkillPlanner
                     var prereq = node.Tag as SkillLevel;
                     if (prereq != null)
                     {
-                        Skill skill = prereq.Skill;
+                        var skill = prereq.Skill;
                         planToLevel.Enabled = skill.Level < prereq.Level && !m_plan.
                             IsPlanned(skill, prereq.Level);
                         planToLevel.Text = $"Plan \"{skill} {Skill.GetRomanFromInt(prereq.Level)}\"";
@@ -654,7 +654,7 @@ namespace EVEMon.SkillPlanner
             showInMenuSeparator.Visible = (node != null && masteryLevel == null);
 
             // "Collapse" and "Expand" menus
-            int subNodeCount = node?.GetNodeCount(true) ?? 0;
+            var subNodeCount = node?.GetNodeCount(true) ?? 0;
             tsmCollapseSelected.Visible = subNodeCount > 0 && node.IsExpanded;
             tsmExpandSelected.Visible = subNodeCount > 0 && !node.IsExpanded;
 

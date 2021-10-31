@@ -132,10 +132,10 @@ namespace EVEMon.CharacterMonitoring
             get
             {
                 // Add the visible columns; matching the display order
-                List<WalletTransactionColumnSettings> newColumns = new List<WalletTransactionColumnSettings>();
-                foreach (ColumnHeader header in lvWalletTransactions.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
+                var newColumns = new List<WalletTransactionColumnSettings>();
+                foreach (var header in lvWalletTransactions.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
                 {
-                    WalletTransactionColumnSettings columnSetting =
+                    var columnSetting =
                         m_columns.First(x => x.Column == (WalletTransactionColumn)header.Tag);
                     if (columnSetting.Width > -1)
                         columnSetting.Width = header.Width;
@@ -261,9 +261,9 @@ namespace EVEMon.CharacterMonitoring
                 lvWalletTransactions.Groups.Clear();
                 lvWalletTransactions.Items.Clear();
 
-                foreach (WalletTransactionColumnSettings column in m_columns.Where(x => x.Visible))
+                foreach (var column in m_columns.Where(x => x.Visible))
                 {
-                    ColumnHeader header = lvWalletTransactions.Columns.Add(column.Column.GetHeader(), column.Width);
+                    var header = lvWalletTransactions.Columns.Add(column.Column.GetHeader(), column.Width);
                     header.Tag = column.Column;
 
                     switch (column.Column)
@@ -295,17 +295,17 @@ namespace EVEMon.CharacterMonitoring
             if (!Visible)
                 return;
 
-            int scrollBarPosition = lvWalletTransactions.GetVerticalScrollBarPosition();
+            var scrollBarPosition = lvWalletTransactions.GetVerticalScrollBarPosition();
 
             // Store the selected item (if any) to restore it after the update
-            int selectedItem = lvWalletTransactions.SelectedItems.Count > 0
+            var selectedItem = lvWalletTransactions.SelectedItems.Count > 0
                 ? lvWalletTransactions.SelectedItems[0].Tag.GetHashCode()
                 : 0;
 
             lvWalletTransactions.BeginUpdate();
             try
             {
-                IEnumerable<WalletTransaction> walletTransactions = m_list
+                var walletTransactions = m_list
                     .Where(x => x.Station != null).Where(x => IsTextMatching(x, m_textFilter));
 
                 UpdateSort();
@@ -315,7 +315,7 @@ namespace EVEMon.CharacterMonitoring
                 // Restore the selected item (if any)
                 if (selectedItem > 0)
                 {
-                    foreach (ListViewItem lvItem in lvWalletTransactions.Items.Cast<ListViewItem>().Where(
+                    foreach (var lvItem in lvWalletTransactions.Items.Cast<ListViewItem>().Where(
                         lvItem => lvItem.Tag.GetHashCode() == selectedItem))
                     {
                         lvItem.Selected = true;
@@ -359,42 +359,42 @@ namespace EVEMon.CharacterMonitoring
                     UpdateNoGroupContent(walletTransactions);
                     break;
                 case WalletTransactionGrouping.Date:
-                    IOrderedEnumerable<IGrouping<DateTime, WalletTransaction>> groups1 =
+                    var groups1 =
                         walletTransactions.GroupBy(x => x.Date.ToLocalTime().Date).OrderBy(x => x.Key);
                     UpdateContent(groups1);
                     break;
                 case WalletTransactionGrouping.DateDesc:
-                    IOrderedEnumerable<IGrouping<DateTime, WalletTransaction>> groups2 =
+                    var groups2 =
                         walletTransactions.GroupBy(x => x.Date.ToLocalTime().Date).OrderByDescending(x => x.Key);
                     UpdateContent(groups2);
                     break;
                 case WalletTransactionGrouping.ItemType:
-                    IOrderedEnumerable<IGrouping<string, WalletTransaction>> groups3 =
+                    var groups3 =
                         walletTransactions.GroupBy(x => x.ItemName).OrderBy(x => x.Key);
                     UpdateContent(groups3);
                     break;
                 case WalletTransactionGrouping.ItemTypeDesc:
-                    IOrderedEnumerable<IGrouping<string, WalletTransaction>> groups4 =
+                    var groups4 =
                         walletTransactions.GroupBy(x => x.ItemName).OrderByDescending(x => x.Key);
                     UpdateContent(groups4);
                     break;
                 case WalletTransactionGrouping.Client:
-                    IOrderedEnumerable<IGrouping<string, WalletTransaction>> groups5 =
+                    var groups5 =
                         walletTransactions.GroupBy(x => x.ClientName).OrderBy(x => x.Key);
                     UpdateContent(groups5);
                     break;
                 case WalletTransactionGrouping.ClientDesc:
-                    IOrderedEnumerable<IGrouping<string, WalletTransaction>> groups6 =
+                    var groups6 =
                         walletTransactions.GroupBy(x => x.ClientName).OrderByDescending(x => x.Key);
                     UpdateContent(groups6);
                     break;
                 case WalletTransactionGrouping.Location:
-                    IOrderedEnumerable<IGrouping<Station, WalletTransaction>> groups7 =
+                    var groups7 =
                         walletTransactions.GroupBy(x => x.Station).OrderBy(x => x.Key.Name);
                     UpdateContent(groups7);
                     break;
                 case WalletTransactionGrouping.LocationDesc:
-                    IOrderedEnumerable<IGrouping<Station, WalletTransaction>> groups8 =
+                    var groups8 =
                         walletTransactions.GroupBy(x => x.Station).OrderByDescending(x => x.Key.Name);
                     UpdateContent(groups8);
                     break;
@@ -434,7 +434,7 @@ namespace EVEMon.CharacterMonitoring
             lvWalletTransactions.Groups.Clear();
 
             // Add the groups
-            foreach (IGrouping<TKey, WalletTransaction> group in groups)
+            foreach (var group in groups)
             {
                 string groupText;
                 if (group.Key is DateTime)
@@ -442,7 +442,7 @@ namespace EVEMon.CharacterMonitoring
                 else
                     groupText = group.Key.ToString();
                 
-                ListViewGroup listGroup = new ListViewGroup(groupText);
+                var listGroup = new ListViewGroup(groupText);
                 lvWalletTransactions.Groups.Add(listGroup);
 
                 // Add the items in every group
@@ -474,7 +474,7 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Creates the subitems
-            for (int i = 0; i < lvWalletTransactions.Columns.Count; i++)
+            for (var i = 0; i < lvWalletTransactions.Columns.Count; i++)
             {
                 SetColumn(walletTransaction, item.SubItems[i], (WalletTransactionColumn)lvWalletTransactions.Columns[i].Tag);
             }
@@ -503,14 +503,14 @@ namespace EVEMon.CharacterMonitoring
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (lvWalletTransactions.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += lvWalletTransactions.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -535,9 +535,9 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void UpdateSortVisualFeedback()
         {
-            foreach (ColumnHeader columnHeader in lvWalletTransactions.Columns.Cast<ColumnHeader>())
+            foreach (var columnHeader in lvWalletTransactions.Columns.Cast<ColumnHeader>())
             {
-                WalletTransactionColumn column = (WalletTransactionColumn)columnHeader.Tag;
+                var column = (WalletTransactionColumn)columnHeader.Tag;
                 if (m_sortCriteria == column)
                     columnHeader.ImageIndex = m_sortAscending ? 0 : 1;
                 else
@@ -687,7 +687,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            WalletTransactionColumn column = (WalletTransactionColumn)lvWalletTransactions.Columns[e.Column].Tag;
+            var column = (WalletTransactionColumn)lvWalletTransactions.Columns[e.Column].Tag;
             if (m_sortCriteria == column)
                 m_sortAscending = !m_sortAscending;
             else
@@ -774,7 +774,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void EveMonClient_ConquerableStationListUpdated(object sender, EventArgs e)
         {
-            foreach (WalletTransaction walletTransaction in m_list)
+            foreach (var walletTransaction in m_list)
             {
                 walletTransaction.UpdateStation();
             }

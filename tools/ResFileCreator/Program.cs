@@ -47,7 +47,7 @@ namespace EVEMon.ResFileCreator
         {
             Directory.SetCurrentDirectory(GetSolutionDirectory());
 
-            string assemblyInfoFileContent = File.ReadAllText(Path.GetFullPath(@"src\EVEMon\Properties\AssemblyInfo.cs"));
+            var assemblyInfoFileContent = File.ReadAllText(Path.GetFullPath(@"src\EVEMon\Properties\AssemblyInfo.cs"));
             s_dictionary["AssemblyTitle"] = GetValueOf(assemblyInfoFileContent, "AssemblyTitle");
 
             assemblyInfoFileContent = File.ReadAllText(Path.GetFullPath(@"SharedAssemblyInfo.cs"));
@@ -67,10 +67,10 @@ namespace EVEMon.ResFileCreator
         /// <returns></returns>
         private static string GetValueOf(string assemblyInfoFileContent, string key)
         {
-            int index = assemblyInfoFileContent.IndexOf(key, StringComparison.Ordinal) + key.Length;
-            string substring = assemblyInfoFileContent.Substring(index);
-            int length = substring.IndexOf(")", StringComparison.Ordinal) - 1;
-            string value = assemblyInfoFileContent.Substring(index, length)
+            var index = assemblyInfoFileContent.IndexOf(key, StringComparison.Ordinal) + key.Length;
+            var substring = assemblyInfoFileContent.Substring(index);
+            var length = substring.IndexOf(")", StringComparison.Ordinal) - 1;
+            var value = assemblyInfoFileContent.Substring(index, length)
                 .Replace("(\"", string.Empty).Replace("\")", string.Empty);
             return value;
         }
@@ -84,7 +84,7 @@ namespace EVEMon.ResFileCreator
             s_resScriptfile = Path.GetFullPath(string.Format(CultureInfo.InvariantCulture,
                 "src\\EVEMon\\{0}.rc", s_dictionary["AssemblyTitle"]));
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             AddIcons(sb);
             AddManifest(sb);
@@ -110,7 +110,7 @@ namespace EVEMon.ResFileCreator
         /// <param name="sb">The sb.</param>
         private static void AddVersionInfo(StringBuilder sb)
         {
-            string commaFileVersion = s_dictionary["AssemblyFileVersion"].ToString().Replace(".", ",");
+            var commaFileVersion = s_dictionary["AssemblyFileVersion"].ToString().Replace(".", ",");
 
             sb
                 .AppendLine("// Version")
@@ -172,7 +172,7 @@ namespace EVEMon.ResFileCreator
         private static void AddIcons(StringBuilder sb)
         {
             const string IconsDir = @"src\EVEMon.Common\Resources\Icons";
-            List<string> iconFilesPath = new List<string>();
+            var iconFilesPath = new List<string>();
 
             if (Directory.Exists(IconsDir))
                 iconFilesPath = Directory.GetFiles(IconsDir, "EVEMon.ico", SearchOption.AllDirectories).ToList();
@@ -180,8 +180,8 @@ namespace EVEMon.ResFileCreator
             if (!iconFilesPath.Any())
                 return;
 
-            int count = 1;
-            string iconEVEMon = iconFilesPath.FirstOrDefault(file => file.Contains("EVEMon.ico"));
+            var count = 1;
+            var iconEVEMon = iconFilesPath.FirstOrDefault(file => file.Contains("EVEMon.ico"));
 
             sb.AppendLine("// Icon");
             if (iconEVEMon != null)
@@ -191,7 +191,7 @@ namespace EVEMon.ResFileCreator
                 iconFilesPath.Remove(iconEVEMon);
             }
 
-            foreach (string iconFilePath in iconFilesPath)
+            foreach (var iconFilePath in iconFilesPath)
             {
                 sb.AppendLine($"{count} ICON \"{iconFilePath}\"");
                 count++;
@@ -205,7 +205,7 @@ namespace EVEMon.ResFileCreator
         /// </summary>
         private static void CreateResFile()
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            var startInfo = new ProcessStartInfo
             {
                 FileName = s_rcexe,
                 Arguments = string.Format(CultureInfo.InvariantCulture, "/v /nologo /r \"{0}\"", s_resScriptfile),
@@ -214,7 +214,7 @@ namespace EVEMon.ResFileCreator
             };
 
             int exitCode;
-            using (Process makeResProcess = new Process())
+            using (var makeResProcess = new Process())
             {
                 makeResProcess.StartInfo = startInfo;
                 makeResProcess.Start();
@@ -240,8 +240,8 @@ namespace EVEMon.ResFileCreator
         private static string FindRcExe()
         {
             // Lookup for 'RC.exe' for the particular process architecture
-            string architecture = Environment.Is64BitProcess ? "x64" : "x86";
-            string filePath = Path.Combine(GetProjectDirectory(), @"Dependencies\ResCompiler\", architecture, "rc.exe");
+            var architecture = Environment.Is64BitProcess ? "x64" : "x86";
+            var filePath = Path.Combine(GetProjectDirectory(), @"Dependencies\ResCompiler\", architecture, "rc.exe");
 
             return File.Exists(filePath) ? filePath : null;
         }

@@ -32,17 +32,17 @@ namespace EVEMon.Common.Models.Collections
         /// <param name="character">The character.</param>
         internal SkillCollection(Character character)
         {
-            IEnumerable<Skill> skills = character?.SkillGroups.SelectMany(group => group) ??
-                              StaticSkills.AllGroups.SelectMany(group => new SkillGroup(group));
+            var skills = character?.SkillGroups.SelectMany(group => group) ??
+                         StaticSkills.AllGroups.SelectMany(group => new SkillGroup(group));
 
-            foreach (Skill skill in skills)
+            foreach (var skill in skills)
             {
                 Items[skill.ID] = skill;
                 m_itemsArray[skill.ArrayIndex] = skill;
             }
 
             // Build prerequisites list
-            foreach (Skill skill in m_itemsArray)
+            foreach (var skill in m_itemsArray)
             {
                 skill.CompleteInitialization(m_itemsArray);
             }
@@ -81,14 +81,14 @@ namespace EVEMon.Common.Models.Collections
         internal void Import(IEnumerable<SerializableCharacterSkill> skills, bool fromCCP)
         {
             // Skills : reset all > update all
-            foreach (Skill skill in Items.Values)
+            foreach (var skill in Items.Values)
             {
                 skill.Reset(fromCCP);
             }
 
             // Take care of the new skills not in our datafiles yet
             // Update if it exists
-            foreach (SerializableCharacterSkill serialSkill in skills.Where(x => this[x.ID] != null && Items.ContainsKey(x.ID)))
+            foreach (var serialSkill in skills.Where(x => this[x.ID] != null && Items.ContainsKey(x.ID)))
             {
                 Items[serialSkill.ID].Import(serialSkill, fromCCP);
             }

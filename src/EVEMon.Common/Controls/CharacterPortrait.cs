@@ -139,7 +139,7 @@ namespace EVEMon.Common.Controls
 
             m_updatingPortrait = true;
 
-            Image image = await ImageService.GetCharacterImageAsync(m_character.CharacterID);
+            var image = await ImageService.GetCharacterImageAsync(m_character.CharacterID);
 
             pictureBox.Cursor = CustomCursors.ContextMenu;
 
@@ -198,9 +198,9 @@ namespace EVEMon.Common.Controls
             // Now, search in the game folder all matching files 
             // (different resolutions are available for every character)
             // Retrieve all files in the EVE cache directory which matches "<characterId>*"
-            List<FileInfo> filesInEveCache = new List<FileInfo>();
-            List<FileInfo> imageFilesInEveCache = new List<FileInfo>();
-            foreach (DirectoryInfo di in EveMonClient.EvePortraitCacheFolders
+            var filesInEveCache = new List<FileInfo>();
+            var imageFilesInEveCache = new List<FileInfo>();
+            foreach (var di in EveMonClient.EvePortraitCacheFolders
                 .Select(evePortraitCacheFolder => new DirectoryInfo(evePortraitCacheFolder))
                 .Where(directory => directory.Exists))
             {
@@ -217,7 +217,7 @@ namespace EVEMon.Common.Controls
             // Displays an error message if none found
             if (!imageFilesInEveCache.Any())
             {
-                StringBuilder message = new StringBuilder();
+                var message = new StringBuilder();
 
                 message.AppendLine("No portraits for your character were found in the folder you selected.");
                 message.AppendLine().AppendLine("Ensure that you have checked the following:");
@@ -238,11 +238,11 @@ namespace EVEMon.Common.Controls
             }
 
             // Search for the largest portrait
-            int bestSize = 0;
-            string bestFile = string.Empty;
-            int charIDLength = m_character.CharacterID.ToString(CultureConstants.
+            var bestSize = 0;
+            var bestFile = string.Empty;
+            var charIDLength = m_character.CharacterID.ToString(CultureConstants.
                 InvariantCulture).Length;
-            foreach (FileInfo file in imageFilesInEveCache)
+            foreach (var file in imageFilesInEveCache)
             {
                 int sizeLength = file.Name.Length - (file.Extension.Length + 1) - charIDLength,
                     imageSize;
@@ -255,7 +255,7 @@ namespace EVEMon.Common.Controls
             }
 
             // Open the largest image and save it
-            Image image = Image.FromFile(bestFile);
+            var image = Image.FromFile(bestFile);
 
             // Release the updating flag
             m_updatingPortrait = false;
@@ -295,7 +295,7 @@ namespace EVEMon.Common.Controls
         /// </summary>
         private static bool ChangeEVEPortraitCache()
         {
-            using (EveFolderWindow folderWindow = new EveFolderWindow())
+            using (var folderWindow = new EveFolderWindow())
             {
                 if (folderWindow.ShowDialog() != DialogResult.OK)
                     return false;

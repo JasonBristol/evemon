@@ -68,17 +68,17 @@ namespace EVEMon.Common.Data
         /// </remarks>
         internal static string GetFullPath(string filename)
         {
-            string evemonDataDir = EveMonClient.EVEMonDataDir ??
-                                   Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EVEMon");
+            var evemonDataDir = EveMonClient.EVEMonDataDir ??
+                                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EVEMon");
 
             // Look in the %APPDATA% folder
-            string filepath = $"{evemonDataDir}{Path.DirectorySeparatorChar}{filename}";
+            var filepath = $"{evemonDataDir}{Path.DirectorySeparatorChar}{filename}";
 
             if (File.Exists(filepath))
                 return filepath;
 
             // File isn't in the current folder, look in installation directory ("resources" subdirectory)
-            string baseFile = $"{AppDomain.CurrentDomain.BaseDirectory}Resources{Path.DirectorySeparatorChar}{filename}";
+            var baseFile = $"{AppDomain.CurrentDomain.BaseDirectory}Resources{Path.DirectorySeparatorChar}{filename}";
 
             // Does not exist also ? 
             if (!File.Exists(baseFile))

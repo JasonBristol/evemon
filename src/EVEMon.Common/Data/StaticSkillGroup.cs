@@ -35,7 +35,7 @@ namespace EVEMon.Common.Data
         {
             ID = src.ID;
             Name = src.Name;
-            foreach (SerializableSkill srcSkill in src.Skills)
+            foreach (var srcSkill in src.Skills)
             {
                 Items[srcSkill.ID] = new StaticSkill(this, srcSkill, skillArrayIndex);
                 skillArrayIndex++;

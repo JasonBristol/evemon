@@ -102,8 +102,8 @@ namespace EVEMon.SkillPlanner
         {
             get
             {
-                Graphics g = Graphics.FromHwnd(Handle);
-                float dpi = g.DpiX;
+                var g = Graphics.FromHwnd(Handle);
+                var dpi = g.DpiX;
 
                 if (dpi > 125)
                     return 353;
@@ -119,8 +119,8 @@ namespace EVEMon.SkillPlanner
         {
             get
             {
-                Graphics g = Graphics.FromHwnd(Handle);
-                float dpi = g.DpiX;
+                var g = Graphics.FromHwnd(Handle);
+                var dpi = g.DpiX;
 
                 if (dpi > 125)
                     return 110;
@@ -212,7 +212,7 @@ namespace EVEMon.SkillPlanner
         {
             base.OnPaint(e);
 
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // Draws the background (solid or gradient, depending on safe mode or not)
             if (!Settings.UI.SafeForWork)
@@ -230,22 +230,22 @@ namespace EVEMon.SkillPlanner
                 return;
 
             // Compute offset caused by scrollers
-            int ofsLeft = AutoScrollPosition.X;
-            int ofsTop = AutoScrollPosition.Y;
+            var ofsLeft = AutoScrollPosition.X;
+            var ofsTop = AutoScrollPosition.Y;
 
             // Draw the lines
-            using (Pen linePen = new Pen(Settings.UI.SafeForWork ? SystemColors.ControlText : Color.White, 5.0F))
+            using (var linePen = new Pen(Settings.UI.SafeForWork ? SystemColors.ControlText : Color.White, 5.0F))
             {
-                foreach (Cell cell in m_rootCell.Cells)
+                foreach (var cell in m_rootCell.Cells)
                 {
                     DrawLines(g, m_rootCell, cell, linePen, ofsLeft, ofsTop);
                 }
             }
 
             // Draw the cells
-            using (Font boldFont = FontFactory.GetFont(Font, FontStyle.Bold))
+            using (var boldFont = FontFactory.GetFont(Font, FontStyle.Bold))
             {
-                foreach (Cell cell in m_rootCell.AllCells)
+                foreach (var cell in m_rootCell.AllCells)
                 {
                     DrawCell(g, cell, boldFont, ofsLeft, ofsTop);
                 }
@@ -263,8 +263,8 @@ namespace EVEMon.SkillPlanner
         /// <param name="ofsTop"></param>
         private static void DrawLines(Graphics g, Cell startCell, Cell endCell, Pen pen, int ofsLeft, int ofsTop)
         {
-            Rectangle startRect = startCell.Rectangle;
-            Rectangle endRect = endCell.Rectangle;
+            var startRect = startCell.Rectangle;
+            var endRect = endCell.Rectangle;
 
             g.DrawLine(pen,
                 startRect.Location.X + ofsLeft + (startRect.Width >> 1),
@@ -272,7 +272,7 @@ namespace EVEMon.SkillPlanner
                 endRect.Location.X + ofsLeft + (startRect.Width >> 1),
                 endRect.Location.Y + ofsTop + (startRect.Height >> 1));
 
-            foreach (Cell child in endCell.Cells)
+            foreach (var child in endCell.Cells)
             {
                 DrawLines(g, endCell, child, pen, ofsLeft, ofsTop);
             }
@@ -288,17 +288,17 @@ namespace EVEMon.SkillPlanner
         /// <param name="ofsTop"></param>
         private void DrawCell(Graphics g, Cell cell, Font boldFont, int ofsLeft, int ofsTop)
         {
-            Rectangle rect = cell.Rectangle;
+            var rect = cell.Rectangle;
             rect.Offset(ofsLeft, ofsTop);
 
-            Color stdTextColor = !Settings.UI.SafeForWork ? Color.Black : SystemColors.ControlText;
-            Color reqTextColor = !Settings.UI.SafeForWork ? Color.Red : SystemColors.GrayText;
-            Color prTextColor = !Settings.UI.SafeForWork ? Color.Yellow : SystemColors.ControlText;
+            var stdTextColor = !Settings.UI.SafeForWork ? Color.Black : SystemColors.ControlText;
+            var reqTextColor = !Settings.UI.SafeForWork ? Color.Red : SystemColors.GrayText;
+            var prTextColor = !Settings.UI.SafeForWork ? Color.Yellow : SystemColors.ControlText;
 
             Brush fillBrush = null;
             try
             {
-                StringBuilder currentLevelText = new StringBuilder();
+                var currentLevelText = new StringBuilder();
 
                 if (m_plan != null)
                 {
@@ -321,7 +321,7 @@ namespace EVEMon.SkillPlanner
                     if (cell.Skill.Character != null && cell.RequiredLevel > cell.Skill.Level)
                     {
                         // Fourth line : "This Time : 9H, 26M, 42S"
-                        TimeSpan ts = cell.Skill.GetLeftTrainingTimeToLevel(cell.RequiredLevel);
+                        var ts = cell.Skill.GetLeftTrainingTimeToLevel(cell.RequiredLevel);
                         thisRequiredTime = $"This Time: {ts.ToDescriptiveText(TimeFormat)}";
                         reqTextColor = !Settings.UI.SafeForWork ? Color.Yellow : SystemColors.GrayText;
 
@@ -353,7 +353,7 @@ namespace EVEMon.SkillPlanner
                 // Last line : prerequisites time
                 if (cell.Skill.Character != null && !cell.Skill.ArePrerequisitesMet)
                 {
-                    TimeSpan pts = cell.Skill.Character.GetTrainingTimeToMultipleSkills(cell.Skill.Prerequisites);
+                    var pts = cell.Skill.Character.GetTrainingTimeToMultipleSkills(cell.Skill.Prerequisites);
                     prereqTime = $"Prerequisite: {pts.ToDescriptiveText(TimeFormat)}";
                 }
 
@@ -364,8 +364,8 @@ namespace EVEMon.SkillPlanner
                 g.FillRectangle(fillBrush, rect);
 
                 // Draw text (two to five lines)
-                Point drawPoint = new Point(rect.Left + 5, rect.Top + 5);
-                Size sz = MeasureAndDrawText(g, cell.Skill.Name, boldFont, drawPoint, stdTextColor);
+                var drawPoint = new Point(rect.Left + 5, rect.Top + 5);
+                var sz = MeasureAndDrawText(g, cell.Skill.Name, boldFont, drawPoint, stdTextColor);
                 drawPoint.Y += sz.Height;
 
                 sz = MeasureAndDrawText(g, currentLevelText.ToString(), Font, drawPoint, stdTextColor);
@@ -433,7 +433,7 @@ namespace EVEMon.SkillPlanner
         /// <returns></returns>
         private static Size MeasureAndDrawText(IDeviceContext g, string text, Font f, Point p, Color c)
         {
-            Size res = TextRenderer.MeasureText(g, text, f);
+            var res = TextRenderer.MeasureText(g, text, f);
 
             TextRenderer.DrawText(g, text, f,
                 new Rectangle(p.X, p.Y, res.Width, res.Height), c, Color.Transparent,
@@ -481,7 +481,7 @@ namespace EVEMon.SkillPlanner
                 Cursor = Cursors.Default;
 
             Skill skill;
-            Point mouseLocation = GetMouseLocation(e, out skill);
+            var mouseLocation = GetMouseLocation(e, out skill);
 
             // Fires the event when skill not null
             if (skill == null)
@@ -514,11 +514,11 @@ namespace EVEMon.SkillPlanner
         private Point GetMouseLocation(MouseEventArgs e, out Skill skill)
         {
             // Computes the offsets caused by scrollers
-            int ofsLeft = -AutoScrollPosition.X;
-            int ofsTop = -AutoScrollPosition.Y;
+            var ofsLeft = -AutoScrollPosition.X;
+            var ofsTop = -AutoScrollPosition.Y;
 
             // Checks every cell
-            Point mouseLocation = e.Location;
+            var mouseLocation = e.Location;
             mouseLocation.Offset(ofsLeft, ofsTop);
             skill = m_rootCell.AllCells.FirstOrDefault(cell => cell.Rectangle.Contains(mouseLocation))?.Skill;
             return mouseLocation;
@@ -617,8 +617,8 @@ namespace EVEMon.SkillPlanner
                     leftIndex < -1)
                     return false;
 
-                Cell left = this[Math.Min(leftIndex, rightIndex)];
-                Cell right = this[Math.Max(leftIndex, rightIndex)];
+                var left = this[Math.Min(leftIndex, rightIndex)];
+                var right = this[Math.Max(leftIndex, rightIndex)];
 
                 space = right.Rectangle.Left - (left.Rectangle.Right + SkillboxMarginLr);
                 return space < 0;
@@ -647,11 +647,11 @@ namespace EVEMon.SkillPlanner
                 RequiredLevel = -1;
 
                 // Create the top row
-                List<Row> rows = new List<Row> { new Row(this) };
+                var rows = new List<Row> { new Row(this) };
 
                 // Create the children
                 Cells = new List<Cell>();
-                foreach (SkillLevel prereq in skill.Prerequisites.Where(prereq => prereq.Skill != skill))
+                foreach (var prereq in skill.Prerequisites.Where(prereq => prereq.Skill != skill))
                 {
                     Cells.Add(new Cell(prereq, rows, 1));
                 }
@@ -680,7 +680,7 @@ namespace EVEMon.SkillPlanner
 
                 // Create the children
                 Cells = new List<Cell>();
-                foreach (SkillLevel childPrereq in prereq.Skill.Prerequisites
+                foreach (var childPrereq in prereq.Skill.Prerequisites
                     .Where(childPrereq => childPrereq.Skill != prereq.Skill))
                 {
                     Cells.Add(new Cell(childPrereq, rows, level + 1));
@@ -724,7 +724,7 @@ namespace EVEMon.SkillPlanner
                 get
                 {
                     yield return this;
-                    foreach (Cell cell in Cells.SelectMany(child => child.AllCells))
+                    foreach (var cell in Cells.SelectMany(child => child.AllCells))
                     {
                         yield return cell;
                     }
@@ -745,17 +745,17 @@ namespace EVEMon.SkillPlanner
             /// <returns></returns>
             private void FirstPassLayout(int left, int top)
             {
-                using (SkillTreeDisplayControl stdc = new SkillTreeDisplayControl())
+                using (var stdc = new SkillTreeDisplayControl())
                 {
                     // Layout this cell
                     Rectangle = new Rectangle(left, top, stdc.CellWidth, stdc.CellHeight);
 
                     // Layout the children
-                    int childrenTop = top + stdc.CellHeight + SkillboxMarginUd;
-                    int childrenWidth = Cells.Count * stdc.CellWidth + (Cells.Count - 1) * SkillboxMarginLr;
+                    var childrenTop = top + stdc.CellHeight + SkillboxMarginUd;
+                    var childrenWidth = Cells.Count * stdc.CellWidth + (Cells.Count - 1) * SkillboxMarginLr;
 
                     left += (stdc.CellWidth - childrenWidth) / 2;
-                    foreach (Cell cell in Cells)
+                    foreach (var cell in Cells)
                     {
                         cell.FirstPassLayout(left, childrenTop);
                         left += stdc.CellWidth + SkillboxMarginLr;
@@ -775,22 +775,22 @@ namespace EVEMon.SkillPlanner
                 if (level == rows.Count)
                     return;
 
-                Row row = rows[level];
+                var row = rows[level];
 
                 // Scan every cell and, when there is a conflict, shift all the other cells
-                for (int i = 0; i < row.Count - 1; i++)
+                for (var i = 0; i < row.Count - 1; i++)
                 {
                     int space;
                     if (!row.AreOverlapping(i, i + 1, out space))
                         continue;
 
                     // Shift the two cells
-                    int shift = -space >> 1;
+                    var shift = -space >> 1;
                     row[i].Offset(-shift, 0);
                     row[i + 1].Offset(shift, 0);
 
                     // Shift boxes on the left of "left"
-                    for (int j = i - 1; j >= 0; j--)
+                    for (var j = i - 1; j >= 0; j--)
                     {
                         if (!row.AreOverlapping(j, j + 1, out space))
                             break;
@@ -798,7 +798,7 @@ namespace EVEMon.SkillPlanner
                         row[j].Offset(space, 0);
                     }
                     // Shift boxes on the right of "right"
-                    for (int j = i + 2; j < row.Count; j++)
+                    for (var j = i + 2; j < row.Count; j++)
                     {
                         if (!row.AreOverlapping(j, j - 1, out space))
                             break;
@@ -818,11 +818,11 @@ namespace EVEMon.SkillPlanner
             /// <param name="y"></param>
             private void Offset(int x, int y)
             {
-                Rectangle rect = Rectangle;
+                var rect = Rectangle;
                 rect.Offset(x, y);
                 Rectangle = rect;
 
-                foreach (Cell cell in Cells)
+                foreach (var cell in Cells)
                 {
                     cell.Offset(x, y);
                 }
@@ -840,7 +840,7 @@ namespace EVEMon.SkillPlanner
                     right = Rectangle.Right,
                     top = Rectangle.Top,
                     bottom = Rectangle.Bottom;
-                foreach (Rectangle rect in AllCells.Select(cell => cell.Rectangle))
+                foreach (var rect in AllCells.Select(cell => cell.Rectangle))
                 {
                     left = Math.Min(left, rect.Left);
                     right = Math.Max(right, rect.Right);
@@ -849,13 +849,13 @@ namespace EVEMon.SkillPlanner
                 }
 
                 // Compute the new origins
-                int xOrigin = Math.Max(10, size.Width - (right - left)) >> 1;
-                int yOrigin = Math.Max(10, size.Height - (bottom - top)) >> 1;
+                var xOrigin = Math.Max(10, size.Width - (right - left)) >> 1;
+                var yOrigin = Math.Max(10, size.Height - (bottom - top)) >> 1;
 
                 // Offset the cell's rectangles
-                foreach (Cell cell in AllCells)
+                foreach (var cell in AllCells)
                 {
-                    Rectangle rect = cell.Rectangle;
+                    var rect = cell.Rectangle;
                     rect.Offset(xOrigin - left, yOrigin - top);
                     cell.Rectangle = rect;
                 }

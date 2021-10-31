@@ -75,7 +75,7 @@ namespace EVEMon.ExceptionHandling
             EveMonClient.StopTraceLogging();
             try
             {
-                StringBuilder exceptionReport = new StringBuilder();
+                var exceptionReport = new StringBuilder();
                 exceptionReport.Append("EVEMon Version: ").AppendLine(EveMonClient.
                     FileVersionInfo.FileVersion);
                 exceptionReport.Append(".NET Runtime Version: ").AppendLine(Environment.
@@ -107,7 +107,7 @@ namespace EVEMon.ExceptionHandling
             {
                 traceStream = Util.GetFileStream(EveMonClient.TraceFileNameFullPath,
                     FileMode.Open, FileAccess.Read);
-                using (StreamReader traceReader = new StreamReader(traceStream))
+                using (var traceReader = new StreamReader(traceStream))
                 {
                     traceStream = null;
                     trace = traceReader.ReadToEnd();
@@ -137,14 +137,14 @@ namespace EVEMon.ExceptionHandling
         {
             try
             {
-                Bitmap bug = Resources.Bug;
+                var bug = Resources.Bug;
 
-                int oHeight = bug.Height;
-                int oWidth = bug.Width;
+                var oHeight = bug.Height;
+                var oWidth = bug.Width;
                 if (bug.Height <= BugPictureBox.ClientSize.Height)
                     return;
 
-                double scale = (double)BugPictureBox.ClientSize.Height / bug.Height;
+                var scale = (double)BugPictureBox.ClientSize.Height / bug.Height;
                 oHeight = (int)(oHeight * scale);
                 oWidth = (int)(oWidth * scale);
                 BugPictureBox.Image = new Bitmap(bug, new Size(oWidth, oHeight));
@@ -163,17 +163,17 @@ namespace EVEMon.ExceptionHandling
         /// <value>The datafile report.</value>
         private static string GetDatafileReport()
         {
-            StringBuilder datafileReport = new StringBuilder();
+            var datafileReport = new StringBuilder();
 
             try
             {
                 datafileReport.AppendLine("Datafile report:");
 
-                foreach (string datafile in Datafile.GetFilesFrom(EveMonClient.EVEMonDataDir,
+                foreach (var datafile in Datafile.GetFilesFrom(EveMonClient.EVEMonDataDir,
                     Datafile.DatafilesExtension))
                 {
-                    FileInfo info = new FileInfo(datafile);
-                    Datafile file = new Datafile(Path.GetFileName(datafile));
+                    var info = new FileInfo(datafile);
+                    var file = new Datafile(Path.GetFileName(datafile));
 
                     datafileReport.AppendLine($"  {info.Name} ({info.Length / 1024}KiB - {file.MD5Sum})");
                 }
@@ -193,8 +193,8 @@ namespace EVEMon.ExceptionHandling
         /// <value>The recursive stack trace.</value>
         internal static string GetRecursiveStackTrace(Exception exception)
         {
-            StringBuilder stackTraceBuilder = new StringBuilder();
-            Exception ex = exception;
+            var stackTraceBuilder = new StringBuilder();
+            var ex = exception;
 
             stackTraceBuilder.Append(ex).AppendLine();
 

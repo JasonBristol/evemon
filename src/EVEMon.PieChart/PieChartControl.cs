@@ -241,7 +241,7 @@ namespace EVEMon.PieChart
         /// </summary>
         public void InitialAngle(float angle)
         {
-            float newAngle = angle;
+            var newAngle = angle;
 
             if (newAngle > 360.0f)
                 newAngle -= 360.0f;
@@ -277,8 +277,8 @@ namespace EVEMon.PieChart
                 return;
 
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            float width = ClientSize.Width - m_leftMargin - m_rightMargin;
-            float height = ClientSize.Height - m_topMargin - m_bottomMargin;
+            var width = ClientSize.Width - m_leftMargin - m_rightMargin;
+            var height = ClientSize.Height - m_topMargin - m_bottomMargin;
 
             // If the width or height if <=0 an exception would be thrown -> exit method..
             if (width <= 0 || height <= 0)
@@ -375,12 +375,12 @@ namespace EVEMon.PieChart
 
             if (m_mouseDown)
             {
-                float newAngle = m_initialAngle - (e.X - m_lastX);
+                var newAngle = m_initialAngle - (e.X - m_lastX);
                 InitialAngle(newAngle);
             }
             else
             {
-                int index = PieChart.FindPieSliceUnderPoint(new PointF(e.X, e.Y));
+                var index = PieChart.FindPieSliceUnderPoint(new PointF(e.X, e.Y));
 
                 if (index != m_highlightedIndex)
                 {
@@ -476,7 +476,7 @@ namespace EVEMon.PieChart
 
             // fill the sort order to default:
             m_sortOrder = new int[m_values.Length];
-            for (int i = 0; i < m_values.Length; i++)
+            for (var i = 0; i < m_values.Length; i++)
             {
                 m_sortOrder[i] = i;
             }
@@ -495,18 +495,18 @@ namespace EVEMon.PieChart
 
                 // take a copy of the original values
                 // then use it to do the calculations
-                decimal[] values = (decimal[])m_values.Clone();
-                Color[] colours = (Color[])m_colors.Clone();
-                float[] displacements = (float[])m_relativeSliceDisplacements.Clone();
-                string[] tooltips = (string[])m_tootips.Clone();
-                string[] texts = (string[])m_texts.Clone();
+                var values = (decimal[])m_values.Clone();
+                var colours = (Color[])m_colors.Clone();
+                var displacements = (float[])m_relativeSliceDisplacements.Clone();
+                var tooltips = (string[])m_tootips.Clone();
+                var texts = (string[])m_texts.Clone();
 
                 // reordering the slices
-                for (int num = 0; num < values.Length; num++)
+                for (var num = 0; num < values.Length; num++)
                 {
-                    decimal tempsp = decimal.MinValue;
-                    int biggest = -1;
-                    for (int y = 0; y < values.Length; y++)
+                    var tempsp = decimal.MinValue;
+                    var biggest = -1;
+                    for (var y = 0; y < values.Length; y++)
                     {
                         if (biggest == -1)
                         {

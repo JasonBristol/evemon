@@ -197,7 +197,7 @@ namespace EVEMon.SkillPlanner
                 return;
 
             // Retrieve the race
-            Race race = Race.None;
+            var race = Race.None;
             if (cbAmarr.Checked)
                 race |= Race.Amarr;
             if (cbCaldari.Checked)
@@ -270,27 +270,27 @@ namespace EVEMon.SkillPlanner
         protected override void BuildTreeView()
         {
             // Store the selected node (if any) to restore it after the update
-            int selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
+            var selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
 
             if (StaticItems.ShipsMarketGroup == null)
                 return;
 
-            int numberOfItems = 0;
+            var numberOfItems = 0;
             tvItems.BeginUpdate();
             try
             {
                 tvItems.Nodes.Clear();
 
                 // Create the nodes
-                foreach (MarketGroup group in StaticItems.ShipsMarketGroup.SubGroups)
+                foreach (var group in StaticItems.ShipsMarketGroup.SubGroups)
                 {
-                    TreeNode node = new TreeNode
+                    var node = new TreeNode
                     {
                         Text = group.Name,
                         Tag = group
                     };
 
-                    int result = BuildSubtree(group, node.Nodes);
+                    var result = BuildSubtree(group, node.Nodes);
 
                     if (result == 0)
                         continue;
@@ -304,7 +304,7 @@ namespace EVEMon.SkillPlanner
                 // Restore the selected node (if any)
                 if (selectedItemHash > 0)
                 {
-                    foreach (TreeNode node in tvItems.GetAllNodes().Where(node => node.Tag.GetHashCode() == selectedItemHash))
+                    foreach (var node in tvItems.GetAllNodes().Where(node => node.Tag.GetHashCode() == selectedItemHash))
                     {
                         tvItems.SelectNodeWithTag(node.Tag);
                         selectedNode = node;
@@ -341,12 +341,12 @@ namespace EVEMon.SkillPlanner
         private int BuildSubtree(MarketGroup group, TreeNodeCollection nodeCollection)
         {
             // Total items count in this category and its subcategories
-            int result = 0;
+            var result = 0;
 
             // Add all subcategories
-            foreach (MarketGroup childGroup in group.SubGroups)
+            foreach (var childGroup in group.SubGroups)
             {
-                TreeNode node = new TreeNode
+                var node = new TreeNode
                 {
                     Text = childGroup.Name,
                     Tag = childGroup
@@ -361,7 +361,7 @@ namespace EVEMon.SkillPlanner
             }
 
             // Add all items
-            foreach (TreeNode node in group.Items.Where(
+            foreach (var node in group.Items.Where(
                 x => UsabilityPredicate(x) && m_racePredicate(x)).Select(
                     childItem => new TreeNode { Text = childItem.Name, Tag = childItem }))
             {

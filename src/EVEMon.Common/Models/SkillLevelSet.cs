@@ -61,7 +61,7 @@ namespace EVEMon.Common.Models
                 if (level <= 0 || level > 5)
                     throw new ArgumentOutOfRangeException(nameof(level), @"Level must be greater than 0 and lesser or equal than 5.");
 
-                T oldValue = m_items[skillArrayIndex * 5 + level - 1];
+                var oldValue = m_items[skillArrayIndex * 5 + level - 1];
 
                 if (value == null || value.Skill == null)
                     Count--;
@@ -99,7 +99,7 @@ namespace EVEMon.Common.Models
             if (skillArrayindex > m_items.Length)
                 return true;
 
-            T result = this[skillArrayindex, level];
+            var result = this[skillArrayindex, level];
             return result != null && result.Skill != null;
         }
 
@@ -114,7 +114,7 @@ namespace EVEMon.Common.Models
             if (skill.ArrayIndex > m_items.Length)
                 return true;
 
-            T result = this[skill.ArrayIndex, level];
+            var result = this[skill.ArrayIndex, level];
             return result != null && result.Skill != null;
         }
 
@@ -129,7 +129,7 @@ namespace EVEMon.Common.Models
             if (skill.ArrayIndex > m_items.Length)
                 return true;
 
-            T result = this[skill.ArrayIndex, level];
+            var result = this[skill.ArrayIndex, level];
             return result != null && result.Skill != null;
         }
 
@@ -144,7 +144,7 @@ namespace EVEMon.Common.Models
             if (item.Skill.ArrayIndex > m_items.Length)
                 return true;
 
-            T result = this[item.Skill.ArrayIndex, item.Level];
+            var result = this[item.Skill.ArrayIndex, item.Level];
             return result != null && result.Skill != null;
         }
 
@@ -212,9 +212,9 @@ namespace EVEMon.Common.Models
         /// <returns></returns>
         public IEnumerable<T> GetLevelsOf(int skillArrayIndex)
         {
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-                T item = m_items[skillArrayIndex * 5 + i];
+                var item = m_items[skillArrayIndex * 5 + i];
                 if (item != null && item.Skill != null)
                     yield return item;
             }

@@ -131,7 +131,7 @@ namespace EVEMon.Common.Models
             var esiResult = new EsiResult<T>(result);
             // Sync clock on the answer if necessary and provided
             var sync = esiResult.Result as ISynchronizableWithLocalClock;
-            DateTime? when = esiResult.CurrentTime;
+            var when = esiResult.CurrentTime;
             if (sync != null && when != null)
                 sync.SynchronizeWithLocalClock(DateTime.UtcNow - (DateTime)when);
             return esiResult;
@@ -149,10 +149,10 @@ namespace EVEMon.Common.Models
         /// <returns>A String representing the full URL path of the specified method.</returns>
         private Uri GetESIUrl(Enum requestMethod, ESIParams data, int page = 1)
         {
-            long id = data.ParamOne;
-            string paramStr = string.IsNullOrEmpty(data.GetData) ? data.ParamTwo.ToString(
+            var id = data.ParamOne;
+            var paramStr = string.IsNullOrEmpty(data.GetData) ? data.ParamTwo.ToString(
                 CultureConstants.InvariantCulture) : data.GetData;
-            string path = string.Format(GetESIMethod(requestMethod).Path, id, paramStr);
+            var path = string.Format(GetESIMethod(requestMethod).Path, id, paramStr);
             
             // Build the URI
             var builder = new UriBuilder(new Uri(NetworkConstants.ESIBase));
@@ -197,9 +197,9 @@ namespace EVEMon.Common.Models
         private void QueryEsiPageHelper<T, U>(Enum method, ESIRequestCallback<T> callback,
             ESIParams data, PageInfo<T, U> state) where T : List<U> where U : class
         {
-            int page = state.CurrentPage;
+            var page = state.CurrentPage;
             var first = state.FirstResult;
-            Uri pageUrl = GetESIUrl(method, data, page);
+            var pageUrl = GetESIUrl(method, data, page);
             // Create RequestParams manually to zero out the ETag/Expiry since it was already
             // checked
             Util.DownloadJsonAsync<T>(pageUrl, new RequestParams(null, data.PostData)
@@ -209,7 +209,7 @@ namespace EVEMon.Common.Models
             }).ContinueWith(task =>
             {
                 var esiResult = GetESIResult(task.Result);
-                object callbackState = state.State;
+                var callbackState = state.State;
                 if (esiResult.HasError)
                     // Invoke the callback if an error occurred
                     Dispatcher.Invoke(() => callback.Invoke(esiResult, callbackState));
@@ -249,12 +249,12 @@ namespace EVEMon.Common.Models
         {
             callback.ThrowIfNull(nameof(callback), "The callback cannot be null.");
 
-            Uri url = GetESIUrl(method, data);
+            var url = GetESIUrl(method, data);
             Util.DownloadJsonAsync<T>(url, GetRequestParams(data)).ContinueWith(task =>
             {
                 var esiResult = GetESIResult(task.Result);
                 // Check page count
-                int pages = esiResult.Response.Pages;
+                var pages = esiResult.Response.Pages;
                 if (pages > 1 && esiResult.HasData && !esiResult.HasError)
                     // Fetch the other pages
                     QueryEsiPageHelper(method, callback, data, new PageInfo<T, U>(esiResult,
@@ -283,7 +283,7 @@ namespace EVEMon.Common.Models
         {
             callback.ThrowIfNull(nameof(callback), "The callback cannot be null.");
 
-            Uri url = GetESIUrl(method, data);
+            var url = GetESIUrl(method, data);
             Util.DownloadJsonAsync<T>(url, GetRequestParams(data)).ContinueWith(task =>
             {
                 // Invokes the callback

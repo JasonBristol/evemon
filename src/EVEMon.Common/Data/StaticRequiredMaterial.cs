@@ -46,7 +46,7 @@ namespace EVEMon.Common.Data
         /// <returns></returns>
         private static string GetName(int id)
         {
-            Item item = StaticItems.GetItemByID(id);
+            var item = StaticItems.GetItemByID(id);
 
             return item?.Name ?? string.Empty;
         }

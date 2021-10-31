@@ -205,7 +205,7 @@ namespace EVEMon.SkillPlanner
                 return;
 
             // Retrieve the metagroup
-            ItemMetaGroup metagroup = ItemMetaGroup.None;
+            var metagroup = ItemMetaGroup.None;
             if (cbTech1.Checked)
                 metagroup |= ItemMetaGroup.T1;
             if (cbTech2.Checked)
@@ -325,24 +325,24 @@ namespace EVEMon.SkillPlanner
         protected override void BuildTreeView()
         {
             // Store the selected node (if any) to restore it after the update
-            int selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
+            var selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
 
-            int numberOfItems = 0;
+            var numberOfItems = 0;
             tvItems.BeginUpdate();
             try
             {
                 tvItems.Nodes.Clear();
 
                 // Create the nodes
-                foreach (BlueprintMarketGroup group in StaticBlueprints.BlueprintMarketGroups)
+                foreach (var group in StaticBlueprints.BlueprintMarketGroups)
                 {
-                    TreeNode node = new TreeNode
+                    var node = new TreeNode
                     {
                         Text = group.Name,
                         Tag = group
                     };
 
-                    int result = BuildSubtree(group, node.Nodes);
+                    var result = BuildSubtree(group, node.Nodes);
 
                     if (result == 0)
                         continue;
@@ -356,7 +356,7 @@ namespace EVEMon.SkillPlanner
                 // Restore the selected node (if any)
                 if (selectedItemHash > 0)
                 {
-                    foreach (TreeNode node in tvItems.GetAllNodes()
+                    foreach (var node in tvItems.GetAllNodes()
                         .Where(node => node.Tag.GetHashCode() == selectedItemHash))
                     {
                         tvItems.SelectNodeWithTag(node.Tag);
@@ -394,12 +394,12 @@ namespace EVEMon.SkillPlanner
         private int BuildSubtree(BlueprintMarketGroup group, TreeNodeCollection nodeCollection)
         {
             // Total blueprints count in this category and its subcategories
-            int result = 0;
+            var result = 0;
 
             // Add all subcategories
-            foreach (BlueprintMarketGroup childGroup in group.SubGroups)
+            foreach (var childGroup in group.SubGroups)
             {
-                TreeNode node = new TreeNode
+                var node = new TreeNode
                 {
                     Text = childGroup.Name,
                     Tag = childGroup
@@ -414,7 +414,7 @@ namespace EVEMon.SkillPlanner
             }
 
             // Add all blueprints
-            foreach (TreeNode node in group.Blueprints.Where(
+            foreach (var node in group.Blueprints.Where(
                 x => UsabilityPredicate(x) && m_metaGroupPredicate(x)).Select(
                     childItem => new TreeNode { Text = childItem.Name, Tag = childItem }))
             {

@@ -73,7 +73,7 @@ namespace EVEMon.Common.Data
             if (src.Agents == null)
                 return;
 
-            foreach (SerializableAgent agent in src.Agents)
+            foreach (var agent in src.Agents)
             {
                 Items.Add(new Agent(this, agent));
             }

@@ -108,13 +108,13 @@ namespace EVEMon.ApiCredentialsManagement
         /// <param name="e"></param>
         private async void fileButton_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog form = new OpenFileDialog())
+            using (var form = new OpenFileDialog())
             {
                 form.Title = @"Import character file";
                 form.Filter = @"CCP XML Character (*.xml)|*.xml";
                 form.FilterIndex = 0;
 
-                DialogResult dr = form.ShowDialog();
+                var dr = form.ShowDialog();
                 if (dr == DialogResult.Cancel)
                     return;
 
@@ -140,7 +140,7 @@ namespace EVEMon.ApiCredentialsManagement
             urlThrobber.State = ThrobberState.Rotating;
 
             // Starts querying the web or the hard drive, and invokes the given callback on result
-            int version = m_version;
+            var version = m_version;
             var result = await GlobalCharacterCollection.TryAddOrUpdateFromUriAsync(new Uri(uri));
             if (version != m_version)
                 return;

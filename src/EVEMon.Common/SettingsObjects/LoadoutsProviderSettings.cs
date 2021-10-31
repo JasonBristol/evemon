@@ -15,7 +15,7 @@ namespace EVEMon.Common.SettingsObjects
         /// </summary>
         public LoadoutsProviderSettings()
         {
-            foreach (LoadoutsProvider provider in LoadoutsProvider.Providers)
+            foreach (var provider in LoadoutsProvider.Providers)
             {
                 s_loadoutsProviders[provider.Name] = provider;
             }

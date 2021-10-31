@@ -29,7 +29,7 @@ namespace EVEMon.Common.Serialization.Esi
             {
                 // Determine planet type from type name
                 // Planet type is a type ID
-                CCPAPIPlanetTypes type = CCPAPIPlanetTypes.Unknown;
+                var type = CCPAPIPlanetTypes.Unknown;
                 if (!string.IsNullOrEmpty(PlanetTypeJson))
                     Enum.TryParse(PlanetTypeJson, true, out type);
                 return (int)type;

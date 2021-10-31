@@ -69,15 +69,15 @@ namespace EVEMon.SkillPlanner
 
             // Set the min and max values of the NumericUpDown controls
             // based on character attributes value
-            foreach (NumericUpDown nud in AtrributesPanel.Controls.OfType<NumericUpDown>())
+            foreach (var nud in AtrributesPanel.Controls.OfType<NumericUpDown>())
             {
-                string tag = (nud.Tag as string) ?? string.Empty;
+                var tag = (nud.Tag as string) ?? string.Empty;
                 int attribIndex;
                 if (tag.TryParseInv(out attribIndex))
                 {
                     var attrib = (EveAttribute)attribIndex;
                     var charAttribute = m_character[attrib];
-                    long min = charAttribute.EffectiveValue - charAttribute.ImplantBonus;
+                    var min = charAttribute.EffectiveValue - charAttribute.ImplantBonus;
                     nud.Minimum = min;
                     nud.Maximum = min + Math.Min(m_plan.ChosenImplantSet[attrib].Bonus,
                         EveConstants. MaxImplantPoints);
@@ -145,7 +145,7 @@ namespace EVEMon.SkillPlanner
         {
             gbAttributes.Text = $"Attributes of \"{m_plan.ChosenImplantSet.Name}\"";
 
-            CharacterScratchpad characterScratchpad = m_plan.Character.After(m_plan.ChosenImplantSet);
+            var characterScratchpad = m_plan.Character.After(m_plan.ChosenImplantSet);
 
             nudCharisma.Value = characterScratchpad.Charisma.EffectiveValue;
             nudWillpower.Value = characterScratchpad.Willpower.EffectiveValue;
@@ -169,10 +169,10 @@ namespace EVEMon.SkillPlanner
         /// <param name="lblEffectiveAttribute"></param>
         private void UpdateAttributeLabels(EveAttribute attrib, int myValue, Control lblAdjust, Control lblEffectiveAttribute)
         {
-            CharacterScratchpad characterScratchpad = m_plan.Character.After(m_plan.ChosenImplantSet);
+            var characterScratchpad = m_plan.Character.After(m_plan.ChosenImplantSet);
 
-            long baseAttr = characterScratchpad[attrib].EffectiveValue - characterScratchpad[attrib].ImplantBonus;
-            long adjust = myValue - baseAttr;
+            var baseAttr = characterScratchpad[attrib].EffectiveValue - characterScratchpad[attrib].ImplantBonus;
+            var adjust = myValue - baseAttr;
 
             lblAdjust.ForeColor = adjust >= 0 ? SystemColors.ControlText : Color.Red;
             lblAdjust.Text = $"{(adjust >= 0 ? "+" : string.Empty)}{adjust}";
@@ -185,15 +185,15 @@ namespace EVEMon.SkillPlanner
         private async Task UpdateTimesAsync()
         {
             // Current (with implants)
-            TimeSpan currentSpan = await UpdateTimesForCharacter(m_character.After(m_plan.ChosenImplantSet));
+            var currentSpan = await UpdateTimesForCharacter(m_character.After(m_plan.ChosenImplantSet));
 
             // Current (without implants)
-            ImplantSet noneImplantSet = m_character.ImplantSets.None;
-            TimeSpan baseSpan = await UpdateTimesForCharacter(m_character.After(noneImplantSet));
+            var noneImplantSet = m_character.ImplantSets.None;
+            var baseSpan = await UpdateTimesForCharacter(m_character.After(noneImplantSet));
 
             // This
-            CharacterScratchpad scratchpad = CreateModifiedScratchpad(m_character.After(m_plan.ChosenImplantSet));
-            TimeSpan thisSpan = await UpdateTimesForCharacter(scratchpad);
+            var scratchpad = CreateModifiedScratchpad(m_character.After(m_plan.ChosenImplantSet));
+            var thisSpan = await UpdateTimesForCharacter(scratchpad);
 
             lblCurrentSpan.Text = currentSpan.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas);
             lblCurrentDate.Text = DateTime.Now.Add(currentSpan).ToString(CultureConstants.DefaultCulture);
@@ -331,7 +331,7 @@ namespace EVEMon.SkillPlanner
         private CharacterScratchpad CreateModifiedScratchpad(BaseCharacter character)
         {
             // Creates a scratchpad with new implants
-            CharacterScratchpad scratchpad = new CharacterScratchpad(character);
+            var scratchpad = new CharacterScratchpad(character);
 
             scratchpad.Memory.ImplantBonus += (int)nudMemory.Value - character.Memory.EffectiveValue;
             scratchpad.Charisma.ImplantBonus += (int)nudCharisma.Value - character.Charisma.EffectiveValue;
@@ -359,7 +359,7 @@ namespace EVEMon.SkillPlanner
 
             areRemappingPointsActive = true;
 
-            CharacterScratchpad scratchpad = CreateModifiedScratchpad(m_character.After(m_plan.ChosenImplantSet));
+            var scratchpad = CreateModifiedScratchpad(m_character.After(m_plan.ChosenImplantSet));
             plan.UpdateStatistics(scratchpad, true, true);
             plan.UpdateOldTrainingTimes();
         }

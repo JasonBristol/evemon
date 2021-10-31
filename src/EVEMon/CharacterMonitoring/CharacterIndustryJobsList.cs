@@ -183,10 +183,10 @@ namespace EVEMon.CharacterMonitoring
             get
             {
                 // Add the visible columns; matching the display order
-                List<IndustryJobColumnSettings> newColumns = new List<IndustryJobColumnSettings>();
-                foreach (ColumnHeader header in lvJobs.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
+                var newColumns = new List<IndustryJobColumnSettings>();
+                foreach (var header in lvJobs.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
                 {
-                    IndustryJobColumnSettings columnSetting = m_columns.First(x => x.Column == (IndustryJobColumn)header.Tag);
+                    var columnSetting = m_columns.First(x => x.Column == (IndustryJobColumn)header.Tag);
                     if (columnSetting.Width > -1)
                         columnSetting.Width = header.Width;
 
@@ -327,9 +327,9 @@ namespace EVEMon.CharacterMonitoring
                 lvJobs.Groups.Clear();
                 lvJobs.Items.Clear();
 
-                foreach (IndustryJobColumnSettings column in m_columns.Where(x => x.Visible))
+                foreach (var column in m_columns.Where(x => x.Visible))
                 {
-                    ColumnHeader header = lvJobs.Columns.Add(column.Column.GetHeader(), column.Width);
+                    var header = lvJobs.Columns.Add(column.Column.GetHeader(), column.Width);
                     header.Tag = column.Column;
 
                     switch (column.Column)
@@ -363,9 +363,9 @@ namespace EVEMon.CharacterMonitoring
             // Returns if not visible
             if (!Visible)
                 return;
-            int scrollBarPosition = lvJobs.GetVerticalScrollBarPosition();
+            var scrollBarPosition = lvJobs.GetVerticalScrollBarPosition();
             // Store the selected item (if any) to restore it after the update
-            int selectedItem = lvJobs.SelectedItems.Count > 0 ? lvJobs.SelectedItems[0].Tag.
+            var selectedItem = lvJobs.SelectedItems.Count > 0 ? lvJobs.SelectedItems[0].Tag.
                 GetHashCode() : 0;
             lvJobs.BeginUpdate();
             try
@@ -391,7 +391,7 @@ namespace EVEMon.CharacterMonitoring
                 UpdateContentByGroup(jobs);
                 // Restore the selected item (if any)
                 if (selectedItem > 0)
-                    foreach (ListViewItem lvItem in lvJobs.Items.Cast<ListViewItem>().Where(
+                    foreach (var lvItem in lvJobs.Items.Cast<ListViewItem>().Where(
                             lvItem => lvItem.Tag.GetHashCode() == selectedItem))
                         lvItem.Selected = true;
                 // Adjust the size of the columns
@@ -432,62 +432,62 @@ namespace EVEMon.CharacterMonitoring
             switch (m_grouping)
             {
                 case IndustryJobGrouping.State:
-                    IOrderedEnumerable<IGrouping<JobState, IndustryJob>> groups0 =
+                    var groups0 =
                         jobs.GroupBy(x => x.State).OrderBy(x => (int)x.Key);
                     UpdateContent(groups0);
                     break;
                 case IndustryJobGrouping.StateDesc:
-                    IOrderedEnumerable<IGrouping<JobState, IndustryJob>> groups1 =
+                    var groups1 =
                         jobs.GroupBy(x => x.State).OrderByDescending(x => (int)x.Key);
                     UpdateContent(groups1);
                     break;
                 case IndustryJobGrouping.EndDate:
-                    IOrderedEnumerable<IGrouping<DateTime, IndustryJob>> groups2 =
+                    var groups2 =
                         jobs.GroupBy(x => x.EndDate.ToLocalTime().Date).OrderBy(x => x.Key);
                     UpdateContent(groups2);
                     break;
                 case IndustryJobGrouping.EndDateDesc:
-                    IOrderedEnumerable<IGrouping<DateTime, IndustryJob>> groups3 =
+                    var groups3 =
                         jobs.GroupBy(x => x.EndDate.ToLocalTime().Date).OrderByDescending(x => x.Key);
                     UpdateContent(groups3);
                     break;
                 case IndustryJobGrouping.InstalledItemType:
-                    IOrderedEnumerable<IGrouping<string, IndustryJob>> groups4 =
+                    var groups4 =
                         jobs.GroupBy(x => x.InstalledItem.MarketGroup.CategoryPath).OrderBy(x => x.Key);
                     UpdateContent(groups4);
                     break;
                 case IndustryJobGrouping.InstalledItemTypeDesc:
-                    IOrderedEnumerable<IGrouping<string, IndustryJob>> groups5 =
+                    var groups5 =
                         jobs.GroupBy(x => x.InstalledItem.MarketGroup.CategoryPath).OrderByDescending(x => x.Key);
                     UpdateContent(groups5);
                     break;
                 case IndustryJobGrouping.OutputItemType:
-                    IOrderedEnumerable<IGrouping<string, IndustryJob>> groups6 =
+                    var groups6 =
                         jobs.GroupBy(x => x.OutputItem.MarketGroup.CategoryPath).OrderBy(x => x.Key);
                     UpdateContent(groups6);
                     break;
                 case IndustryJobGrouping.OutputItemTypeDesc:
-                    IOrderedEnumerable<IGrouping<string, IndustryJob>> groups7 =
+                    var groups7 =
                         jobs.GroupBy(x => x.OutputItem.MarketGroup.CategoryPath).OrderByDescending(x => x.Key);
                     UpdateContent(groups7);
                     break;
                 case IndustryJobGrouping.Activity:
-                    IOrderedEnumerable<IGrouping<string, IndustryJob>> groups8 =
+                    var groups8 =
                         jobs.GroupBy(x => x.Activity.GetDescription()).OrderBy(x => x.Key);
                     UpdateContent(groups8);
                     break;
                 case IndustryJobGrouping.ActivityDesc:
-                    IOrderedEnumerable<IGrouping<string, IndustryJob>> groups9 =
+                    var groups9 =
                         jobs.GroupBy(x => x.Activity.GetDescription()).OrderByDescending(x => x.Key);
                     UpdateContent(groups9);
                     break;
                 case IndustryJobGrouping.Location:
-                    IOrderedEnumerable<IGrouping<string, IndustryJob>> groups10 =
+                    var groups10 =
                         jobs.GroupBy(x => x.Installation).OrderBy(x => x.Key);
                     UpdateContent(groups10);
                     break;
                 case IndustryJobGrouping.LocationDesc:
-                    IOrderedEnumerable<IGrouping<string, IndustryJob>> groups11 =
+                    var groups11 =
                         jobs.GroupBy(x => x.Installation).OrderByDescending(x => x.Key);
                     UpdateContent(groups11);
                     break;
@@ -505,7 +505,7 @@ namespace EVEMon.CharacterMonitoring
             lvJobs.Groups.Clear();
 
             // Add the groups
-            foreach (IGrouping<TKey, IndustryJob> group in groups)
+            foreach (var group in groups)
             {
                 string groupText;
                 if (group.Key is JobState)
@@ -515,7 +515,7 @@ namespace EVEMon.CharacterMonitoring
                 else
                     groupText = group.Key.ToString();
 
-                ListViewGroup listGroup = new ListViewGroup(groupText);
+                var listGroup = new ListViewGroup(groupText);
                 lvJobs.Groups.Add(listGroup);
 
                 // Add the items in every group
@@ -551,10 +551,10 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Creates the subitems
-            for (int i = 0; i < lvJobs.Columns.Count; i++)
+            for (var i = 0; i < lvJobs.Columns.Count; i++)
             {
-                ColumnHeader header = lvJobs.Columns[i];
-                IndustryJobColumn column = (IndustryJobColumn)header.Tag;
+                var header = lvJobs.Columns[i];
+                var column = (IndustryJobColumn)header.Tag;
                 SetColumn(job, item.SubItems[i], column);
             }
 
@@ -593,14 +593,14 @@ namespace EVEMon.CharacterMonitoring
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (lvJobs.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += lvJobs.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -625,9 +625,9 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void UpdateSortVisualFeedback()
         {
-            foreach (ColumnHeader columnHeader in lvJobs.Columns.Cast<ColumnHeader>())
+            foreach (var columnHeader in lvJobs.Columns.Cast<ColumnHeader>())
             {
-                IndustryJobColumn column = (IndustryJobColumn)columnHeader.Tag;
+                var column = (IndustryJobColumn)columnHeader.Tag;
                 if (m_sortCriteria == column)
                     columnHeader.ImageIndex = m_sortAscending ? 0 : 1;
                 else
@@ -662,7 +662,7 @@ namespace EVEMon.CharacterMonitoring
                     item.Text = job.InstalledItem.MarketGroup.CategoryPath;
                     break;
                 case IndustryJobColumn.OutputItem:
-                    long units = GetUnitCount(job);
+                    var units = GetUnitCount(job);
                     // If units goes over max int, limit to max int for pluralization
                     item.Text = units + " Unit" + ((int)Math.Min(units, int.MaxValue)).S() +
                         " of " + job.OutputItem.Name;
@@ -827,12 +827,12 @@ namespace EVEMon.CharacterMonitoring
         private void UpdateTimeToCompletion()
         {
             const int Pad = 4;
-            int columnTTCIndex = m_columns.IndexOf(m_columns.FirstOrDefault(x => x.Column ==
+            var columnTTCIndex = m_columns.IndexOf(m_columns.FirstOrDefault(x => x.Column ==
                 IndustryJobColumn.TTC));
 
-            foreach (ListViewItem listViewItem in lvJobs.Items.Cast<ListViewItem>())
+            foreach (var listViewItem in lvJobs.Items.Cast<ListViewItem>())
             {
-                IndustryJob job = (IndustryJob)listViewItem.Tag;
+                var job = (IndustryJob)listViewItem.Tag;
                 if (!job.IsActive || job.ActiveJobState == ActiveJobState.Ready)
                     continue;
 
@@ -849,14 +849,14 @@ namespace EVEMon.CharacterMonitoring
                     if (m_columnTTCIndex == 0)
                     {
                         // Calculate column header text width with padding
-                        int columnHeaderWidth = TextRenderer.MeasureText(lvJobs.Columns[
+                        var columnHeaderWidth = TextRenderer.MeasureText(lvJobs.Columns[
                             m_columnTTCIndex].Text, Font).Width + Pad * 2;
 
                         // If there is an image assigned to the header, add its width with padding
                         if (ilIcons.ImageSize.Width > 0)
                             columnHeaderWidth += ilIcons.ImageSize.Width + Pad;
 
-                        int columnWidth = Math.Max(lvJobs.Items.Cast<ListViewItem>().Select(
+                        var columnWidth = Math.Max(lvJobs.Items.Cast<ListViewItem>().Select(
                             item => TextRenderer.MeasureText(item.SubItems[m_columnTTCIndex].
                             Text, Font).Width).Max(), columnHeaderWidth) + Pad + 2;
                         lvJobs.Columns[m_columnTTCIndex].Width = columnWidth;
@@ -946,7 +946,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            IndustryJobColumn column = (IndustryJobColumn)lvJobs.Columns[e.Column].Tag;
+            var column = (IndustryJobColumn)lvJobs.Columns[e.Column].Tag;
             if (m_sortCriteria == column)
                 m_sortAscending = !m_sortAscending;
             else
@@ -988,7 +988,7 @@ namespace EVEMon.CharacterMonitoring
 
             lvJobs.Cursor = CustomCursors.ContextMenu;
 
-            ListViewItem item = lvJobs.GetItemAt(e.Location.X, e.Location.Y);
+            var item = lvJobs.GetItemAt(e.Location.X, e.Location.Y);
             if (item == null)
             {
                 m_tooltip.Hide();
@@ -1015,7 +1015,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
         private void contextMenu_Opening(object sender, CancelEventArgs e)
         {
-            bool visible = lvJobs.SelectedItems.Count != 0;
+            var visible = lvJobs.SelectedItems.Count != 0;
 
             showInstalledInBrowserMenuItem.Visible =
                 showProducedInBrowserMenuItem.Visible =
@@ -1024,15 +1024,15 @@ namespace EVEMon.CharacterMonitoring
             if (!visible)
                 return;
 
-            IndustryJob job = lvJobs.SelectedItems[0]?.Tag as IndustryJob;
+            var job = lvJobs.SelectedItems[0]?.Tag as IndustryJob;
 
             if (job?.InstalledItem == null || job.OutputItem == null)
                 return;
 
-            Blueprint blueprint = StaticBlueprints.GetBlueprintByID(job.OutputItem.ID);
-            Ship ship = job.OutputItem as Ship;
+            var blueprint = StaticBlueprints.GetBlueprintByID(job.OutputItem.ID);
+            var ship = job.OutputItem as Ship;
 
-            string text = ship != null ? "Ship" : blueprint != null ? "Blueprint" : "Item";
+            var text = ship != null ? "Ship" : blueprint != null ? "Blueprint" : "Item";
 
             showProducedInBrowserMenuItem.Text = $"Show Output In {text} Browser...";
         }
@@ -1044,12 +1044,12 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void showInBrowserMenuItem_Click(object sender, EventArgs e)
         {
-            ToolStripItem menuItem = sender as ToolStripItem;
+            var menuItem = sender as ToolStripItem;
 
             if (menuItem == null)
                 return;
 
-            IndustryJob job = lvJobs.SelectedItems[0]?.Tag as IndustryJob;
+            var job = lvJobs.SelectedItems[0]?.Tag as IndustryJob;
 
             if (menuItem == showInstalledInBrowserMenuItem)
             {
@@ -1057,10 +1057,10 @@ namespace EVEMon.CharacterMonitoring
                     return;
 
                 // showProducedInBrowserMenuItem was clicked
-                Ship ship = job.OutputItem as Ship;
-                Blueprint blueprint = StaticBlueprints.GetBlueprintByID(job.OutputItem.ID);
+                var ship = job.OutputItem as Ship;
+                var blueprint = StaticBlueprints.GetBlueprintByID(job.OutputItem.ID);
 
-                PlanWindow planWindow = PlanWindow.ShowPlanWindow(Character);
+                var planWindow = PlanWindow.ShowPlanWindow(Character);
 
                 if (ship != null)
                     planWindow.ShowShipInBrowser(ship);
@@ -1135,7 +1135,7 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Find how many jobs are active and not ready
-            int activeJobs = lvJobs.Items.Cast<ListViewItem>().Select(
+            var activeJobs = lvJobs.Items.Cast<ListViewItem>().Select(
                 item => (IndustryJob)item.Tag).Count(job => job.IsActive && job.ActiveJobState != ActiveJobState.Ready);
 
             // We use time dilation according to the ammount of active jobs that are not ready,
@@ -1163,7 +1163,7 @@ namespace EVEMon.CharacterMonitoring
             if (Character == null)
                 return;
 
-            foreach (IndustryJob job in m_list)
+            foreach (var job in m_list)
             {
                 job.UpdateInstallation(this.Character);
             }
@@ -1210,7 +1210,7 @@ namespace EVEMon.CharacterMonitoring
         /// <returns>Text describing the number of jobs left.</returns>
         private string GetHeaderText(string header, int totalJobs, JobsIssued issued)
         {
-            long remainingJobs = Math.Max(0L, totalJobs - issued.ForCharacter - issued.
+            var remainingJobs = Math.Max(0L, totalJobs - issued.ForCharacter - issued.
                 ForCorporation);
             return string.Format("{0} Jobs Remaining: {1:D} out of {2:D} max", header,
                 remainingJobs, totalJobs);
@@ -1299,7 +1299,7 @@ namespace EVEMon.CharacterMonitoring
         {
             industryExpPanelControl.SuspendLayout();
 
-            int height = industryExpPanelControl.ExpandDirection == Direction.Up ? PAD :
+            var height = industryExpPanelControl.ExpandDirection == Direction.Up ? PAD :
                 industryExpPanelControl.HeaderHeight;
 
             height = UpdatePanelItemPosition(height, m_lblActiveManufacturingJobs,
@@ -1398,7 +1398,7 @@ namespace EVEMon.CharacterMonitoring
             });
 
             // Apply properties
-            foreach (Label label in industryExpPanelControl.Controls.OfType<Label>())
+            foreach (var label in industryExpPanelControl.Controls.OfType<Label>())
             {
                 label.ForeColor = SystemColors.ControlText;
                 label.BackColor = Color.Transparent;

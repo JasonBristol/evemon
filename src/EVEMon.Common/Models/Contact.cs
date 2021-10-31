@@ -110,7 +110,7 @@ namespace EVEMon.Common.Models
         /// </summary>
         private async Task GetImageAsync()
         {
-            Image img = await ImageService.GetImageAsync(GetImageUrl()).ConfigureAwait(false);
+            var img = await ImageService.GetImageAsync(GetImageUrl()).ConfigureAwait(false);
             if (img != null)
             {
                 m_image = img;

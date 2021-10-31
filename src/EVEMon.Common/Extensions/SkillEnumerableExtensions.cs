@@ -23,7 +23,7 @@ namespace EVEMon.Common.Extensions
         public static IEnumerable<SkillLevel> GetAllPrerequisites(this IEnumerable<Skill> src)
         {
             var enumerable = src as IList<Skill> ?? src.ToList();
-            Skill first = enumerable.FirstOrDefault();
+            var first = enumerable.FirstOrDefault();
             return first == null
                 ? Enumerable.Empty<SkillLevel>()
                 : enumerable.ToStatic().GetAllPrerequisites().ToCharacter(first.Character);

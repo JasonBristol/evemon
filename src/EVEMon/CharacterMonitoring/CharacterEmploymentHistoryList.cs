@@ -133,7 +133,7 @@ namespace EVEMon.CharacterMonitoring
                 return;
             }
 
-            int scrollBarPosition = lbEmploymentHistory.TopIndex;
+            var scrollBarPosition = lbEmploymentHistory.TopIndex;
 
             // Update the skills list
             lbEmploymentHistory.BeginUpdate();
@@ -141,7 +141,7 @@ namespace EVEMon.CharacterMonitoring
             {
                 // Add items in the list
                 lbEmploymentHistory.Items.Clear();
-                foreach (EmploymentRecord employmentRecord in Character.EmploymentHistory)
+                foreach (var employmentRecord in Character.EmploymentHistory)
                 {
                     employmentRecord.EmploymentRecordImageUpdated += record_EmploymentRecordImageUpdated;
                     lbEmploymentHistory.Items.Add(employmentRecord);
@@ -189,31 +189,31 @@ namespace EVEMon.CharacterMonitoring
             if (e.Index < 0 || e.Index >= lbEmploymentHistory.Items.Count)
                 return;
 
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
-            EmploymentRecord record = (EmploymentRecord)lbEmploymentHistory.Items[e.Index];
-            EmploymentRecord previousRecord = e.Index == 0 ? null : (EmploymentRecord)lbEmploymentHistory.Items[e.Index - 1];
+            var record = (EmploymentRecord)lbEmploymentHistory.Items[e.Index];
+            var previousRecord = e.Index == 0 ? null : (EmploymentRecord)lbEmploymentHistory.Items[e.Index - 1];
 
             // Draw background
             g.FillRectangle(e.Index % 2 == 0 ? Brushes.White : Brushes.LightGray, e.Bounds);
 
             // Measure texts
-            DateTime dt = previousRecord?.StartDate ?? DateTime.UtcNow;
-            string recordPeriodText =
+            var dt = previousRecord?.StartDate ?? DateTime.UtcNow;
+            var recordPeriodText =
                 $"( {dt.Subtract(record.StartDate).ToDescriptiveText(DescriptiveTextOptions.SpaceBetween, false)} )";
-            string recordStartDateText = record.StartDate.ToLocalTime().DateTimeToDotFormattedString();
-            string recordEndDateText = previousRecord == null
+            var recordStartDateText = record.StartDate.ToLocalTime().DateTimeToDotFormattedString();
+            var recordEndDateText = previousRecord == null
                                            ? RecordDateTodayText
                                            : previousRecord.StartDate.ToLocalTime().DateTimeToDotFormattedString();
 
-            Size recordCorporationNameTextSize = TextRenderer.MeasureText(g, record.CorporationName, m_recordBoldFont, Size.Empty,
+            var recordCorporationNameTextSize = TextRenderer.MeasureText(g, record.CorporationName, m_recordBoldFont, Size.Empty,
                                                                           TextFormat);
-            Size recordPeriodTextSize = TextRenderer.MeasureText(g, recordPeriodText, m_recordFont, Size.Empty, TextFormat);
-            Size recordFromTextSize = TextRenderer.MeasureText(g, RecordDateFromText, m_recordFont, Size.Empty, TextFormat);
-            Size recordStartDateTextSize = TextRenderer.MeasureText(g, recordStartDateText, m_recordBoldFont, Size.Empty,
+            var recordPeriodTextSize = TextRenderer.MeasureText(g, recordPeriodText, m_recordFont, Size.Empty, TextFormat);
+            var recordFromTextSize = TextRenderer.MeasureText(g, RecordDateFromText, m_recordFont, Size.Empty, TextFormat);
+            var recordStartDateTextSize = TextRenderer.MeasureText(g, recordStartDateText, m_recordBoldFont, Size.Empty,
                                                                     TextFormat);
-            Size recordToTextSize = TextRenderer.MeasureText(g, RecordDateToText, m_recordFont, Size.Empty, TextFormat);
-            Size recordEndDateTextSize = TextRenderer.MeasureText(g, recordEndDateText,
+            var recordToTextSize = TextRenderer.MeasureText(g, RecordDateToText, m_recordFont, Size.Empty, TextFormat);
+            var recordEndDateTextSize = TextRenderer.MeasureText(g, recordEndDateText,
                                                                   previousRecord == null ? m_recordFont : m_recordBoldFont,
                                                                   Size.Empty, TextFormat);
 
@@ -307,15 +307,15 @@ namespace EVEMon.CharacterMonitoring
                 return;
 
             // Update the drawing based upon the mouse wheel scrolling
-            int numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
-            int lines = numberOfItemLinesToMove;
+            var numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
+            var lines = numberOfItemLinesToMove;
             if (lines == 0)
                 return;
 
             // Compute the number of lines to move
-            int direction = lines / Math.Abs(lines);
-            int[] numberOfPixelsToMove = new int[lines * direction];
-            for (int i = 1; i <= Math.Abs(lines); i++)
+            var direction = lines / Math.Abs(lines);
+            var numberOfPixelsToMove = new int[lines * direction];
+            for (var i = 1; i <= Math.Abs(lines); i++)
             {
                 object item = null;
 
@@ -330,8 +330,8 @@ namespace EVEMon.CharacterMonitoring
                 else
                 {
                     // Compute the height of the items from current the topindex (included)
-                    int height = 0;
-                    for (int j = lbEmploymentHistory.TopIndex + i - 1; j < lbEmploymentHistory.Items.Count; j++)
+                    var height = 0;
+                    for (var j = lbEmploymentHistory.TopIndex + i - 1; j < lbEmploymentHistory.Items.Count; j++)
                     {
                         height += GetItemHeight;
                     }

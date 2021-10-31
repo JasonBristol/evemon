@@ -81,7 +81,7 @@ namespace EVEMon.Common.CustomEventArgs
         /// </summary>
         public UriCharacter CreateCharacter()
         {
-            CharacterIdentity identity = GetIdentity(m_result);
+            var identity = GetIdentity(m_result);
 
             // Instantiates characters, adds, notify
             var uriCharacter = m_apiResult != null ? new UriCharacter(identity, Uri, m_apiResult) :
@@ -101,14 +101,14 @@ namespace EVEMon.Common.CustomEventArgs
         {
             character.ThrowIfNull(nameof(character));
 
-            CharacterIdentity identity = GetIdentity(m_result);
+            var identity = GetIdentity(m_result);
 
             // Updates
             if (m_apiResult != null)
                 character.Update(identity, Uri, m_apiResult);
             else
             {
-                SerializableCCPCharacter ccpCharacter = m_result as SerializableCCPCharacter;
+                var ccpCharacter = m_result as SerializableCCPCharacter;
                 character.Update(identity, Uri, ccpCharacter);
             }
         }

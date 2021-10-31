@@ -97,7 +97,7 @@ namespace EVEMon.BlankCharacter
         /// </summary>
         private void UpdateBloodlineControl()
         {
-            int index = 0;
+            var index = 0;
             switch (BlankCharacterUIHelper.Race)
             {
                 case Race.Amarr:
@@ -145,7 +145,7 @@ namespace EVEMon.BlankCharacter
         /// </summary>
         private void UpdateAncestryControl()
         {
-            int index = 0;
+            var index = 0;
 
             switch (BlankCharacterUIHelper.Bloodline)
             {

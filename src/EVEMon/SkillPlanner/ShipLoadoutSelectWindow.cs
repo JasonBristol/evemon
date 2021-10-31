@@ -238,9 +238,9 @@ namespace EVEMon.SkillPlanner
             }
 
             // Add the listview items for every loadout
-            foreach (Loadout loadout in m_loadoutInfo.Loadouts)
+            foreach (var loadout in m_loadoutInfo.Loadouts)
             {
-                ListViewItem lvi = new ListViewItem(loadout.Name) { Text = loadout.Name, Tag = loadout };
+                var lvi = new ListViewItem(loadout.Name) { Text = loadout.Name, Tag = loadout };
                 lvi.SubItems.Add(loadout.Author);
                 lvi.SubItems.Add(loadout.Rating.ToString(CultureConstants.DefaultCulture));
                 lvi.SubItems.Add(loadout.SubmissionDate.ToString("G"));
@@ -342,13 +342,13 @@ namespace EVEMon.SkillPlanner
             m_prerequisites.AddRange(m_ship.Prerequisites);
 
             // Add the prerequisites for each item
-            foreach (IGrouping<string, Item> slotItems in items.GroupBy(LoadoutHelper.GetSlotByItem))
+            foreach (var slotItems in items.GroupBy(LoadoutHelper.GetSlotByItem))
             {
-                TreeNode typeNode = new TreeNode(slotItems.Key);
+                var typeNode = new TreeNode(slotItems.Key);
 
-                foreach (Item item in slotItems)
+                foreach (var item in slotItems)
                 {
-                    TreeNode slotNode = new TreeNode { Text = item.Name, Tag = item };
+                    var slotNode = new TreeNode { Text = item.Name, Tag = item };
                     typeNode.Nodes.Add(slotNode);
 
                     m_prerequisites.AddRange(item.Prerequisites);
@@ -358,7 +358,7 @@ namespace EVEMon.SkillPlanner
             }
 
             // Order the nodes
-            TreeNode[] orderNodes = tvLoadout.Nodes.Cast<TreeNode>().OrderBy(
+            var orderNodes = tvLoadout.Nodes.Cast<TreeNode>().OrderBy(
                 node => LoadoutHelper.OrderedSlotNames.IndexOf(string.Intern(node.Text))).ToArray();
 
             tvLoadout.BeginUpdate();
@@ -423,19 +423,19 @@ namespace EVEMon.SkillPlanner
             }
 
             // Compute the training time
-            CharacterScratchpad scratchpad = new CharacterScratchpad(m_character);
-            foreach (PlanEntry entry in m_plan)
+            var scratchpad = new CharacterScratchpad(m_character);
+            foreach (var entry in m_plan)
             {
                 scratchpad.Train(entry);
             }
 
-            TimeSpan startTime = scratchpad.TrainingTime;
-            foreach (StaticSkillLevel prereq in m_prerequisites)
+            var startTime = scratchpad.TrainingTime;
+            foreach (var prereq in m_prerequisites)
             {
                 scratchpad.Train(prereq);
             }
 
-            TimeSpan trainingTime = scratchpad.TrainingTime.Subtract(startTime);
+            var trainingTime = scratchpad.TrainingTime.Subtract(startTime);
 
             // Update the labels
             lblTrainTime.Text = trainingTime.ToDescriptiveText(
@@ -451,7 +451,7 @@ namespace EVEMon.SkillPlanner
         /// </summary>
         private void UpdateSortVisualFeedback()
         {
-            foreach (ColumnHeader columnHeader in lvLoadouts.Columns.Cast<ColumnHeader>())
+            foreach (var columnHeader in lvLoadouts.Columns.Cast<ColumnHeader>())
             {
                 if (m_columnSorter.SortColumn == columnHeader.Index)
                     columnHeader.ImageIndex = m_columnSorter.OrderOfSort == SortOrder.Ascending ? 0 : 1;
@@ -478,14 +478,14 @@ namespace EVEMon.SkillPlanner
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (lvLoadouts.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += lvLoadouts.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -567,7 +567,7 @@ namespace EVEMon.SkillPlanner
             if (lvLoadouts.SelectedItems.Count == 0)
                 return;
 
-            Loadout loadout = (Loadout)lvLoadouts.SelectedItems[0].Tag;
+            var loadout = (Loadout)lvLoadouts.SelectedItems[0].Tag;
             DownloadLoadout(loadout);
         }
 
@@ -633,11 +633,11 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void btnPlan_Click(object sender, EventArgs e)
         {
-            IPlanOperation operation = m_plan.TryAddSet(m_prerequisites, m_selectedLoadout.Name);
+            var operation = m_plan.TryAddSet(m_prerequisites, m_selectedLoadout.Name);
             if (operation == null)
                 return;
 
-            PlanWindow planWindow = PlanWindow.ShowPlanWindow(plan: operation.Plan);
+            var planWindow = PlanWindow.ShowPlanWindow(plan: operation.Plan);
             if (planWindow == null)
                 return;
 
@@ -689,7 +689,7 @@ namespace EVEMon.SkillPlanner
         private void tvLoadout_DoubleClick(object sender, EventArgs e)
         {
             // user double clicked an area that isn't a node
-            Item item = tvLoadout.SelectedNode?.Tag as Item;
+            var item = tvLoadout.SelectedNode?.Tag as Item;
 
             PlanWindow.ShowPlanWindow(m_character, m_plan).ShowItemInBrowser(item);
         }
@@ -706,8 +706,8 @@ namespace EVEMon.SkillPlanner
             if (e.Cancel)
                 return;
 
-            TreeNode node = tvLoadout.SelectedNode;
-            Item selectedItem = node?.Tag as Item;
+            var node = tvLoadout.SelectedNode;
+            var selectedItem = node?.Tag as Item;
 
             miShowInBrowser.Visible = showInMenuSeparator.Visible = selectedItem != null;
 
@@ -849,19 +849,19 @@ namespace EVEMon.SkillPlanner
             /// are of different types and neither one can handle comparisons with the other. </exception>
             public int Compare(object x, object y)
             {
-                int compareResult = 0;
-                ListViewItem a = (ListViewItem)x;
-                ListViewItem b = (ListViewItem)y;
+                var compareResult = 0;
+                var a = (ListViewItem)x;
+                var b = (ListViewItem)y;
 
                 if (OrderOfSort == SortOrder.Descending)
                 {
-                    ListViewItem tmp = b;
+                    var tmp = b;
                     b = a;
                     a = tmp;
                 }
 
-                Loadout loadoutA = a.Tag as Loadout;
-                Loadout loadoutB = b.Tag as Loadout;
+                var loadoutA = a.Tag as Loadout;
+                var loadoutB = b.Tag as Loadout;
 
                 switch (SortColumn)
                 {

@@ -142,10 +142,10 @@ namespace EVEMon.CharacterMonitoring
             get
             {
                 // Add the visible columns; matching the display order
-                List<PlanetaryColumnSettings> newColumns = new List<PlanetaryColumnSettings>();
-                foreach (ColumnHeader header in lvPlanetary.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
+                var newColumns = new List<PlanetaryColumnSettings>();
+                foreach (var header in lvPlanetary.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
                 {
-                    PlanetaryColumnSettings columnSetting = m_columns.First(x => x.Column == (PlanetaryColumn)header.Tag);
+                    var columnSetting = m_columns.First(x => x.Column == (PlanetaryColumn)header.Tag);
                     if (columnSetting.Width > -1)
                         columnSetting.Width = header.Width;
 
@@ -281,9 +281,9 @@ namespace EVEMon.CharacterMonitoring
                 lvPlanetary.Groups.Clear();
                 lvPlanetary.Items.Clear();
 
-                foreach (PlanetaryColumnSettings column in m_columns.Where(x => x.Visible))
+                foreach (var column in m_columns.Where(x => x.Visible))
                 {
-                    ColumnHeader header = lvPlanetary.Columns.Add(column.Column.GetHeader(), column.Width);
+                    var header = lvPlanetary.Columns.Add(column.Column.GetHeader(), column.Width);
                     header.Tag = column.Column;
 
                     switch (column.Column)
@@ -318,18 +318,18 @@ namespace EVEMon.CharacterMonitoring
             if (!Visible)
                 return;
 
-            int scrollBarPosition = lvPlanetary.GetVerticalScrollBarPosition();
+            var scrollBarPosition = lvPlanetary.GetVerticalScrollBarPosition();
 
             // Store the selected item (if any) to restore it after the update
-            int selectedItem = lvPlanetary.SelectedItems.Count > 0
+            var selectedItem = lvPlanetary.SelectedItems.Count > 0
                 ? lvPlanetary.SelectedItems[0].Tag.GetHashCode()
                 : 0;
 
             lvPlanetary.BeginUpdate();
             try
             {
-                string text = m_textFilter.ToUpperInvariant();
-                IEnumerable<PlanetaryPin> pins = m_list.Where(x => IsTextMatching(x, text));
+                var text = m_textFilter.ToUpperInvariant();
+                var pins = m_list.Where(x => IsTextMatching(x, text));
 
                 if (Settings.UI.MainWindow.Planetary.ShowEcuOnly)
                     pins = pins.Where(pin => DBConstants.EcuTypeIDs.Any(id => id == pin.TypeID));
@@ -341,7 +341,7 @@ namespace EVEMon.CharacterMonitoring
                 // Restore the selected item (if any)
                 if (selectedItem > 0)
                 {
-                    foreach (ListViewItem lvItem in lvPlanetary.Items.Cast<ListViewItem>().Where(
+                    foreach (var lvItem in lvPlanetary.Items.Cast<ListViewItem>().Where(
                         lvItem => lvItem.Tag.GetHashCode() == selectedItem))
                     {
                         lvItem.Selected = true;
@@ -372,52 +372,52 @@ namespace EVEMon.CharacterMonitoring
                     UpdateNoGroupContent(pins);
                     break;
                 case PlanetaryGrouping.SolarSystem:
-                    IOrderedEnumerable<IGrouping<string, PlanetaryPin>> groups0 =
+                    var groups0 =
                         pins.GroupBy(x => x.Colony.SolarSystem.Name).OrderBy(x => x.Key);
                     UpdateContent(groups0);
                     break;
                 case PlanetaryGrouping.SolarSystemDesc:
-                    IOrderedEnumerable<IGrouping<string, PlanetaryPin>> groups1 =
+                    var groups1 =
                         pins.GroupBy(x => x.Colony.SolarSystem.Name).OrderByDescending(x => x.Key);
                     UpdateContent(groups1);
                     break;
                 case PlanetaryGrouping.PlanetType:
-                    IOrderedEnumerable<IGrouping<string, PlanetaryPin>> groups2 =
+                    var groups2 =
                         pins.GroupBy(x => x.Colony.PlanetTypeName).OrderBy(x => x.Key);
                     UpdateContent(groups2);
                     break;
                 case PlanetaryGrouping.PlanetTypeDesc:
-                    IOrderedEnumerable<IGrouping<string, PlanetaryPin>> groups3 =
+                    var groups3 =
                         pins.GroupBy(x => x.Colony.PlanetTypeName).OrderByDescending(x => x.Key);
                     UpdateContent(groups3);
                     break;
                 case PlanetaryGrouping.Colony:
-                    IOrderedEnumerable<IGrouping<PlanetaryColony, PlanetaryPin>> groups4 =
+                    var groups4 =
                         pins.GroupBy(x => x.Colony).OrderBy(x => x.Key.PlanetID);
                     UpdateContent(groups4);
                     break;
                 case PlanetaryGrouping.ColonyDesc:
-                    IOrderedEnumerable<IGrouping<PlanetaryColony, PlanetaryPin>> groups5 =
+                    var groups5 =
                         pins.GroupBy(x => x.Colony).OrderByDescending(x => x.Key.PlanetID);
                     UpdateContent(groups5);
                     break;
                 case PlanetaryGrouping.EndDate:
-                    IOrderedEnumerable<IGrouping<DateTime, PlanetaryPin>> groups6 =
+                    var groups6 =
                         pins.GroupBy(x => x.ExpiryTime.ToLocalTime().Date).OrderBy(x => x.Key);
                     UpdateContent(groups6);
                     break;
                 case PlanetaryGrouping.EndDateDesc:
-                    IOrderedEnumerable<IGrouping<DateTime, PlanetaryPin>> groups7 =
+                    var groups7 =
                         pins.GroupBy(x => x.ExpiryTime.ToLocalTime().Date).OrderByDescending(x => x.Key);
                     UpdateContent(groups7);
                     break;
                 case PlanetaryGrouping.GroupName:
-                    IOrderedEnumerable<IGrouping<string, PlanetaryPin>> groups8 =
+                    var groups8 =
                         pins.GroupBy(x => x.GroupName).OrderBy(x => x.Key);
                     UpdateContent(groups8);
                     break;
                 case PlanetaryGrouping.GroupNameDesc:
-                    IOrderedEnumerable<IGrouping<string, PlanetaryPin>> groups9 =
+                    var groups9 =
                         pins.GroupBy(x => x.GroupName).OrderByDescending(x => x.Key);
                     UpdateContent(groups9);
                     break;
@@ -456,14 +456,14 @@ namespace EVEMon.CharacterMonitoring
             lvPlanetary.Groups.Clear();
 
             // Add the groups
-            foreach (IGrouping<TKey, PlanetaryPin> group in groups)
+            foreach (var group in groups)
             {
                 string groupText;
                 if (group.Key is DateTime)
                     groupText = ((DateTime)(object)group.Key).ToShortDateString();
                 else
                 {
-                    PlanetaryColony colony = group.Key as PlanetaryColony;
+                    var colony = group.Key as PlanetaryColony;
                     if (colony != null)
                     {
                         groupText = $"{colony.SolarSystem.Name} > {colony.PlanetName} [{colony.PlanetTypeName}] " +
@@ -475,7 +475,7 @@ namespace EVEMon.CharacterMonitoring
                         groupText = group.Key.ToString();
                 }
 
-                ListViewGroup listGroup = new ListViewGroup(groupText);
+                var listGroup = new ListViewGroup(groupText);
                 lvPlanetary.Groups.Add(listGroup);
 
                 // Add the items in every group
@@ -508,7 +508,7 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Creates the subitems
-            for (int i = 0; i < lvPlanetary.Columns.Count; i++)
+            for (var i = 0; i < lvPlanetary.Columns.Count; i++)
             {
                 SetColumn(pin, item.SubItems[i], (PlanetaryColumn)lvPlanetary.Columns[i].Tag);
             }
@@ -551,14 +551,14 @@ namespace EVEMon.CharacterMonitoring
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (lvPlanetary.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += lvPlanetary.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -583,9 +583,9 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void UpdateSortVisualFeedback()
         {
-            foreach (ColumnHeader columnHeader in lvPlanetary.Columns.Cast<ColumnHeader>())
+            foreach (var columnHeader in lvPlanetary.Columns.Cast<ColumnHeader>())
             {
-                PlanetaryColumn column = (PlanetaryColumn)columnHeader.Tag;
+                var column = (PlanetaryColumn)columnHeader.Tag;
                 if (m_sortCriteria == column)
                     columnHeader.ImageIndex = m_sortAscending ? 0 : 1;
                 else
@@ -695,11 +695,11 @@ namespace EVEMon.CharacterMonitoring
         private void UpdateTimeToCompletion()
         {
             const int Pad = 4;
-            int columnTTCIndex = m_columns.IndexOf(m_columns.FirstOrDefault(x => x.Column == PlanetaryColumn.TTC));
+            var columnTTCIndex = m_columns.IndexOf(m_columns.FirstOrDefault(x => x.Column == PlanetaryColumn.TTC));
 
-            foreach (ListViewItem listViewItem in lvPlanetary.Items.Cast<ListViewItem>())
+            foreach (var listViewItem in lvPlanetary.Items.Cast<ListViewItem>())
             {
-                PlanetaryPin pin = (PlanetaryPin)listViewItem.Tag;
+                var pin = (PlanetaryPin)listViewItem.Tag;
                 if (pin.State != PlanetaryPinState.Extracting)
                     continue;
 
@@ -716,14 +716,14 @@ namespace EVEMon.CharacterMonitoring
                     if (m_columnTTCDisplayIndex == 0)
                     {
                         // Calculate column header text width with padding
-                        int columnHeaderWidth =
+                        var columnHeaderWidth =
                             TextRenderer.MeasureText(lvPlanetary.Columns[m_columnTTCDisplayIndex].Text, Font).Width + Pad * 2;
 
                         // If there is an image assigned to the header, add its width with padding
                         if (ilIcons.ImageSize.Width > 0)
                             columnHeaderWidth += ilIcons.ImageSize.Width + Pad;
 
-                        int columnWidth = lvPlanetary.Items.Cast<ListViewItem>().Select(
+                        var columnWidth = lvPlanetary.Items.Cast<ListViewItem>().Select(
                             item => TextRenderer.MeasureText(item.SubItems[m_columnTTCDisplayIndex].Text, Font).Width).Concat(
                                 new[] { columnHeaderWidth }).Max() + Pad + 2;
                         lvPlanetary.Columns[m_columnTTCDisplayIndex].Width = columnWidth;
@@ -870,7 +870,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
         private void contextMenu_Opening(object sender, CancelEventArgs e)
         {
-            bool visible = lvPlanetary.SelectedItems.Count != 0;
+            var visible = lvPlanetary.SelectedItems.Count != 0;
             showInBrowserMenuItem.Visible = showInBrowserMenuSeparator.Visible = visible;
             if (visible)
             {
@@ -899,7 +899,7 @@ namespace EVEMon.CharacterMonitoring
                     if (pin?.TypeID == null)
                         return;
 
-                    Item installation = StaticItems.GetItemByID(pin.TypeID);
+                    var installation = StaticItems.GetItemByID(pin.TypeID);
 
                     if (installation != null)
                         PlanWindow.ShowPlanWindow(Character).ShowItemInBrowser(installation);
@@ -913,7 +913,7 @@ namespace EVEMon.CharacterMonitoring
                     if (pin?.ContentTypeID == null)
                         return;
 
-                    Item commmodity = StaticItems.GetItemByID(pin.ContentTypeID);
+                    var commmodity = StaticItems.GetItemByID(pin.ContentTypeID);
 
                     if (commmodity != null)
                         PlanWindow.ShowPlanWindow(Character).ShowItemInBrowser(commmodity);
@@ -925,7 +925,7 @@ namespace EVEMon.CharacterMonitoring
                 if (pin?.Colony?.PlanetTypeID == null)
                     return;
 
-                Item planet = StaticItems.GetItemByID(pin.Colony.PlanetTypeID);
+                var planet = StaticItems.GetItemByID(pin.Colony.PlanetTypeID);
 
                 if (planet != null)
                     PlanWindow.ShowPlanWindow(Character).ShowItemInBrowser(planet);
@@ -953,7 +953,7 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Find how many jobs are active and not ready
-            int activePins = lvPlanetary.Items.Cast<ListViewItem>().Select(
+            var activePins = lvPlanetary.Items.Cast<ListViewItem>().Select(
                 item => (PlanetaryPin)item.Tag).Count(pin => pin.State == PlanetaryPinState.Extracting);
 
             // We use time dilation according to the ammount of active pins that are active,

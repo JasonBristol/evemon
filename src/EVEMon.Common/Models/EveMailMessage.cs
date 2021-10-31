@@ -45,7 +45,7 @@ namespace EVEMon.Common.Models
             m_source = src;
             m_bodyResponse = null;
 
-            long senderID = src.SenderID;
+            var senderID = src.SenderID;
             State = (senderID != ccpCharacter.CharacterID) ? EveMailState.Inbox :
                 EveMailState.SentItem;
             MessageID = src.MessageID;
@@ -178,7 +178,7 @@ namespace EVEMon.Common.Models
             if (!mailingListIDs.Any())
                 return NO_SENDER;
 
-            List<string> listOfNames = mailingListIDs.Select(listID => m_ccpCharacter.
+            var listOfNames = mailingListIDs.Select(listID => m_ccpCharacter.
                 EVEMailingLists.FirstOrDefault(x => x.ID == listID)).Select(mailingList =>
                 mailingList?.Name ?? EveMonConstants.UnknownText).ToList();
             // In case the list returned from the API is empty, add an "Unknown" entry
@@ -220,7 +220,7 @@ namespace EVEMon.Common.Models
         /// <param name="result">The result.</param>
         private void OnEVEMailBodyDownloaded(EsiResult<EsiAPIMailBody> result, object forMessage)
         {
-            long messageID = (forMessage as long?) ?? 0L;
+            var messageID = (forMessage as long?) ?? 0L;
             m_queryPending = false;
             m_bodyResponse = result.Response;
             // Notify if an error occured

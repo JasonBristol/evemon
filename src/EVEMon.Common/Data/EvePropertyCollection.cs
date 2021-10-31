@@ -19,7 +19,7 @@ namespace EVEMon.Common.Data
             if (src == null)
                 return;
 
-            foreach (EvePropertyValue prop in src.Select(
+            foreach (var prop in src.Select(
                 srcProp => new EvePropertyValue(srcProp)).Where(prop => prop.Property != null))
             {
                 Items.Add(prop);
@@ -40,7 +40,7 @@ namespace EVEMon.Common.Data
         {
             get
             {
-                foreach (EvePropertyValue prop in Items.TakeWhile(prop => prop.Property != null).Where(
+                foreach (var prop in Items.TakeWhile(prop => prop.Property != null).Where(
                     prop => prop.Property.ID == id))
                 {
                     return prop;

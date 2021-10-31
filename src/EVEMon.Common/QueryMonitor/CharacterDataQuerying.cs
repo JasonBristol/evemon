@@ -185,10 +185,10 @@ namespace EVEMon.Common.QueryMonitor
 
             // Enumerate the basic feature monitors into a separate list
             m_basicFeaturesMonitors = new List<IQueryMonitorEx>(m_characterQueryMonitors.Count);
-            long basicFeatures = (long)CCPAPIMethodsEnum.BasicCharacterFeatures;
+            var basicFeatures = (long)CCPAPIMethodsEnum.BasicCharacterFeatures;
             foreach (var monitor in m_characterQueryMonitors)
             {
-                long method = (long)(ESIAPICharacterMethods)monitor.Method;
+                var method = (long)(ESIAPICharacterMethods)monitor.Method;
                 if (method == (method & basicFeatures))
                 {
                     m_basicFeaturesMonitors.Add(monitor);
@@ -366,7 +366,7 @@ namespace EVEMon.Common.QueryMonitor
         private void QueryAttributesAsync(CCPCharacter target)
         {
             // This is only invoked where the character has already been checked against null
-            ESIKey esiKey = target.Identity.FindAPIKeyWithAccess(ESIAPICharacterMethods.
+            var esiKey = target.Identity.FindAPIKeyWithAccess(ESIAPICharacterMethods.
                 Attributes);
             if (esiKey != null && !EsiErrors.IsErrorCountExceeded)
                 EveMonClient.APIProviders.CurrentProvider.QueryEsi<EsiAPIAttributes>(
@@ -480,7 +480,7 @@ namespace EVEMon.Common.QueryMonitor
         private void OnFactionalWarfareStatsUpdated(EsiAPIFactionalWarfareStats result)
         {
             var target = m_ccpCharacter;
-            int factionID = result.FactionID;
+            var factionID = result.FactionID;
             // Character may have been deleted since we queried
             if (target != null)
             {
@@ -686,7 +686,7 @@ namespace EVEMon.Common.QueryMonitor
             {
                 target.EVEMailMessages.Import(result.ToXMLItem().Messages);
                 // Notify on new messages
-                int newMessages = target.EVEMailMessages.NewMessages;
+                var newMessages = target.EVEMailMessages.NewMessages;
                 if (newMessages != 0)
                     EveMonClient.Notifications.NotifyNewEVEMailMessages(target, newMessages);
             }
@@ -718,7 +718,7 @@ namespace EVEMon.Common.QueryMonitor
             {
                 target.EVENotifications.Import(result);
                 // Notify on new notifications
-                int newNotify = target.EVENotifications.NewNotifications;
+                var newNotify = target.EVENotifications.NewNotifications;
                 if (newNotify != 0)
                     EveMonClient.Notifications.NotifyNewEVENotifications(target, newNotify);
             }

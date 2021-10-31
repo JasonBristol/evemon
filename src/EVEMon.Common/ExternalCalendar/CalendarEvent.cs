@@ -140,7 +140,7 @@ namespace EVEMon.Common.ExternalCalendar
             if (StartDate >= EarlyReminder)
                 return LateReminder;
 
-            DateTime lateRem = LateReminder;
+            var lateRem = LateReminder;
             lateRem = lateRem.AddDays(-1);
             return lateRem;
         }

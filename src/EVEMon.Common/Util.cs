@@ -61,10 +61,10 @@ namespace EVEMon.Common
         /// <returns></returns>
         public static XslCompiledTransform LoadXslt(string content)
         {
-            using (StringReader stringReader = new StringReader(content))
+            using (var stringReader = new StringReader(content))
             {
-                XmlTextReader reader = new XmlTextReader(stringReader);
-                XslCompiledTransform xslt = new XslCompiledTransform();
+                var reader = new XmlTextReader(stringReader);
+                var xslt = new XslCompiledTransform();
 
                 xslt.Load(reader);
                 return xslt;
@@ -83,12 +83,12 @@ namespace EVEMon.Common
         {
             try
             {
-                XmlSerializer xs = new XmlSerializer(typeof(T));
+                var xs = new XmlSerializer(typeof(T));
 
                 if (transform != null)
                 {
-                    MemoryStream stream = GetMemoryStream();
-                    using (XmlTextWriter writer = new XmlTextWriter(stream, Encoding.UTF8))
+                    var stream = GetMemoryStream();
+                    using (var writer = new XmlTextWriter(stream, Encoding.UTF8))
                     {
                         // Apply the XSL transform
                         writer.Formatting = Formatting.Indented;
@@ -102,7 +102,7 @@ namespace EVEMon.Common
                 }
 
                 // Deserialization without transform
-                using (Stream stream = FileHelper.OpenRead(filename, false))
+                using (var stream = FileHelper.OpenRead(filename, false))
                 {
                     return (T)xs.Deserialize(stream);
                 }
@@ -140,9 +140,9 @@ namespace EVEMon.Common
             {
                 if (transform != null)
                 {
-                    MemoryStream stream = GetMemoryStream();
+                    var stream = GetMemoryStream();
                     using (TextReader textReader = new StringReader(text))
-                    using (XmlTextWriter writer = new XmlTextWriter(stream, Encoding.UTF8))
+                    using (var writer = new XmlTextWriter(stream, Encoding.UTF8))
                     {
                         XmlReader reader = new XmlTextReader(textReader);
 
@@ -152,7 +152,7 @@ namespace EVEMon.Common
                         writer.Flush();
 
                         // Deserialize from the given stream
-                        XmlSerializer xs = new XmlSerializer(typeof(T));
+                        var xs = new XmlSerializer(typeof(T));
                         stream.Seek(0, SeekOrigin.Begin);
                         return (T)xs.Deserialize(stream);
                     }
@@ -160,7 +160,7 @@ namespace EVEMon.Common
 
                 using (TextReader textReader = new StringReader(text))
                 {
-                    XmlSerializer xs = new XmlSerializer(typeof(T));
+                    var xs = new XmlSerializer(typeof(T));
                     return (T)xs.Deserialize(textReader);
                 }
             }
@@ -193,22 +193,22 @@ namespace EVEMon.Common
         internal static T DeserializeDatafile<T>(string filename, XslCompiledTransform transform = null)
         {
             // Gets the full path
-            string path = Datafile.GetFullPath(filename);
+            var path = Datafile.GetFullPath(filename);
             try
             {
-                using (Stream stream = FileHelper.OpenRead(path, false))
+                using (var stream = FileHelper.OpenRead(path, false))
                 {
-                    GZipStream gZipStream = new GZipStream(stream, CompressionMode.Decompress);
-                    XmlSerializer xs = new XmlSerializer(typeof(T));
+                    var gZipStream = new GZipStream(stream, CompressionMode.Decompress);
+                    var xs = new XmlSerializer(typeof(T));
 
                     // Deserialization without transform
                     if (transform == null)
                         return (T)xs.Deserialize(gZipStream);
 
                     // Deserialization with transform
-                    MemoryStream memoryStream = GetMemoryStream();
-                    XmlTextWriter writer = new XmlTextWriter(memoryStream, Encoding.UTF8);
-                    XmlTextReader reader = new XmlTextReader(gZipStream);
+                    var memoryStream = GetMemoryStream();
+                    var writer = new XmlTextWriter(memoryStream, Encoding.UTF8);
+                    var reader = new XmlTextReader(gZipStream);
 
                     // Apply the XSL transform
                     writer.Formatting = Formatting.Indented;
@@ -222,14 +222,14 @@ namespace EVEMon.Common
             }
             catch (InvalidOperationException ex)
             {
-                string message = $"An error occurred decompressing {filename}, the error message was '{ex.Message}' from '{ex.Source}'. " +
-                    $"Try deleting all of the {Datafile.DatafilesExtension} files in %APPDATA%\\EVEMon.";
+                var message = $"An error occurred decompressing {filename}, the error message was '{ex.Message}' from '{ex.Source}'. " +
+                              $"Try deleting all of the {Datafile.DatafilesExtension} files in %APPDATA%\\EVEMon.";
                 throw new InvalidOperationException(message, ex);
             }
             catch (XmlException ex)
             {
-                string message = $"An error occurred reading the XML from {filename}, the error message was '{ex.Message}' from '{ex.Source}'. " +
-                    $"Try deleting all of the {Datafile.DatafilesExtension} files in %APPDATA%\\EVEMon.";
+                var message = $"An error occurred reading the XML from {filename}, the error message was '{ex.Message}' from '{ex.Source}'. " +
+                              $"Try deleting all of the {Datafile.DatafilesExtension} files in %APPDATA%\\EVEMon.";
                 throw new XmlException(message, ex);
             }
         }
@@ -245,7 +245,7 @@ namespace EVEMon.Common
         {
             try
             {
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.LoadXml(text);
                 return DeserializeAPIResultCore<T>(doc, transform);
             }
@@ -267,7 +267,7 @@ namespace EVEMon.Common
         {
             try
             {
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.Load(filename);
                 return DeserializeAPIResultCore<T>(doc, transform);
             }
@@ -325,14 +325,14 @@ namespace EVEMon.Common
             try
             {
                 // Deserialization with a transform
-                using (XmlNodeReader reader = new XmlNodeReader((XmlDocument)doc))
+                using (var reader = new XmlNodeReader((XmlDocument)doc))
                 {
-                    XmlSerializer xs = new XmlSerializer(typeof(CCPAPIResult<T>));
+                    var xs = new XmlSerializer(typeof(CCPAPIResult<T>));
 
                     if (transform != null)
                     {
-                        MemoryStream stream = GetMemoryStream();
-                        using (XmlTextWriter writer = new XmlTextWriter(stream, Encoding.UTF8))
+                        var stream = GetMemoryStream();
+                        using (var writer = new XmlTextWriter(stream, Encoding.UTF8))
                         {
                             // Apply the XSL transform
                             writer.Formatting = Formatting.Indented;
@@ -352,8 +352,8 @@ namespace EVEMon.Common
                 // Fix times
                 if (result.Result is ISynchronizableWithLocalClock)
                 {
-                    DateTime requestTime = DateTime.UtcNow;
-                    double offsetCCP = result.CurrentTime.Subtract(requestTime).TotalMilliseconds;
+                    var requestTime = DateTime.UtcNow;
+                    var offsetCCP = result.CurrentTime.Subtract(requestTime).TotalMilliseconds;
                     result.SynchronizeWithLocalClock(offsetCCP);
                 }
             }
@@ -403,13 +403,13 @@ namespace EVEMon.Common
                 try
                 {
                     // Deserialize
-                    using (XmlNodeReader reader = new XmlNodeReader((XmlDocument)asyncResult.Result))
+                    using (var reader = new XmlNodeReader((XmlDocument)asyncResult.Result))
                     {
-                        XmlSerializer xs = new XmlSerializer(typeof(T));
+                        var xs = new XmlSerializer(typeof(T));
                         if (transform != null)
                         {
-                            MemoryStream stream = GetMemoryStream();
-                            using (XmlTextWriter writer = new XmlTextWriter(stream, Encoding.UTF8))
+                            var stream = GetMemoryStream();
+                            using (var writer = new XmlTextWriter(stream, Encoding.UTF8))
                             {
                                 // Apply the XSL transform
                                 writer.Formatting = Formatting.Indented;
@@ -520,10 +520,10 @@ namespace EVEMon.Common
             };
 
             // Writes to a string builder
-            StringBuilder xmlBuilder = new StringBuilder();
-            using (XmlWriter xmlWriter = XmlWriter.Create(xmlBuilder, settings))
+            var xmlBuilder = new StringBuilder();
+            using (var xmlWriter = XmlWriter.Create(xmlBuilder, settings))
             {
-                XmlDocument xmlDoc = (XmlDocument)doc;
+                var xmlDoc = (XmlDocument)doc;
                 xmlDoc.WriteContentTo(xmlWriter);
                 xmlWriter.Flush();
             }
@@ -537,15 +537,15 @@ namespace EVEMon.Common
         /// <returns>The Xml document representing the given object.</returns>
         public static IXPathNavigable SerializeToXmlDocument(object data)
         {
-            using (MemoryStream memStream = GetMemoryStream())
+            using (var memStream = GetMemoryStream())
             {
                 // Serializes to the stream
-                XmlSerializer serializer = new XmlSerializer(data.GetType());
+                var serializer = new XmlSerializer(data.GetType());
                 serializer.Serialize(memStream, data);
 
                 // Creates a XML doc from the stream
                 memStream.Seek(0, SeekOrigin.Begin);
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.Load(memStream);
 
                 return doc;
@@ -567,8 +567,8 @@ namespace EVEMon.Common
 
             xslt.ThrowIfNull(nameof(xslt));
 
-            MemoryStream stream = GetMemoryStream();
-            using (XmlTextWriter writer = new XmlTextWriter(stream, Encoding.UTF8))
+            var stream = GetMemoryStream();
+            using (var writer = new XmlTextWriter(stream, Encoding.UTF8))
             {
                 // Apply the XSL transform
                 writer.Formatting = Formatting.Indented;
@@ -577,7 +577,7 @@ namespace EVEMon.Common
 
                 // Reads the XML document from the given stream.
                 stream.Seek(0, SeekOrigin.Begin);
-                XmlDocument outDoc = new XmlDocument();
+                var outDoc = new XmlDocument();
                 outDoc.Load(stream);
                 return outDoc;
             }
@@ -592,9 +592,9 @@ namespace EVEMon.Common
         public static int GetRevisionNumber(string filename)
         {
             // Uses a regex to retrieve the revision number
-            string content = File.Exists(filename) ? File.ReadAllText(filename) : filename;
+            var content = File.Exists(filename) ? File.ReadAllText(filename) : filename;
 
-            Match match = Regex.Match(content, "revision=\"([0-9]+)\"",
+            var match = Regex.Match(content, "revision=\"([0-9]+)\"",
                 RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
             // No match ? Then there was no "revision" attribute, this is an old format
@@ -613,7 +613,7 @@ namespace EVEMon.Common
         /// <returns>The temporary file's name.</returns>
         public static string UncompressToTempFile(string filename)
         {
-            string tempFile = Path.GetTempFileName();
+            var tempFile = Path.GetTempFileName();
 
             // We decompress the gzipped stream and writes it to a temporary file
             FileStream stream = null;
@@ -624,13 +624,13 @@ namespace EVEMon.Common
 
                 using (var outStream = File.OpenWrite(tempFile))
                 {
-                    byte[] bytes = new byte[4096];
+                    var bytes = new byte[4096];
 
                     // Since we're reading a compressed stream, the total number of bytes to decompress cannot be foreseen
                     // So we just continue reading while there are bytes to decompress
                     while (true)
                     {
-                        int count = gzipStream.Read(bytes, 0, bytes.Length);
+                        var count = gzipStream.Read(bytes, 0, bytes.Length);
                         if (count == 0)
                             break;
 
@@ -727,7 +727,7 @@ namespace EVEMon.Common
             using (stream)
             using (var md5 = MD5.Create())
             {
-                byte[] hash = md5.ComputeHash(stream);
+                var hash = md5.ComputeHash(stream);
                 return BitConverter.ToString(hash).Replace("-", string.Empty).ToLowerInvariant();
             }
         }
@@ -758,7 +758,7 @@ namespace EVEMon.Common
             using (stream)
             using (var sha1 = SHA1.Create())
             {
-                byte[] hash = sha1.ComputeHash(stream);
+                var hash = sha1.ComputeHash(stream);
                 return BitConverter.ToString(hash).Replace("-", string.Empty).ToLowerInvariant();
             }
         }
@@ -919,7 +919,7 @@ namespace EVEMon.Common
             if (stream == null)
                 return inputStream;
 
-            byte[] data = ZlibUncompress(stream.ToArray()) as byte[];
+            var data = ZlibUncompress(stream.ToArray()) as byte[];
 
             return data == null ? inputStream : new MemoryStream(data);
         }
@@ -1064,7 +1064,7 @@ namespace EVEMon.Common
         private static T ParseJSONObject<T>(Stream stream, ResponseParams response)
             where T : class
         {
-            T value = default(T);
+            var value = default(T);
             if (!response.IsNotModifiedResponse)
             {
                 if (!response.IsOKResponse)
@@ -1093,8 +1093,8 @@ namespace EVEMon.Common
             // Initialize parser to attempt and parse error details
             var settings = new DataContractJsonSerializerSettings();
             var serializer = new DataContractJsonSerializer(typeof(EsiAPIError), settings);
-            int code = response.ResponseCode;
-            string responseCode = code.ToString(CultureInfo.InvariantCulture);
+            var code = response.ResponseCode;
+            var responseCode = code.ToString(CultureInfo.InvariantCulture);
             try
             {
                 var esiError = serializer.ReadObject(stream) as EsiAPIError;
@@ -1135,7 +1135,7 @@ namespace EVEMon.Common
         {
             using (var sr = new StringReader(text))
             {
-                YamlStream yStream = new YamlStream();
+                var yStream = new YamlStream();
                 yStream.Load(sr);
                 return yStream.Documents.First().RootNode;
             }

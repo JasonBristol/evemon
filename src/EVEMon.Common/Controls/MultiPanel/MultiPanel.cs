@@ -36,7 +36,7 @@ namespace EVEMon.Common.Controls.MultiPanel
                 if (m_selectedPage == value)
                     return;
 
-                MultiPanelPage oldPage = m_selectedPage;
+                var oldPage = m_selectedPage;
                 m_selectedPage = value;
 
                 foreach (Control child in Controls)
@@ -56,9 +56,9 @@ namespace EVEMon.Common.Controls.MultiPanel
         {
             base.OnPaint(e);
 
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
-            using (SolidBrush br = new SolidBrush(BackColor))
+            using (var br = new SolidBrush(BackColor))
             {
                 g.FillRectangle(br, ClientRectangle);
             }
@@ -113,7 +113,7 @@ namespace EVEMon.Common.Controls.MultiPanel
             {
                 value.ThrowIfNull(nameof(value), "Tried to add a null value to the MultiPanelPagesCollection.");
 
-                MultiPanelPage p = value as MultiPanelPage;
+                var p = value as MultiPanelPage;
                 if (p == null)
                 {
                     throw new ArgumentException("Tried to add a non-MultiPanelPage control to the MultiPanelPagesCollection",
@@ -146,7 +146,7 @@ namespace EVEMon.Common.Controls.MultiPanel
             /// <returns></returns>
             public override int IndexOfKey(string key)
             {
-                Control ctrl = base[key];
+                var ctrl = base[key];
                 return GetChildIndex(ctrl);
             }
         }

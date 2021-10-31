@@ -120,10 +120,10 @@ namespace EVEMon.CharacterMonitoring
             get
             {
                 // Add the visible columns; matching the display order
-                List<ResearchColumnSettings> newColumns = new List<ResearchColumnSettings>();
-                foreach (ColumnHeader header in lvResearchPoints.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
+                var newColumns = new List<ResearchColumnSettings>();
+                foreach (var header in lvResearchPoints.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
                 {
-                    ResearchColumnSettings columnSetting = m_columns.First(x => x.Column == (ResearchColumn)header.Tag);
+                    var columnSetting = m_columns.First(x => x.Column == (ResearchColumn)header.Tag);
                     if (columnSetting.Width > -1)
                         columnSetting.Width = header.Width;
 
@@ -245,9 +245,9 @@ namespace EVEMon.CharacterMonitoring
                 lvResearchPoints.Groups.Clear();
                 lvResearchPoints.Items.Clear();
 
-                foreach (ResearchColumnSettings column in m_columns.Where(x => x.Visible))
+                foreach (var column in m_columns.Where(x => x.Visible))
                 {
-                    ColumnHeader header = lvResearchPoints.Columns.Add(column.Column.GetHeader(), column.Width);
+                    var header = lvResearchPoints.Columns.Add(column.Column.GetHeader(), column.Width);
                     header.Tag = column.Column;
 
                     switch (column.Column)
@@ -281,18 +281,18 @@ namespace EVEMon.CharacterMonitoring
             if (!Visible)
                 return;
 
-            int scrollBarPosition = lvResearchPoints.GetVerticalScrollBarPosition();
+            var scrollBarPosition = lvResearchPoints.GetVerticalScrollBarPosition();
 
             // Store the selected item (if any) to restore it after the update
-            int selectedItem = lvResearchPoints.SelectedItems.Count > 0 ?
+            var selectedItem = lvResearchPoints.SelectedItems.Count > 0 ?
                 lvResearchPoints.SelectedItems[0].Tag.GetHashCode() : 0;
 
             lvResearchPoints.BeginUpdate();
             try
             {
-                IEnumerable<ResearchPoint> researchPoints = m_list.Where(x => !string.
-                    IsNullOrEmpty(x.AgentName) && !string.IsNullOrEmpty(x.Field) &&
-                    x.Station != null).Where(x => IsTextMatching(x, m_textFilter));
+                var researchPoints = m_list.Where(x => !string.
+                                                           IsNullOrEmpty(x.AgentName) && !string.IsNullOrEmpty(x.Field) &&
+                                                       x.Station != null).Where(x => IsTextMatching(x, m_textFilter));
 
                 UpdateSort();
 
@@ -312,7 +312,7 @@ namespace EVEMon.CharacterMonitoring
                 // Restore the selected item (if any)
                 if (selectedItem > 0)
                 {
-                    foreach (ListViewItem lvItem in lvResearchPoints.Items.Cast<ListViewItem>().Where(
+                    foreach (var lvItem in lvResearchPoints.Items.Cast<ListViewItem>().Where(
                         lvItem => lvItem.Tag.GetHashCode() == selectedItem))
                     {
                         lvItem.Selected = true;
@@ -345,7 +345,7 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Creates the subitems
-            for (int i = 0; i < lvResearchPoints.Columns.Count; i++)
+            for (var i = 0; i < lvResearchPoints.Columns.Count; i++)
             {
                 SetColumn(researchPoint, item.SubItems[i], (ResearchColumn)lvResearchPoints.Columns[i].Tag);
             }
@@ -387,14 +387,14 @@ namespace EVEMon.CharacterMonitoring
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (lvResearchPoints.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += lvResearchPoints.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -419,9 +419,9 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void UpdateSortVisualFeedback()
         {
-            foreach (ColumnHeader columnHeader in lvResearchPoints.Columns.Cast<ColumnHeader>())
+            foreach (var columnHeader in lvResearchPoints.Columns.Cast<ColumnHeader>())
             {
-                ResearchColumn column = (ResearchColumn)columnHeader.Tag;
+                var column = (ResearchColumn)columnHeader.Tag;
                 if (m_sortCriteria == column)
                     columnHeader.ImageIndex = m_sortAscending ? 0 : 1;
                 else
@@ -548,7 +548,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            ResearchColumn column = (ResearchColumn)lvResearchPoints.Columns[e.Column].Tag;
+            var column = (ResearchColumn)lvResearchPoints.Columns[e.Column].Tag;
             if (m_sortCriteria == column)
                 m_sortAscending = !m_sortAscending;
             else
@@ -610,12 +610,12 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void showInBrowserMenuItem_Click(object sender, EventArgs e)
         {
-            ToolStripItem menuItem = sender as ToolStripItem;
+            var menuItem = sender as ToolStripItem;
 
             if (menuItem == null)
                 return;
 
-            ResearchPoint researchPoint = lvResearchPoints.SelectedItems[0]?.Tag as ResearchPoint;
+            var researchPoint = lvResearchPoints.SelectedItems[0]?.Tag as ResearchPoint;
 
             // showInSkillBrowserMenuItem
             if (menuItem == showInSkillBrowserMenuItem)
@@ -623,7 +623,7 @@ namespace EVEMon.CharacterMonitoring
                 if (researchPoint?.Field == null)
                     return;
 
-                Skill skill = Character.Skills[researchPoint.Skill.ID];
+                var skill = Character.Skills[researchPoint.Skill.ID];
 
                 if (skill != Skill.UnknownSkill)
                     PlanWindow.ShowPlanWindow(Character).ShowSkillInBrowser(skill);
@@ -684,7 +684,7 @@ namespace EVEMon.CharacterMonitoring
             if (Character == null)
                 return;
 
-            foreach (ResearchPoint researchPoint in m_list)
+            foreach (var researchPoint in m_list)
             {
                 researchPoint.UpdateStation();
             }

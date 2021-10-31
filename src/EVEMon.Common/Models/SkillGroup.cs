@@ -34,7 +34,7 @@ namespace EVEMon.Common.Models
         {
             StaticData = src;
 
-            foreach (StaticSkill srcSkill in src)
+            foreach (var srcSkill in src)
             {
                 Items[srcSkill.Name] = new Skill(character, this, srcSkill);
             }

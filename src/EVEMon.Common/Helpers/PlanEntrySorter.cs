@@ -42,12 +42,12 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         public IEnumerable<PlanEntry> Sort()
         {
-            int initialCount = m_entries.Count();
+            var initialCount = m_entries.Count();
 
             // Apply first pass (priorities grouping)
             // We split the entries into multiple priority groups if that selection is made
-            List<PlanScratchpad> groupedPlan = new List<PlanScratchpad>();
-            CharacterScratchpad scratchpad = new CharacterScratchpad(m_character);
+            var groupedPlan = new List<PlanScratchpad>();
+            var scratchpad = new CharacterScratchpad(m_character);
 
             if (m_groupByPriority)
             {
@@ -59,9 +59,9 @@ namespace EVEMon.Common.Helpers
 
             // Apply second pass (sorts)
             // We sort every group, and merge them once they're sorted
-            List<PlanEntry> list = new List<PlanEntry>();
+            var list = new List<PlanEntry>();
 
-            foreach (PlanScratchpad group in groupedPlan)
+            foreach (var group in groupedPlan)
             {
                 group.UpdateStatistics(scratchpad, false, false);
                 group.SimpleSort(m_sort, m_reverseOrder);
@@ -85,23 +85,23 @@ namespace EVEMon.Common.Helpers
         /// <param name="list"></param>
         private static void FixPrerequisitesOrder(ICollection<PlanEntry> list)
         {
-            // Gather prerequisites/postrequisites relationships and use them to connect nodes - O(n²) operation
-            Dictionary<PlanEntry, List<PlanEntry>> dependencies = new Dictionary<PlanEntry, List<PlanEntry>>();
-            foreach (PlanEntry entry in list)
+            // Gather prerequisites/postrequisites relationships and use them to connect nodes - O(nÂ²) operation
+            var dependencies = new Dictionary<PlanEntry, List<PlanEntry>>();
+            foreach (var entry in list)
             {
                 dependencies[entry] = new List<PlanEntry>(list.Where(x => entry.IsDependentOf(x)));
             }
 
 
             // Insert entries
-            LinkedList<PlanEntry> entriesToAdd = new LinkedList<PlanEntry>(list);
-            SkillLevelSet<PlanEntry> set = new SkillLevelSet<PlanEntry>();
+            var entriesToAdd = new LinkedList<PlanEntry>(list);
+            var set = new SkillLevelSet<PlanEntry>();
             list.Clear();
 
             while (entriesToAdd.Count != 0)
             {
                 // Gets the first entry which has all its prerequisites satisfied.
-                PlanEntry item = entriesToAdd.First(x => dependencies[x].All(y => set[y.Skill, y.Level] != null));
+                var item = entriesToAdd.First(x => dependencies[x].All(y => set[y.Skill, y.Level] != null));
 
                 // Add it to the set and list, and remove it from the entries to add
                 set[item.Skill, item.Level] = item;
@@ -121,7 +121,7 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         public static int CompareByName(PlanEntry x, PlanEntry y)
         {
-            int nameDiff = string.CompareOrdinal(x.Skill.Name, y.Skill.Name);
+            var nameDiff = string.CompareOrdinal(x.Skill.Name, y.Skill.Name);
             return nameDiff != 0 ? nameDiff : Convert.ToInt32(x.Level - y.Level);
         }
 
@@ -133,8 +133,8 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         public static int CompareByCost(PlanEntry x, PlanEntry y)
         {
-            long xCost = x.Level == 1 && !x.CharacterSkill.IsOwned ? x.Skill.Cost : 0;
-            long yCost = y.Level == 1 && !x.CharacterSkill.IsOwned ? y.Skill.Cost : 0;
+            var xCost = x.Level == 1 && !x.CharacterSkill.IsOwned ? x.Skill.Cost : 0;
+            var yCost = y.Level == 1 && !x.CharacterSkill.IsOwned ? y.Skill.Cost : 0;
             return xCost.CompareTo(yCost);
         }
 
@@ -223,8 +223,8 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         public static int CompareByTimeDifference(PlanEntry x, PlanEntry y)
         {
-            TimeSpan xDuration = x.TrainingTime - x.OldTrainingTime;
-            TimeSpan yDuration = y.TrainingTime - y.OldTrainingTime;
+            var xDuration = x.TrainingTime - x.OldTrainingTime;
+            var yDuration = y.TrainingTime - y.OldTrainingTime;
             return xDuration.CompareTo(yDuration);
         }
 
@@ -236,8 +236,8 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         public static int CompareByPercentCompleted(PlanEntry x, PlanEntry y)
         {
-            float xRatio = x.CharacterSkill.FractionCompleted;
-            float yRatio = y.CharacterSkill.FractionCompleted;
+            var xRatio = x.CharacterSkill.FractionCompleted;
+            var yRatio = y.CharacterSkill.FractionCompleted;
             return xRatio.CompareTo(yRatio);
         }
 
@@ -278,8 +278,8 @@ namespace EVEMon.Common.Helpers
         public static int CompareBySkillGroupDuration(PlanEntry x, PlanEntry y, IEnumerable<PlanEntry> entries,
             Dictionary<StaticSkillGroup, TimeSpan> skillGroupsDurations)
         {
-            TimeSpan xDuration = GetSkillGroupDuration(x.Skill.Group, entries, skillGroupsDurations);
-            TimeSpan yDuration = GetSkillGroupDuration(y.Skill.Group, entries, skillGroupsDurations);
+            var xDuration = GetSkillGroupDuration(x.Skill.Group, entries, skillGroupsDurations);
+            var yDuration = GetSkillGroupDuration(y.Skill.Group, entries, skillGroupsDurations);
             return xDuration.CompareTo(yDuration);
         }
 
@@ -296,7 +296,7 @@ namespace EVEMon.Common.Helpers
             if (skillGroupsDurations.ContainsKey(group))
                 return skillGroupsDurations[group];
 
-            TimeSpan time = entries.Where(x => x.Skill.Group == group).Aggregate(TimeSpan.Zero,
+            var time = entries.Where(x => x.Skill.Group == group).Aggregate(TimeSpan.Zero,
                 (current, entry) =>
                     current + entry.TrainingTime);
             skillGroupsDurations[group] = time;

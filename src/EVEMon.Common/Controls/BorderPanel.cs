@@ -38,10 +38,10 @@ namespace EVEMon.Common.Controls
         {
             base.OnPaint(pe);
 
-            Rectangle rect = ClientRectangle;
+            var rect = ClientRectangle;
             rect.Inflate(-1, -1);
 
-            using (Pen pen = new Pen(Color.Gray, 1.0f))
+            using (var pen = new Pen(Color.Gray, 1.0f))
             {
                 pe.Graphics.DrawRectangle(pen, rect);
             }

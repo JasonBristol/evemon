@@ -18,7 +18,7 @@ namespace EVEMon.Common.Extensions
             int? ret = null;
             // If values are available, try to parse as integer, use the last one
             if (headers.TryGetValues(name, out values))
-                foreach (string value in values)
+                foreach (var value in values)
                 {
                     int intVal;
                     if (value.Trim().TryParseInv(out intVal) && intVal >= 0)

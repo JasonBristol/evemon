@@ -134,11 +134,11 @@ namespace EVEMon.Controls
 
                 // Scroll through groups
                 FittingContentListBox.Items.Clear();
-                foreach (IGrouping<KillLogFittingContentGroup, KillLogItem> group in groups)
+                foreach (var group in groups)
                 {
                     FittingContentListBox.Items.Add(group.Key);
 
-                    foreach (KillLogItem item in group)
+                    foreach (var item in group)
                     {
                         // Add the item to the list
                         AddItem(item);
@@ -147,7 +147,7 @@ namespace EVEMon.Controls
                             continue;
 
                         // Add items in a container to the list
-                        foreach (KillLogItem itemInItem in item.Items)
+                        foreach (var itemInItem in item.Items)
                         {
                             AddItem(itemInItem);
                         }
@@ -175,7 +175,7 @@ namespace EVEMon.Controls
         /// <param name="item">The item.</param>
         private void AddItem(KillLogItem item)
         {
-            bool eventHandlerAdded = false;
+            var eventHandlerAdded = false;
 
             // Add if the item was destroyed
             if (item.QtyDestroyed > 0)
@@ -200,11 +200,11 @@ namespace EVEMon.Controls
         /// <returns></returns>
         private string GetTotalCost()
         {
-            double shipCost = Settings.MarketPricer.Pricer != null
+            var shipCost = Settings.MarketPricer.Pricer != null
                 ? Settings.MarketPricer.Pricer.GetPriceByTypeID(m_killLog.Victim.ShipTypeID)
                 : 0;
-            bool unknownCost = m_killLog.Victim.ShipTypeID != DBConstants.CapsuleID && Math.Abs(shipCost) < double.Epsilon;
-            double totalCost = shipCost;
+            var unknownCost = m_killLog.Victim.ShipTypeID != DBConstants.CapsuleID && Math.Abs(shipCost) < double.Epsilon;
+            var totalCost = shipCost;
 
             // Get the items cost
             double itemsCost;
@@ -222,11 +222,11 @@ namespace EVEMon.Controls
         /// <returns></returns>
         private static bool GetItemsCost(IEnumerable<KillLogItem> items, out double totalCost)
         {
-            bool unknownCost = false;
-            double itemCost = 0d;
-            foreach (KillLogItem item in items)
+            var unknownCost = false;
+            var itemCost = 0d;
+            foreach (var item in items)
             {
-                double price = item.Price;
+                var price = item.Price;
                 unknownCost |= Math.Abs(price) < double.Epsilon;
                 itemCost += price * (item.QtyDestroyed + item.QtyDropped);
 
@@ -268,8 +268,8 @@ namespace EVEMon.Controls
             if (e.Index < 0 || e.Index >= FittingContentListBox.Items.Count)
                 return;
 
-            object listItem = FittingContentListBox.Items[e.Index];
-            KillLogItem item = listItem as KillLogItem;
+            var listItem = FittingContentListBox.Items[e.Index];
+            var item = listItem as KillLogItem;
             if (item != null)
             {
                 // If item is the same with previous item then we previously have drawn a destroyed item
@@ -297,22 +297,22 @@ namespace EVEMon.Controls
         /// <param name="itemIsDropped">if set to <c>true</c> item is dropped.</param>
         private void DrawItem(KillLogItem item, DrawItemEventArgs e, bool itemIsDropped = false)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
             // Draw background
             g.FillRectangle(itemIsDropped ? Brushes.Green : Brushes.LightGray, e.Bounds);
 
-            int itemQty = itemIsDropped ? item.QtyDropped : item.QtyDestroyed;
-            int inContainerPad = item.IsInContainer ? PadLeft * 2 : 0;
+            var itemQty = itemIsDropped ? item.QtyDropped : item.QtyDestroyed;
+            var inContainerPad = item.IsInContainer ? PadLeft * 2 : 0;
 
             // Texts size measure
-            Size itemTextSize = TextRenderer.MeasureText(g, item.Name, m_fittingFont, Size.Empty, Format);
-            Size itemQtyTextSize = TextRenderer.MeasureText(g, itemQty.ToNumericString(0), m_fittingFont);
+            var itemTextSize = TextRenderer.MeasureText(g, item.Name, m_fittingFont, Size.Empty, Format);
+            var itemQtyTextSize = TextRenderer.MeasureText(g, itemQty.ToNumericString(0), m_fittingFont);
 
-            Rectangle itemTextRect = new Rectangle(e.Bounds.Left + inContainerPad + PadLeft * 2 + ItemImageSize,
+            var itemTextRect = new Rectangle(e.Bounds.Left + inContainerPad + PadLeft * 2 + ItemImageSize,
                 e.Bounds.Top + (e.Bounds.Height - itemTextSize.Height) / 2,
                 itemTextSize.Width + PadRight, itemTextSize.Height);
-            Rectangle itemQtyTextRect = new Rectangle(e.Bounds.Right - itemQtyTextSize.Width - PadRight,
+            var itemQtyTextRect = new Rectangle(e.Bounds.Right - itemQtyTextSize.Width - PadRight,
                 e.Bounds.Top + (e.Bounds.Height - itemTextSize.Height) / 2,
                 itemQtyTextSize.Width + PadRight, itemQtyTextSize.Height);
 
@@ -336,9 +336,9 @@ namespace EVEMon.Controls
         /// <param name="e"></param>
         private void DrawItem(KillLogFittingContentGroup group, DrawItemEventArgs e)
         {
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
-            using (Brush brush = Settings.UI.SafeForWork
+            using (var brush = Settings.UI.SafeForWork
                 ? new SolidBrush(Color.FromArgb(75, 75, 75))
                 : (Brush)new LinearGradientBrush(new PointF(0F, 0F), new PointF(0F, FittingDetailHeight),
                     Color.FromArgb(75, 75, 75), Color.FromArgb(25, 25, 25)))
@@ -346,13 +346,13 @@ namespace EVEMon.Controls
                 g.FillRectangle(brush, e.Bounds);
             }
 
-            using (Pen pen = new Pen(Color.FromArgb(100, 100, 100)))
+            using (var pen = new Pen(Color.FromArgb(100, 100, 100)))
             {
                 g.DrawLine(pen, e.Bounds.Left, e.Bounds.Top, e.Bounds.Right + 1, e.Bounds.Top);
             }
 
-            Size fittingGroupTextSize = TextRenderer.MeasureText(g, group.GetDescription(), m_fittingBoldFont, Size.Empty, Format);
-            Rectangle fittingGroupTextRect = new Rectangle(e.Bounds.Left + PadLeft / 3 + ItemImageSize,
+            var fittingGroupTextSize = TextRenderer.MeasureText(g, group.GetDescription(), m_fittingBoldFont, Size.Empty, Format);
+            var fittingGroupTextRect = new Rectangle(e.Bounds.Left + PadLeft / 3 + ItemImageSize,
                 e.Bounds.Top +
                 (e.Bounds.Height - fittingGroupTextSize.Height) / 2,
                 fittingGroupTextSize.Width + PadRight,
@@ -364,7 +364,7 @@ namespace EVEMon.Controls
             if (Settings.UI.SafeForWork)
                 return;
 
-            Rectangle fittingGroupImageRect = new Rectangle(e.Bounds.Left + PadLeft / 3,
+            var fittingGroupImageRect = new Rectangle(e.Bounds.Left + PadLeft / 3,
                 e.Bounds.Top + (e.Bounds.Height - ItemImageSize) / 2,
                 ItemImageSize, ItemImageSize);
 
@@ -424,15 +424,15 @@ namespace EVEMon.Controls
                 return;
 
             // Update the drawing based upon the mouse wheel scrolling
-            int numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
-            int lines = numberOfItemLinesToMove;
+            var numberOfItemLinesToMove = e.Delta * SystemInformation.MouseWheelScrollLines / Math.Abs(e.Delta);
+            var lines = numberOfItemLinesToMove;
             if (lines == 0)
                 return;
 
             // Compute the number of lines to move
-            int direction = lines / Math.Abs(lines);
-            int[] numberOfPixelsToMove = new int[lines * direction];
-            for (int i = 1; i <= Math.Abs(lines); i++)
+            var direction = lines / Math.Abs(lines);
+            var numberOfPixelsToMove = new int[lines * direction];
+            for (var i = 1; i <= Math.Abs(lines); i++)
             {
                 object item = null;
 
@@ -447,8 +447,8 @@ namespace EVEMon.Controls
                 else
                 {
                     // Compute the height of the items from current the topindex (included)
-                    int height = 0;
-                    for (int j = FittingContentListBox.TopIndex + i - 1; j < FittingContentListBox.Items.Count; j++)
+                    var height = 0;
+                    for (var j = FittingContentListBox.TopIndex + i - 1; j < FittingContentListBox.Items.Count; j++)
                     {
                         height += FittingDetailHeight;
                     }
@@ -478,17 +478,17 @@ namespace EVEMon.Controls
         private void FittingContentListBox_MouseDown(object sender, MouseEventArgs e)
         {
             // Retrieve the item at the given point and quit if none
-            int index = FittingContentListBox.IndexFromPoint(e.Location);
+            var index = FittingContentListBox.IndexFromPoint(e.Location);
             if (index < 0 || index >= FittingContentListBox.Items.Count)
                 return;
 
-            KillLogItem killLogItem = FittingContentListBox.Items[index] as KillLogItem;
+            var killLogItem = FittingContentListBox.Items[index] as KillLogItem;
 
             // Beware, this last index may actually means a click in the whitespace at the bottom
             // Let's deal with this special case
             if (index == FittingContentListBox.Items.Count - 1)
             {
-                Rectangle itemRect = FittingContentListBox.GetItemRectangle(index);
+                var itemRect = FittingContentListBox.GetItemRectangle(index);
                 if (!itemRect.Contains(e.Location))
                     killLogItem = null;
             }
@@ -513,14 +513,14 @@ namespace EVEMon.Controls
         /// <param name="e">The <see cref="MouseEventArgs"/> instance containing the event data.</param>
         private void FittingContentListBox_MouseMove(object sender, MouseEventArgs e)
         {
-            for (int i = 0; i < FittingContentListBox.Items.Count; i++)
+            for (var i = 0; i < FittingContentListBox.Items.Count; i++)
             {
                 // Skip until we found the mouse location
-                Rectangle rect = FittingContentListBox.GetItemRectangle(i);
+                var rect = FittingContentListBox.GetItemRectangle(i);
                 if (!rect.Contains(e.Location))
                     continue;
 
-                object item = FittingContentListBox.Items[i];
+                var item = FittingContentListBox.Items[i];
                 FittingContentListBox.Cursor = item is KillLogItem ? CustomCursors.ContextMenu : Cursors.Default;
 
                 return;
@@ -542,14 +542,14 @@ namespace EVEMon.Controls
             if (e.Cancel || m_selectedItem == null)
                 return;
 
-            Ship ship = m_selectedItem as Ship;
-            Blueprint blueprint = StaticBlueprints.GetBlueprintByID(m_selectedItem.ID);
-            Skill skill = m_killLog.Character.Skills[m_selectedItem.ID];
+            var ship = m_selectedItem as Ship;
+            var blueprint = StaticBlueprints.GetBlueprintByID(m_selectedItem.ID);
+            var skill = m_killLog.Character.Skills[m_selectedItem.ID];
             
             if (skill == Skill.UnknownSkill)
                 skill = null;
 
-            string text = ship != null ? "Ship" : blueprint != null ? "Blueprint" : skill != null ? "Skill" : "Item";
+            var text = ship != null ? "Ship" : blueprint != null ? "Blueprint" : skill != null ? "Skill" : "Item";
 
             showInBrowserMenuItem.Text = $"Show In {text} Browser...";
 
@@ -565,14 +565,14 @@ namespace EVEMon.Controls
             if (m_selectedItem == null)
                 return;
 
-            Ship ship = m_selectedItem as Ship;
-            Blueprint blueprint = StaticBlueprints.GetBlueprintByID(m_selectedItem.ID);
-            Skill skill = m_killLog.Character.Skills[m_selectedItem.ID];
+            var ship = m_selectedItem as Ship;
+            var blueprint = StaticBlueprints.GetBlueprintByID(m_selectedItem.ID);
+            var skill = m_killLog.Character.Skills[m_selectedItem.ID];
 
             if (skill == Skill.UnknownSkill)
                 skill = null;
 
-            PlanWindow planWindow = PlanWindow.ShowPlanWindow(m_killLog.Character);
+            var planWindow = PlanWindow.ShowPlanWindow(m_killLog.Character);
 
             if (ship != null)
                 planWindow.ShowShipInBrowser(ship);

@@ -104,8 +104,8 @@ namespace EVEMon.Common.Serialization.Esi
         public SerializableWalletJournalListItem ToXMLItem()
         {
             // This is never actually used in EveMon!
-            string argName1 = string.Empty;
-            long argId1 = 0L;
+            var argName1 = string.Empty;
+            var argId1 = 0L;
             
             // Populate arguments from the extra data based on the ref type
             // See http://eveonline-third-party-documentation.readthedocs.io/en/latest/xmlapi/constants.html#reference-type

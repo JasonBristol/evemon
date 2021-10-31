@@ -165,17 +165,17 @@ namespace EVEMon.Common.Data
         {
             get
             {
-                long[] highestLevels = new long[StaticSkills.ArrayIndicesCount];
-                List<StaticSkillLevel> list = new List<StaticSkillLevel>();
+                var highestLevels = new long[StaticSkills.ArrayIndicesCount];
+                var list = new List<StaticSkillLevel>();
 
                 // Fill the array
-                foreach (StaticSkillLevel prereq in Prerequisites)
+                foreach (var prereq in Prerequisites)
                 {
                     StaticSkillEnumerableExtensions.FillPrerequisites(highestLevels, list, prereq, true);
                 }
 
                 // Return the result
-                foreach (StaticSkillLevel newItem in list.Where(x => highestLevels[x.Skill.ArrayIndex] != 0))
+                foreach (var newItem in list.Where(x => highestLevels[x.Skill.ArrayIndex] != 0))
                 {
                     yield return new StaticSkillLevel(newItem.Skill, highestLevels[newItem.Skill.ArrayIndex]);
                     highestLevels[newItem.Skill.ArrayIndex] = 0;

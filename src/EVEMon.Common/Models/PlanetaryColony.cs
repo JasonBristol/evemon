@@ -161,7 +161,7 @@ namespace EVEMon.Common.Models
             if (!m_queryPinsPending && !EsiErrors.IsErrorCountExceeded)
             {
                 // Find the API key associated with planetary pins
-                ESIKey apiKey = Character.Identity.FindAPIKeyWithAccess(ESIAPICharacterMethods.
+                var apiKey = Character.Identity.FindAPIKeyWithAccess(ESIAPICharacterMethods.
                     PlanetaryLayout);
                 m_queryPinsPending = true;
                 if (apiKey != null)

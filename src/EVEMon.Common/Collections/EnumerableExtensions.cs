@@ -33,10 +33,10 @@ namespace EVEMon.Common.Collections
             comparison.ThrowIfNull(nameof(comparison));
 
             // For every key
-            for (int i = 1; i < list.Count; i++)
+            for (var i = 1; i < list.Count; i++)
             {
-                T value = list[i];
-                int j = i - 1;
+                var value = list[i];
+                var j = i - 1;
 
                 // Move the key backward while the previous items are lesser than it, shifting those items to the right
                 while (j >= 0 && comparison(list[j], value) > 0)
@@ -62,8 +62,8 @@ namespace EVEMon.Common.Collections
         {
             src.ThrowIfNull(nameof(src));
 
-            int index = 0;
-            foreach (T srcItem in src)
+            var index = 0;
+            foreach (var srcItem in src)
             {
                 if (Equals(item, srcItem))
                     return index;

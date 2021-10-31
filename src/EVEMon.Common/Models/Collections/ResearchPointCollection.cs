@@ -26,7 +26,7 @@ namespace EVEMon.Common.Models.Collections
             Items.Clear();
 
             // Import the research points from the API
-            foreach (EsiResearchListItem srcResearchPoint in src)
+            foreach (var srcResearchPoint in src)
             {
                 Items.Add(new ResearchPoint(srcResearchPoint, m_character));
             }

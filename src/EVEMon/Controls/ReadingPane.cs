@@ -85,7 +85,7 @@ namespace EVEMon.Controls
             } while (wbMailBody.IsBusy);
 
             // Show the controls
-            bool visible = ((m_selectedObject as EveMailMessage)?.EVEMailBody?.MessageID ?? 0L) !=
+            var visible = ((m_selectedObject as EveMailMessage)?.EVEMailBody?.MessageID ?? 0L) !=
                 0L || ((m_selectedObject as EveNotification)?.EVENotificationText?.
                 NotificationID ?? 0L) != 0L;
             Visible = visible;
@@ -124,17 +124,17 @@ namespace EVEMon.Controls
         private void FormatLinks(IDictionary<string, string> replacements)
         {
             // Regular expression for all HTML links
-            Regex regexLinks = new Regex(@"<a\shref=""(.+?)"">(.+?)</a>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var regexLinks = new Regex(@"<a\shref=""(.+?)"">(.+?)</a>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             // Regular expression for clickable/valid URLs
-            Regex regexWebProtocol = new Regex(@"(?:f|ht)tps?://", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var regexWebProtocol = new Regex(@"(?:f|ht)tps?://", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             foreach (Match match in regexLinks.Matches(m_selectedObject.Text))
             {
-                string matchValue = match.Groups[1].Value;
-                string matchText = match.Groups[2].Value.TrimEnd("<br>".ToCharArray());
-                string url = string.Empty;
-                bool igbOnly = false;
+                var matchValue = match.Groups[1].Value;
+                var matchText = match.Groups[2].Value.TrimEnd("<br>".ToCharArray());
+                var url = string.Empty;
+                var igbOnly = false;
 
                 if (regexWebProtocol.IsMatch(matchValue))
                     url = matchValue;
@@ -161,10 +161,10 @@ namespace EVEMon.Controls
         /// <param name="replacements">The replacements.</param>
         private void FormatHTMLColorToRGB(IDictionary<string, string> replacements)
         {
-            Color backColor = flPanelHeader.BackColor;
+            var backColor = flPanelHeader.BackColor;
 
             // Regular expression for fixing text color
-            Regex regexColor = new Regex(@"color(?:=""|:\s*)#[0-9a-f]{2}([0-9a-f]{6})(?:;|"")", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var regexColor = new Regex(@"color(?:=""|:\s*)#[0-9a-f]{2}([0-9a-f]{6})(?:;|"")", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             foreach (Match match in regexColor.Matches(m_selectedObject.Text))
             {
                 replacements[match.ToString()] = $"color=\"#{CheckTextColorNotMatchBackColor(backColor, match)}\"";
@@ -179,16 +179,16 @@ namespace EVEMon.Controls
         /// <returns>The text color as it was or a black colored text</returns>
         private static string CheckTextColorNotMatchBackColor(Color backColor, Match match)
         {
-            string color = match.Groups[1].Value;
-            Color textColor = ColorTranslator.FromHtml($"#{color}");
-            bool textColorIsShadeOfWhite = textColor.R == textColor.G && textColor.G == textColor.B;
-            bool backColorIsShadeOfWhite = backColor.R == backColor.G && backColor.G == backColor.B;
+            var color = match.Groups[1].Value;
+            var textColor = ColorTranslator.FromHtml($"#{color}");
+            var textColorIsShadeOfWhite = textColor.R == textColor.G && textColor.G == textColor.B;
+            var backColorIsShadeOfWhite = backColor.R == backColor.G && backColor.G == backColor.B;
             if (!textColorIsShadeOfWhite || !backColorIsShadeOfWhite)
                 return color;
 
             const int ContrastDiff = 64;
-            int colorValue = textColor.R <= backColor.R - ContrastDiff ? textColor.R : 0;
-            string colorElement = Convert.ToString(colorValue, 16);
+            var colorValue = textColor.R <= backColor.R - ContrastDiff ? textColor.R : 0;
+            var colorElement = Convert.ToString(colorValue, 16);
             colorElement = colorElement.Length == 1 ? $"0{colorElement}" : colorElement;
             return $"{colorElement}{colorElement}{colorElement}";
         }
@@ -199,10 +199,10 @@ namespace EVEMon.Controls
         /// <param name="replacements">The replacements.</param>
         private void FixFontSize(IDictionary<string, string> replacements)
         {
-            Regex regexFontSize = new Regex(@"size(?:=""|:\s*)([0-9]+)(?:;|"")", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var regexFontSize = new Regex(@"size(?:=""|:\s*)([0-9]+)(?:;|"")", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             foreach (Match match in regexFontSize.Matches(m_selectedObject.Text))
             {
-                int newFontSize = Convert.ToByte(match.Groups[1].Value, CultureConstants.InvariantCulture) / 4;
+                var newFontSize = Convert.ToByte(match.Groups[1].Value, CultureConstants.InvariantCulture) / 4;
                 replacements[match.ToString()] = $"size=\"{newFontSize}\"";
             }
         }
@@ -223,9 +223,9 @@ namespace EVEMon.Controls
             flPanelHeader.Height = lblMessageHeader.Height + lblSender.Height + lblSendDate.Height + lblRecipient.Height + 10;
 
             // Draw a line at the bottom of the panel
-            using (Graphics g = flPanelHeader.CreateGraphics())
+            using (var g = flPanelHeader.CreateGraphics())
             {
-                using (Pen blackPen = new Pen(Color.Black))
+                using (var blackPen = new Pen(Color.Black))
                 {
                     g.DrawLine(blackPen, 5, flPanelHeader.Height - 1, flPanelHeader.Width - 5, flPanelHeader.Height - 1);
                 }

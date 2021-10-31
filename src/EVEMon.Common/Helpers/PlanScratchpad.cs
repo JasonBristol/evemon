@@ -94,7 +94,7 @@ namespace EVEMon.Common.Helpers
         {
             entries.ThrowIfNull(nameof(entries));
 
-            foreach (PlanEntry entry in entries)
+            foreach (var entry in entries)
             {
                 AddCore(entry);
             }
@@ -109,7 +109,7 @@ namespace EVEMon.Common.Helpers
         {
             entry.ThrowIfNull(nameof(entry));
 
-            int index = IndexOf(entry.Skill, entry.Level);
+            var index = IndexOf(entry.Skill, entry.Level);
             if (index != -1)
                 RemoveCore(index);
         }
@@ -171,7 +171,7 @@ namespace EVEMon.Common.Helpers
                     Items.StableSort(PlanEntrySorter.CompareByTrainingTimeNatural);
                     break;
                 case PlanEntrySort.SkillGroupDuration:
-                    Dictionary<StaticSkillGroup, TimeSpan> skillGroupsDurations = new Dictionary<StaticSkillGroup, TimeSpan>();
+                    var skillGroupsDurations = new Dictionary<StaticSkillGroup, TimeSpan>();
                     Items.StableSort((x, y) => PlanEntrySorter.CompareBySkillGroupDuration(x, y, Items, skillGroupsDurations));
                     break;
                 case PlanEntrySort.SPPerHour:

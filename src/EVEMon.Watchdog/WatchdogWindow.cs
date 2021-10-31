@@ -42,7 +42,7 @@ namespace EVEMon.Watchdog
         {
             get
             {
-                Process[] processes = Process.GetProcessesByName("EVEMon");
+                var processes = Process.GetProcessesByName("EVEMon");
                 return processes.Length != 0;
             }
         }
@@ -74,11 +74,11 @@ namespace EVEMon.Watchdog
         private void StartEVEMonProcess()
         {
             // Find the expected path for 'EVEMon.exe'
-            string path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             if (path == null)
                 return;
 
-            string executable = Path.Combine(path, "EVEMon.exe");
+            var executable = Path.Combine(path, "EVEMon.exe");
 
             // If 'EVEMon.exe' doesn't exist we don't have anything to do
             if (!File.Exists(executable))
@@ -97,14 +97,14 @@ namespace EVEMon.Watchdog
         /// <param name="arguments">Arguments to pass to the executable.</param>
         private static void StartProcess(string executable, string[] arguments)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            var startInfo = new ProcessStartInfo
                                              {
                                                  FileName = executable,
                                                  Arguments = string.Join(" ", arguments),
                                                  UseShellExecute = false
                                              };
 
-            using (Process process = new Process())
+            using (var process = new Process())
             {
                 process.StartInfo = startInfo;
                 process.Start();

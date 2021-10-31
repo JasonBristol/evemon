@@ -27,8 +27,8 @@ namespace EVEMon.XmlGenerator.Providers {
             {
                 foreach (var skillLevel in pair.Value.skills)
                 {
-                    int id = skillLevel.Key;
-                    if (result.TryGetValue(id, out int existing))
+                    var id = skillLevel.Key;
+                    if (result.TryGetValue(id, out var existing))
                         result[id] = Math.Max(existing, skillLevel.Value);
                     else
                         result.Add(id, skillLevel.Value);

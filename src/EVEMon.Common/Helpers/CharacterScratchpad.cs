@@ -37,7 +37,7 @@ namespace EVEMon.Common.Helpers
             m_skillLevels = new long[StaticSkills.ArrayIndicesCount];
             m_cloneStateSetting = character.AccountStatusSettings;
 
-            for (int i = 0; i < m_attributes.Length; i++)
+            for (var i = 0; i < m_attributes.Length; i++)
             {
                 m_attributes[i] = new CharacterAttributeScratchpad((EveAttribute)i);
             }
@@ -109,9 +109,9 @@ namespace EVEMon.Common.Helpers
         {
             point.ThrowIfNull(nameof(point));
 
-            for (int i = 0; i < m_attributes.Length; i++)
+            for (var i = 0; i < m_attributes.Length; i++)
             {
-                EveAttribute attrib = (EveAttribute)i;
+                var attrib = (EveAttribute)i;
                 m_attributes[i].Base = point[attrib];
             }
         }
@@ -121,7 +121,7 @@ namespace EVEMon.Common.Helpers
         /// </summary>
         public void ClearImplants()
         {
-            foreach (CharacterAttributeScratchpad attribute in m_attributes)
+            foreach (var attribute in m_attributes)
             {
                 attribute.ImplantBonus = 0;
             }
@@ -215,7 +215,7 @@ namespace EVEMon.Common.Helpers
         {
             trainings.ThrowIfNull(nameof(trainings));
 
-            foreach (T item in trainings)
+            foreach (var item in trainings)
             {
                 Train(item.Skill, item.Level);
             }
@@ -232,7 +232,7 @@ namespace EVEMon.Common.Helpers
         {
             entries.ThrowIfNull(nameof(entries));
 
-            foreach (PlanEntry entry in entries)
+            foreach (var entry in entries)
             {
                 if (entry.Remapping != null && entry.Remapping.Status == RemappingPointStatus.UpToDate &&
                     applyRemappingPoints)
@@ -273,7 +273,7 @@ namespace EVEMon.Common.Helpers
         /// <param name="options">The options.</param>
         private void SetSkillLevel(StaticSkill skill, long level, LearningOptions options = LearningOptions.None)
         {
-            int index = skill.ArrayIndex;
+            var index = skill.ArrayIndex;
 
             if (index > m_skillLevels.Length)
                 return;
@@ -294,7 +294,7 @@ namespace EVEMon.Common.Helpers
             if ((options & LearningOptions.IgnorePrereqs) == LearningOptions.None)
             {
                 // Deal with recursive prereqs (like Polaris)
-                foreach (StaticSkillLevel prereq in skill.Prerequisites.Where(prereq => prereq.Skill != skill))
+                foreach (var prereq in skill.Prerequisites.Where(prereq => prereq.Skill != skill))
                 {
                     // Set the prereq's level
                     SetSkillLevel(prereq.Skill, prereq.Level, options | LearningOptions.UpgradeOnly);
@@ -323,8 +323,8 @@ namespace EVEMon.Common.Helpers
         /// <param name="level"></param>
         private void UpdateSP(StaticSkill staticSkill, long level)
         {
-            long targetSP = staticSkill.GetPointsRequiredForLevel(level);
-            long difference = targetSP - m_skillSP[staticSkill.ArrayIndex];
+            var targetSP = staticSkill.GetPointsRequiredForLevel(level);
+            var difference = targetSP - m_skillSP[staticSkill.ArrayIndex];
 
             m_skillSP[staticSkill.ArrayIndex] = targetSP;
             m_skillPoints += difference;
@@ -340,12 +340,12 @@ namespace EVEMon.Common.Helpers
         /// </summary>
         public void ClearSkills()
         {
-            for (int i = 0; i < m_skillSP.Length; i++)
+            for (var i = 0; i < m_skillSP.Length; i++)
             {
                 m_skillLevels[i] = 0;
             }
 
-            for (int i = 0; i < m_skillLevels.Length; i++)
+            for (var i = 0; i < m_skillLevels.Length; i++)
             {
                 m_skillLevels[i] = 0;
             }
@@ -353,7 +353,7 @@ namespace EVEMon.Common.Helpers
             m_skillPoints = 0;
             TrainingTime = TimeSpan.Zero;
 
-            foreach (CharacterAttributeScratchpad attribute in m_attributes)
+            foreach (var attribute in m_attributes)
             {
                 attribute.UpdateEffectiveAttribute();
             }
@@ -370,7 +370,7 @@ namespace EVEMon.Common.Helpers
         /// </summary>
         public void Reset()
         {
-            CharacterScratchpad character = m_character as CharacterScratchpad;
+            var character = m_character as CharacterScratchpad;
             if (character != null)
                 Reset(character);
             else
@@ -389,7 +389,7 @@ namespace EVEMon.Common.Helpers
             TrainedSkills.Clear();
             TrainedSkills.AddRange(scratchpad.TrainedSkills);
 
-            for (int i = 0; i < m_attributes.Length; i++)
+            for (var i = 0; i < m_attributes.Length; i++)
             {
                 m_attributes[i].Reset(scratchpad.m_attributes[i]);
             }
@@ -407,18 +407,18 @@ namespace EVEMon.Common.Helpers
             TrainedSkills.Clear();
 
             // Initialize attributes-related stuff
-            for (int i = 0; i < m_attributes.Length; i++)
+            for (var i = 0; i < m_attributes.Length; i++)
             {
-                ICharacterAttribute attrib = m_character[(EveAttribute)i];
+                var attrib = m_character[(EveAttribute)i];
                 m_attributes[i].Reset(attrib.Base, attrib.ImplantBonus);
             }
 
             // Initialize skills
             m_skillPoints = 0;
-            foreach (StaticSkill skill in StaticSkills.AllSkills)
+            foreach (var skill in StaticSkills.AllSkills)
             {
-                long sp = m_character.GetSkillPoints(skill);
-                long level = m_character.GetSkillLevel(skill);
+                var sp = m_character.GetSkillPoints(skill);
+                var level = m_character.GetSkillLevel(skill);
 
                 m_skillPoints += sp;
                 m_skillSP[skill.ArrayIndex] = sp;
@@ -434,7 +434,7 @@ namespace EVEMon.Common.Helpers
         /// <returns>A disposable object which, once disposed, will restore the state of the </returns>
         public IDisposable BeginTemporaryChanges()
         {
-            CharacterScratchpad clone = Clone();
+            var clone = Clone();
             return new DisposableWithCallback(() => Reset(clone));
         }
 

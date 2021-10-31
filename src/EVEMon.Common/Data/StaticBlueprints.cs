@@ -23,12 +23,12 @@ namespace EVEMon.Common.Data
             if (BlueprintMarketGroups != null)
                 return;
 
-            BlueprintsDatafile datafile = Util.DeserializeDatafile<BlueprintsDatafile>(DatafileConstants.BlueprintsDatafile,
+            var datafile = Util.DeserializeDatafile<BlueprintsDatafile>(DatafileConstants.BlueprintsDatafile,
                 Util.LoadXslt(Properties.Resources.DatafilesXSLT));
 
             BlueprintMarketGroups = new BlueprintMarketGroupCollection(null, datafile.MarketGroups);
 
-            foreach (BlueprintMarketGroup srcGroup in BlueprintMarketGroups)
+            foreach (var srcGroup in BlueprintMarketGroups)
             {
                 InitializeDictionaries(srcGroup);
             }
@@ -42,12 +42,12 @@ namespace EVEMon.Common.Data
         /// <param name="marketGroup"></param>
         private static void InitializeDictionaries(BlueprintMarketGroup marketGroup)
         {
-            foreach (Blueprint blueprint in marketGroup.Blueprints)
+            foreach (var blueprint in marketGroup.Blueprints)
             {
                 s_blueprintsByID[blueprint.ID] = blueprint;
             }
 
-            foreach (BlueprintMarketGroup childGroup in marketGroup.SubGroups)
+            foreach (var childGroup in marketGroup.SubGroups)
             {
                 InitializeDictionaries(childGroup);
             }

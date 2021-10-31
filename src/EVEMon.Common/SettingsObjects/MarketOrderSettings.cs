@@ -57,7 +57,7 @@ namespace EVEMon.Common.SettingsObjects
         {
             get
             {
-                MarketOrderColumn[] defaultColumns = new[]
+                var defaultColumns = new[]
                                                          {
                                                              MarketOrderColumn.Item,
                                                              MarketOrderColumn.SolarSystem,

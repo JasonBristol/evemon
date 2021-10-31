@@ -41,17 +41,17 @@ namespace EVEMon.Common.Helpers
 
             settings.ThrowIfNull(nameof(settings));
 
-            PlanScratchpad plan = new PlanScratchpad(planToExport.Character, planToExport);
+            var plan = new PlanScratchpad(planToExport.Character, planToExport);
             plan.Sort(planToExport.SortingPreferences);
             plan.UpdateStatistics();
 
-            StringBuilder builder = new StringBuilder();
-            Character character = (Character)plan.Character;
+            var builder = new StringBuilder();
+            var character = (Character)plan.Character;
 
             // Initialize constants
-            string lineFeed = Environment.NewLine;
-            string boldStart = string.Empty;
-            string boldEnd = string.Empty;
+            var lineFeed = Environment.NewLine;
+            var boldStart = string.Empty;
+            var boldEnd = string.Empty;
 
             switch (settings.Markup)
             {
@@ -82,12 +82,12 @@ namespace EVEMon.Common.Helpers
             }
 
             // Scroll through entries
-            int index = 0;
-            DateTime endTime = DateTime.Now;
-            foreach (PlanEntry entry in plan)
+            var index = 0;
+            var endTime = DateTime.Now;
+            foreach (var entry in plan)
             {
                 // Skip is we're only build a shopping list
-                bool shoppingListCandidate = !(entry.CharacterSkill.IsKnown || entry.Level != 1 || entry.CharacterSkill.IsOwned);
+                var shoppingListCandidate = !(entry.CharacterSkill.IsKnown || entry.Level != 1 || entry.CharacterSkill.IsOwned);
                 if (settings.ShoppingList && !shoppingListCandidate)
                     continue;
 
@@ -168,7 +168,7 @@ namespace EVEMon.Common.Helpers
                                                       | DescriptiveTextOptions.SpaceText;
 
             builder.Append(" (");
-            bool needComma = false;
+            var needComma = false;
 
             // Training time
             if (settings.EntryTrainingTimes)
@@ -229,7 +229,7 @@ namespace EVEMon.Common.Helpers
                 return;
 
             builder.AppendLine(lineFeed);
-            bool needComma = false;
+            var needComma = false;
 
             // Skills count
             if (settings.FooterCount)
@@ -273,7 +273,7 @@ namespace EVEMon.Common.Helpers
                 if (needComma)
                     builder.Append("; ");
 
-                string formattedIsk = FormattableString.Invariant($"{plan.NotKnownSkillBooksCost:N0}");
+                var formattedIsk = FormattableString.Invariant($"{plan.NotKnownSkillBooksCost:N0}");
                 builder.Append($"Cost: {boldStart}{formattedIsk}{boldEnd} ISK");
             }
 
@@ -294,12 +294,12 @@ namespace EVEMon.Common.Helpers
             plan.ThrowIfNull(nameof(plan));
 
             // Generates a settings plan and transforms it to an output plan
-            SerializablePlan serial = plan.Export();
-            OutputPlan output = new OutputPlan { Name = serial.Name, Owner = serial.Owner, Revision = Settings.Revision };
+            var serial = plan.Export();
+            var output = new OutputPlan { Name = serial.Name, Owner = serial.Owner, Revision = Settings.Revision };
             output.Entries.AddRange(serial.Entries);
 
             // Serializes to XML document and gets a string representation
-            XmlDocument doc = (XmlDocument)Util.SerializeToXmlDocument(output);
+            var doc = (XmlDocument)Util.SerializeToXmlDocument(output);
             return Util.GetXmlStringRepresentation(doc);
         }
 
@@ -310,11 +310,11 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         public static string ExportAsXML(IEnumerable<Plan> plans)
         {
-            OutputPlans output = new OutputPlans { Revision = Settings.Revision };
+            var output = new OutputPlans { Revision = Settings.Revision };
             output.Plans.AddRange(plans.Select(plan => plan.Export()));
 
             // Serializes to XML document and gets a string representation
-            XmlDocument doc = (XmlDocument)Util.SerializeToXmlDocument(output);
+            var doc = (XmlDocument)Util.SerializeToXmlDocument(output);
             return Util.GetXmlStringRepresentation(doc);
         }
 
@@ -328,14 +328,14 @@ namespace EVEMon.Common.Helpers
         {
             filename.ThrowIfNull(nameof(filename));
 
-            int revision = -1;
+            var revision = -1;
             SerializablePlan result = null;
             try
             {
                 // Is the format compressed ? 
                 if (filename.EndsWith(".emp", StringComparison.OrdinalIgnoreCase))
                 {
-                    string tempFile = Util.UncompressToTempFile(filename);
+                    var tempFile = Util.UncompressToTempFile(filename);
                     try
                     {
                         return ImportFromXML(tempFile);
@@ -387,7 +387,7 @@ namespace EVEMon.Common.Helpers
                 // Is the format compressed ? 
                 if (filename.EndsWith(".epb", StringComparison.OrdinalIgnoreCase))
                 {
-                    string tempFile = Util.UncompressToTempFile(filename);
+                    var tempFile = Util.UncompressToTempFile(filename);
                     try
                     {
                         return ImportPlansFromXML(tempFile);
@@ -399,7 +399,7 @@ namespace EVEMon.Common.Helpers
                 }
 
                 // Reads the revision number from the file
-                int revision = Util.GetRevisionNumber(filename);
+                var revision = Util.GetRevisionNumber(filename);
 
                 if (revision != 0)
                     result = Util.DeserializeXmlFromFile<OutputPlans>(filename);
@@ -429,7 +429,7 @@ namespace EVEMon.Common.Helpers
         /// <param name="character">The character.</param>
         public static bool CreatePlanFromCharacterSkillQueue(Plan newPlan, Character character)
         {
-            CCPCharacter ccpCharacter = character as CCPCharacter;
+            var ccpCharacter = character as CCPCharacter;
 
             if (ccpCharacter == null)
                 return false;
@@ -451,7 +451,7 @@ namespace EVEMon.Common.Helpers
             }
 
             // Add skill queue in plan
-            foreach (QueuedSkill qSkill in ccpCharacter.SkillQueue)
+            foreach (var qSkill in ccpCharacter.SkillQueue)
             {
                 newPlan.PlanTo(qSkill.Skill, qSkill.Level);
             }

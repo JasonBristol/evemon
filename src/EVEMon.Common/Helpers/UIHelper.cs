@@ -30,10 +30,10 @@ namespace EVEMon.Common.Helpers
         /// <param name="plans">The plans.</param>
         public static async Task SavePlansAsync(IList<Plan> plans)
         {
-            Character character = (Character)plans.First().Character;
+            var character = (Character)plans.First().Character;
 
             // Prompt the user to pick a file name
-            using (SaveFileDialog sfdSave = new SaveFileDialog())
+            using (var sfdSave = new SaveFileDialog())
             {
                 sfdSave.FileName = $"{character.Name} - Plans Backup";
                 sfdSave.Title = @"Save to File";
@@ -45,7 +45,7 @@ namespace EVEMon.Common.Helpers
 
                 try
                 {
-                    string content = PlanIOHelper.ExportAsXML(plans);
+                    var content = PlanIOHelper.ExportAsXML(plans);
 
                     // Moves to the final file
                     await FileHelper.OverwriteOrWarnTheUserAsync(
@@ -54,7 +54,7 @@ namespace EVEMon.Common.Helpers
                             {
                                 // Emp is actually compressed xml
                                 Stream stream = new GZipStream(fs, CompressionMode.Compress);
-                                using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8))
+                                using (var writer = new StreamWriter(stream, Encoding.UTF8))
                                 {
                                     await writer.WriteAsync(content);
                                     await writer.FlushAsync();
@@ -98,16 +98,16 @@ namespace EVEMon.Common.Helpers
             character.ThrowIfNull(nameof(character));
 
             // Create a character without any skill
-            CharacterScratchpad scratchpad = new CharacterScratchpad(character);
+            var scratchpad = new CharacterScratchpad(character);
             scratchpad.ClearSkills();
 
             // Create a new plan
-            Plan plan = new Plan(scratchpad) { Name = "Skills Plan" };
+            var plan = new Plan(scratchpad) { Name = "Skills Plan" };
 
-            IEnumerable<Skill> skills = selectedSkills ?? character.Skills.Where(skill => skill.IsPublic);
+            var skills = selectedSkills ?? character.Skills.Where(skill => skill.IsPublic);
 
             // Add all trained skill levels that the character has trained so far
-            foreach (Skill skill in skills)
+            foreach (var skill in skills)
             {
                 plan.PlanTo(skill, skill.Level);
             }
@@ -130,9 +130,9 @@ namespace EVEMon.Common.Helpers
             character.ThrowIfNull(nameof(character));
 
             // Assemble an initial filename and remove prohibited characters
-            string planSaveName = $"{character.Name} - {plan.Name}";
-            char[] invalidFileChars = Path.GetInvalidFileNameChars();
-            int fileInd = planSaveName.IndexOfAny(invalidFileChars);
+            var planSaveName = $"{character.Name} - {plan.Name}";
+            var invalidFileChars = Path.GetInvalidFileNameChars();
+            var fileInd = planSaveName.IndexOfAny(invalidFileChars);
             while (fileInd != -1)
             {
                 planSaveName = planSaveName.Replace(planSaveName[fileInd], '-');
@@ -140,7 +140,7 @@ namespace EVEMon.Common.Helpers
             }
 
             // Prompt the user to pick a file name
-            using (SaveFileDialog sfdSave = new SaveFileDialog())
+            using (var sfdSave = new SaveFileDialog())
             {
                 sfdSave.FileName = planSaveName;
                 sfdSave.Title = @"Save to File";
@@ -154,7 +154,7 @@ namespace EVEMon.Common.Helpers
                 // Serialize
                 try
                 {
-                    PlanFormat format = (PlanFormat)sfdSave.FilterIndex;
+                    var format = (PlanFormat)sfdSave.FilterIndex;
 
                     string content;
                     switch (format)
@@ -165,7 +165,7 @@ namespace EVEMon.Common.Helpers
                             break;
                         case PlanFormat.Text:
                             // Prompts the user and returns if canceled
-                            PlanExportSettings settings = PromptUserForPlanExportSettings(plan);
+                            var settings = PromptUserForPlanExportSettings(plan);
                             if (settings == null)
                                 return;
 
@@ -180,12 +180,12 @@ namespace EVEMon.Common.Helpers
                         sfdSave.FileName,
                         async fs =>
                             {
-                                Stream stream = fs;
+                                var stream = fs;
                                 // Emp is actually compressed text
                                 if (format == PlanFormat.Emp)
                                     stream = new GZipStream(fs, CompressionMode.Compress);
 
-                                using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8))
+                                using (var writer = new StreamWriter(stream, Encoding.UTF8))
                                 {
                                     await writer.WriteAsync(content);
                                     await writer.FlushAsync();
@@ -210,8 +210,8 @@ namespace EVEMon.Common.Helpers
         /// <returns></returns>
         public static PlanExportSettings PromptUserForPlanExportSettings(Plan plan)
         {
-            PlanExportSettings settings = Settings.Exportation.PlanToText;
-            using (CopySaveOptionsWindow f = new CopySaveOptionsWindow(settings, plan, false))
+            var settings = Settings.Exportation.PlanToText;
+            using (var f = new CopySaveOptionsWindow(settings, plan, false))
             {
                 if (settings.Markup == MarkupType.Undefined)
                     settings.Markup = MarkupType.None;
@@ -243,10 +243,10 @@ namespace EVEMon.Common.Helpers
         {
             character.ThrowIfNull(nameof(character));
 
-            bool isAfterPlanExport = plan != null;
+            var isAfterPlanExport = plan != null;
 
             // Open the dialog box
-            using (SaveFileDialog characterSaveDialog = new SaveFileDialog())
+            using (var characterSaveDialog = new SaveFileDialog())
             {
                 characterSaveDialog.Title = $"Save {(isAfterPlanExport ? "After Plan " : string.Empty)}Character Info";
                 characterSaveDialog.Filter =
@@ -268,7 +268,7 @@ namespace EVEMon.Common.Helpers
                 // Serialize
                 try
                 {
-                    CharacterSaveFormat format = (CharacterSaveFormat)characterSaveDialog.FilterIndex;
+                    var format = (CharacterSaveFormat)characterSaveDialog.FilterIndex;
 
                     // Save character with the chosen format to our file
                     await FileHelper.OverwriteOrWarnTheUserAsync(
@@ -283,7 +283,7 @@ namespace EVEMon.Common.Helpers
                                     return true;
                                 }
 
-                                string content = CharacterExporter.Export(format, character, plan);
+                                var content = CharacterExporter.Export(format, character, plan);
                                 if ((format == CharacterSaveFormat.CCPXML) && string.IsNullOrEmpty(content))
                                 {
                                     MessageBox.Show(
@@ -292,7 +292,7 @@ namespace EVEMon.Common.Helpers
                                     return false;
                                 }
 
-                                using (StreamWriter sw = new StreamWriter(fs))
+                                using (var sw = new StreamWriter(fs))
                                 {
                                     await sw.WriteAsync(content);
                                     await sw.FlushAsync();
@@ -327,10 +327,10 @@ namespace EVEMon.Common.Helpers
             initialize.ThrowIfNull(nameof(initialize));
 
             //Scroll through plans
-            foreach (Plan plan in plans)
+            foreach (var plan in plans)
             {
                 ToolStripMenuItem item;
-                using (ToolStripMenuItem planItem = new ToolStripMenuItem(plan.Name))
+                using (var planItem = new ToolStripMenuItem(plan.Name))
                 {
                     initialize(planItem, plan);
                     item = planItem;

@@ -147,10 +147,10 @@ namespace EVEMon.CharacterMonitoring
             get
             {
                 // Add the visible columns; matching the display order
-                List<EveMailMessageColumnSettings> newColumns = new List<EveMailMessageColumnSettings>();
-                foreach (ColumnHeader header in lvMailMessages.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
+                var newColumns = new List<EveMailMessageColumnSettings>();
+                foreach (var header in lvMailMessages.Columns.Cast<ColumnHeader>().OrderBy(x => x.DisplayIndex))
                 {
-                    EveMailMessageColumnSettings columnSetting =
+                    var columnSetting =
                         m_columns.First(x => x.Column == (EveMailMessageColumn)header.Tag);
                     if (columnSetting.Width > -1)
                         columnSetting.Width = header.Width;
@@ -281,9 +281,9 @@ namespace EVEMon.CharacterMonitoring
                 lvMailMessages.Groups.Clear();
                 lvMailMessages.Items.Clear();
 
-                foreach (EveMailMessageColumnSettings column in m_columns.Where(x => x.Visible))
+                foreach (var column in m_columns.Where(x => x.Visible))
                 {
-                    ColumnHeader header = lvMailMessages.Columns.Add(column.Column.GetHeader(), column.Width);
+                    var header = lvMailMessages.Columns.Add(column.Column.GetHeader(), column.Width);
                     header.Tag = column.Column;
                 }
 
@@ -306,17 +306,17 @@ namespace EVEMon.CharacterMonitoring
             if (!Visible)
                 return;
 
-            int scrollBarPosition = lvMailMessages.GetVerticalScrollBarPosition();
+            var scrollBarPosition = lvMailMessages.GetVerticalScrollBarPosition();
 
             // Store the selected item (if any) to restore it after the update
-            int selectedItem = lvMailMessages.SelectedItems.Count > 0
+            var selectedItem = lvMailMessages.SelectedItems.Count > 0
                 ? lvMailMessages.SelectedItems[0].Tag.GetHashCode()
                 : 0;
 
             lvMailMessages.BeginUpdate();
             try
             {
-                IEnumerable<EveMailMessage> eveMailMessages = m_list
+                var eveMailMessages = m_list
                     .Where(x => x.SentDate != DateTime.MinValue).Where(x => IsTextMatching(x, m_textFilter));
 
                 UpdateSort();
@@ -326,7 +326,7 @@ namespace EVEMon.CharacterMonitoring
                 // Restore the selected item (if any)
                 if (selectedItem > 0)
                 {
-                    foreach (ListViewItem lvItem in lvMailMessages.Items.Cast<ListViewItem>().Where(
+                    foreach (var lvItem in lvMailMessages.Items.Cast<ListViewItem>().Where(
                         lvItem => lvItem.Tag.GetHashCode() == selectedItem))
                     {
                         lvItem.Selected = true;
@@ -367,72 +367,72 @@ namespace EVEMon.CharacterMonitoring
             switch (m_grouping)
             {
                 case EVEMailMessagesGrouping.State:
-                    IOrderedEnumerable<IGrouping<EveMailState, EveMailMessage>> groups0 =
+                    var groups0 =
                         eveMailMessages.GroupBy(x => x.State).OrderBy(x => (int)x.Key);
                     UpdateContent(groups0);
                     break;
                 case EVEMailMessagesGrouping.StateDesc:
-                    IOrderedEnumerable<IGrouping<EveMailState, EveMailMessage>> groups1 =
+                    var groups1 =
                         eveMailMessages.GroupBy(x => x.State).OrderByDescending(x => (int)x.Key);
                     UpdateContent(groups1);
                     break;
                 case EVEMailMessagesGrouping.SentDate:
-                    IOrderedEnumerable<IGrouping<DateTime, EveMailMessage>> groups2 =
+                    var groups2 =
                         eveMailMessages.GroupBy(x => x.SentDate.ToLocalTime().Date).OrderBy(x => x.Key);
                     UpdateContent(groups2);
                     break;
                 case EVEMailMessagesGrouping.SentDateDesc:
-                    IOrderedEnumerable<IGrouping<DateTime, EveMailMessage>> groups3 =
+                    var groups3 =
                         eveMailMessages.GroupBy(x => x.SentDate.ToLocalTime().Date).OrderByDescending(x => x.Key);
                     UpdateContent(groups3);
                     break;
                 case EVEMailMessagesGrouping.Sender:
-                    IOrderedEnumerable<IGrouping<string, EveMailMessage>> groups4 =
+                    var groups4 =
                         eveMailMessages.GroupBy(x => x.SenderName).OrderBy(x => x.Key);
                     UpdateContent(groups4);
                     break;
                 case EVEMailMessagesGrouping.SenderDesc:
-                    IOrderedEnumerable<IGrouping<string, EveMailMessage>> groups5 =
+                    var groups5 =
                         eveMailMessages.GroupBy(x => x.SenderName).OrderByDescending(x => x.Key);
                     UpdateContent(groups5);
                     break;
                 case EVEMailMessagesGrouping.Subject:
-                    IOrderedEnumerable<IGrouping<string, EveMailMessage>> groups6 =
+                    var groups6 =
                         eveMailMessages.GroupBy(x => x.Title).OrderBy(x => x.Key);
                     UpdateContent(groups6);
                     break;
                 case EVEMailMessagesGrouping.SubjectDesc:
-                    IOrderedEnumerable<IGrouping<string, EveMailMessage>> groups7 =
+                    var groups7 =
                         eveMailMessages.GroupBy(x => x.Title).OrderByDescending(x => x.Key);
                     UpdateContent(groups7);
                     break;
                 case EVEMailMessagesGrouping.Recipient:
-                    IOrderedEnumerable<IGrouping<string, EveMailMessage>> groups8 =
+                    var groups8 =
                         eveMailMessages.GroupBy(x => x.ToCharacters.First()).OrderBy(x => x.Key);
                     UpdateContent(groups8);
                     break;
                 case EVEMailMessagesGrouping.RecipientDesc:
-                    IOrderedEnumerable<IGrouping<string, EveMailMessage>> groups9 =
+                    var groups9 =
                         eveMailMessages.GroupBy(x => x.ToCharacters.First()).OrderByDescending(x => x.Key);
                     UpdateContent(groups9);
                     break;
                 case EVEMailMessagesGrouping.CorpOrAlliance:
-                    IOrderedEnumerable<IGrouping<string, EveMailMessage>> groups10 =
+                    var groups10 =
                         eveMailMessages.GroupBy(x => x.ToCorpOrAlliance).OrderBy(x => x.Key);
                     UpdateContent(groups10);
                     break;
                 case EVEMailMessagesGrouping.CorpOrAllianceDesc:
-                    IOrderedEnumerable<IGrouping<string, EveMailMessage>> groups11 =
+                    var groups11 =
                         eveMailMessages.GroupBy(x => x.ToCorpOrAlliance).OrderByDescending(x => x.Key);
                     UpdateContent(groups11);
                     break;
                 case EVEMailMessagesGrouping.MailingList:
-                    IOrderedEnumerable<IGrouping<string, EveMailMessage>> groups12 =
+                    var groups12 =
                         eveMailMessages.GroupBy(x => x.ToMailingLists.First()).OrderBy(x => x.Key);
                     UpdateContent(groups12);
                     break;
                 case EVEMailMessagesGrouping.MailingListDesc:
-                    IOrderedEnumerable<IGrouping<string, EveMailMessage>> groups13 =
+                    var groups13 =
                         eveMailMessages.GroupBy(x => x.ToMailingLists.First()).OrderByDescending(x => x.Key);
                     UpdateContent(groups13);
                     break;
@@ -450,7 +450,7 @@ namespace EVEMon.CharacterMonitoring
             lvMailMessages.Groups.Clear();
 
             // Add the groups
-            foreach (IGrouping<TKey, EveMailMessage> group in groups)
+            foreach (var group in groups)
             {
                 string groupText;
                 if (group.Key is EveMailState)
@@ -460,7 +460,7 @@ namespace EVEMon.CharacterMonitoring
                 else
                     groupText = group.Key.ToString();
 
-                ListViewGroup listGroup = new ListViewGroup(groupText);
+                var listGroup = new ListViewGroup(groupText);
                 lvMailMessages.Groups.Add(listGroup);
 
                 // Add the items in every group
@@ -490,7 +490,7 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Creates the subitems
-            for (int i = 0; i < lvMailMessages.Columns.Count; i++)
+            for (var i = 0; i < lvMailMessages.Columns.Count; i++)
             {
                 SetColumn(eveMailMessage, item.SubItems[i], (EveMailMessageColumn)lvMailMessages.Columns[i].Tag);
             }
@@ -519,14 +519,14 @@ namespace EVEMon.CharacterMonitoring
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (lvMailMessages.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += lvMailMessages.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -551,9 +551,9 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void UpdateSortVisualFeedback()
         {
-            foreach (ColumnHeader columnHeader in lvMailMessages.Columns.Cast<ColumnHeader>())
+            foreach (var columnHeader in lvMailMessages.Columns.Cast<ColumnHeader>())
             {
-                EveMailMessageColumn column = (EveMailMessageColumn)columnHeader.Tag;
+                var column = (EveMailMessageColumn)columnHeader.Tag;
                 if (m_sortCriteria == column)
                     columnHeader.ImageIndex = m_sortAscending ? 0 : 1;
                 else
@@ -578,7 +578,7 @@ namespace EVEMon.CharacterMonitoring
                     item.Text = eveMailMessage.Title;
                     break;
                 case EveMailMessageColumn.SentDate:
-                    DateTime sentDateTime = eveMailMessage.SentDate.ToLocalTime();
+                    var sentDateTime = eveMailMessage.SentDate.ToLocalTime();
                     item.Text = $"{sentDateTime:ddd} {sentDateTime:G}";
                     break;
                 case EveMailMessageColumn.ToCharacters:
@@ -628,8 +628,8 @@ namespace EVEMon.CharacterMonitoring
         /// </summary>
         private void ReadMailLocal()
         {
-            ListViewItem item = lvMailMessages.SelectedItems[0];
-            EveMailMessage message = (EveMailMessage)item.Tag;
+            var item = lvMailMessages.SelectedItems[0];
+            var message = (EveMailMessage)item.Tag;
 
             // Show or bring to front if a window with the same EVE mail message already exists
             WindowsFactory.ShowByTag<EveMessageWindow, EveMailMessage>(message);
@@ -661,7 +661,7 @@ namespace EVEMon.CharacterMonitoring
                 return;
             }
 
-            EveMailMessage selectedObject = lvMailMessages.SelectedItems[0].Tag as EveMailMessage;
+            var selectedObject = lvMailMessages.SelectedItems[0].Tag as EveMailMessage;
             if (selectedObject == null)
             {
                 eveMailReadingPane.HidePane();
@@ -771,7 +771,7 @@ namespace EVEMon.CharacterMonitoring
         /// <param name="e"></param>
         private void lvMailMessages_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            EveMailMessageColumn column = (EveMailMessageColumn)lvMailMessages.Columns[e.Column].Tag;
+            var column = (EveMailMessageColumn)lvMailMessages.Columns[e.Column].Tag;
             if (m_sortCriteria == column)
                 m_sortAscending = !m_sortAscending;
             else
@@ -904,9 +904,9 @@ namespace EVEMon.CharacterMonitoring
             if (Character == null)
                 return;
 
-            APIErrorNotificationEventArgs notification = e as APIErrorNotificationEventArgs;
+            var notification = e as APIErrorNotificationEventArgs;
 
-            CCPAPIResult<SerializableAPIMailBodies> notificationResult =
+            var notificationResult =
                 notification?.Result as CCPAPIResult<SerializableAPIMailBodies>;
 
             if (notificationResult == null)

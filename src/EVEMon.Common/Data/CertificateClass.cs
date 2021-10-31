@@ -86,7 +86,7 @@ namespace EVEMon.Common.Data
                 if (Certificate.AllLevel.All(cert => cert.IsTrained))
                     return false;
 
-                foreach (CertificateLevel certLevel in Certificate.AllLevel)
+                foreach (var certLevel in Certificate.AllLevel)
                 {
                     switch (certLevel.Status)
                     {

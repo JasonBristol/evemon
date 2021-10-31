@@ -125,7 +125,7 @@ namespace EVEMon.Common.Service
         public IEnumerable<T> LookupAllID(IEnumerable<long> ids)
         {
             T value;
-            bool start = false;
+            var start = false;
             var ret = new LinkedList<T>();
             // Thread safety
             lock (m_cache)
@@ -149,7 +149,7 @@ namespace EVEMon.Common.Service
         /// </summary>
         protected void OnLookupComplete()
         {
-            bool done = false;
+            var done = false;
 
             // No more?
             lock (m_pendingIDs)
@@ -201,7 +201,7 @@ namespace EVEMon.Common.Service
         private bool QueueID(long id, X extra = null)
         {
             // Need to add to the requirements list
-            bool startQuery = false;
+            var startQuery = false;
 
             lock (m_pendingIDs)
             {

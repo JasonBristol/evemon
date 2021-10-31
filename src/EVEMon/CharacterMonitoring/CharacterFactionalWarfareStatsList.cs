@@ -150,7 +150,7 @@ namespace EVEMon.CharacterMonitoring
             if (m_charFacWarStats == null)
                 return;
 
-            List<int> factionsAgainstEnlisted =
+            var factionsAgainstEnlisted =
                 EveFactionalWarfareStats.GetAgainstFactionIDs(m_charFacWarStats.FactionID).ToList();
 
             FactionPictureBox.Visible = !Settings.UI.SafeForWork;
@@ -169,12 +169,12 @@ namespace EVEMon.CharacterMonitoring
             }
 
             // Update the labels
-            string highestRankText = m_charFacWarStats.HighestRank > m_charFacWarStats.CurrentRank
+            var highestRankText = m_charFacWarStats.HighestRank > m_charFacWarStats.CurrentRank
                 ? $"({GetMilitiaRank(m_charFacWarStats.HighestRank)})"
                 : string.Empty;
 
-            TimeSpan timeServed = DateTime.UtcNow.Subtract(m_charFacWarStats.EnlistedDate);
-            string timeServedText = timeServed < TimeSpan.FromDays(1) ? "Less than one day." :
+            var timeServed = DateTime.UtcNow.Subtract(m_charFacWarStats.EnlistedDate);
+            var timeServedText = timeServed < TimeSpan.FromDays(1) ? "Less than one day." :
                 $"{timeServed.Days} day{(timeServed.Days.S())}";
 
             FactionLabel.Text = $"Faction: {m_charFacWarStats.FactionName}";
@@ -194,7 +194,7 @@ namespace EVEMon.CharacterMonitoring
             lvPersonal.BeginUpdate();
             try
             {
-                foreach (ListViewItem item in lvPersonal.Items.Cast<ListViewItem>())
+                foreach (var item in lvPersonal.Items.Cast<ListViewItem>())
                 {
                     // Add enough subitems to match the number of columns
                     while (item.SubItems.Count < lvPersonal.Columns.Count)
@@ -222,7 +222,7 @@ namespace EVEMon.CharacterMonitoring
         private void CreatePersonalListViewSubItems(ListViewItem item)
         {
             // Clear the subitems except the item itself
-            for (int i = 1; i < lvPersonal.Columns.Count; i++)
+            for (var i = 1; i < lvPersonal.Columns.Count; i++)
             {
                 item.SubItems.RemoveAt(1);
             }
@@ -269,7 +269,7 @@ namespace EVEMon.CharacterMonitoring
             lvMilitia.BeginUpdate();
             try
             {
-                foreach (ListViewItem item in lvMilitia.Items.Cast<ListViewItem>())
+                foreach (var item in lvMilitia.Items.Cast<ListViewItem>())
                 {
                     // Add enough subitems to match the number of columns
                     while (item.SubItems.Count < lvMilitia.Columns.Count)
@@ -300,17 +300,17 @@ namespace EVEMon.CharacterMonitoring
             if (!EveFactionalWarfareStats.FactionalWarfareStats.Any())
                 return;
 
-            EveFactionWarfareStats amarrFacWarStats =
+            var amarrFacWarStats =
                 EveFactionalWarfareStats.GetFactionalWarfareStatsForFaction(DBConstants.AmarrFactionID);
-            EveFactionWarfareStats caldariFacWarStats =
+            var caldariFacWarStats =
                 EveFactionalWarfareStats.GetFactionalWarfareStatsForFaction(DBConstants.CaldariFactionID);
-            EveFactionWarfareStats gallenteFacWarStats =
+            var gallenteFacWarStats =
                 EveFactionalWarfareStats.GetFactionalWarfareStatsForFaction(DBConstants.GallenteFactionID);
-            EveFactionWarfareStats minmatarFacWarStats =
+            var minmatarFacWarStats =
                 EveFactionalWarfareStats.GetFactionalWarfareStatsForFaction(DBConstants.MinmatarFactionID);
 
             // Clear the subitems except the item itself
-            for (int i = 1; i < lvMilitia.Columns.Count; i++)
+            for (var i = 1; i < lvMilitia.Columns.Count; i++)
             {
                 item.SubItems.RemoveAt(1);
             }
@@ -388,14 +388,14 @@ namespace EVEMon.CharacterMonitoring
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // If there is an image assigned to the header, add its width with padding
                 if (listView.SmallImageList != null && column.ImageIndex > -1)
                     columnHeaderWidth += listView.SmallImageList.ImageSize.Width + Pad;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = column.ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 

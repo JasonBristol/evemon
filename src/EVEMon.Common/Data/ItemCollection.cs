@@ -23,7 +23,7 @@ namespace EVEMon.Common.Data
             if (src == null)
                 return;
 
-            foreach (SerializableItem item in src)
+            foreach (var item in src)
             {
                 switch (item.Family)
                 {

@@ -22,7 +22,7 @@ namespace EVEMon.Common.Data
             if (src == null)
                 return;
 
-            foreach (SerializableBlueprintMarketGroup subGroup in src)
+            foreach (var subGroup in src)
             {
                 Items.Add(new BlueprintMarketGroup(group, subGroup));
             }

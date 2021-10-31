@@ -49,12 +49,12 @@ namespace EVEMon.Common
         /// </summary>
         public static void DeleteInstallationFiles()
         {
-            foreach (string file in Directory.GetFiles(EveMonClient.EVEMonDataDir,
+            foreach (var file in Directory.GetFiles(EveMonClient.EVEMonDataDir,
                 "EVEMon-install-*.exe", SearchOption.TopDirectoryOnly))
             {
                 try
                 {
-                    FileInfo installationFile = new FileInfo(file);
+                    var installationFile = new FileInfo(file);
                     if (!installationFile.Exists)
                         continue;
 
@@ -72,13 +72,13 @@ namespace EVEMon.Common
         /// </summary>
         public static void DeleteDataFiles()
         {
-            foreach (string file in Datafile.GetFilesFrom(EveMonClient.EVEMonDataDir,
+            foreach (var file in Datafile.GetFilesFrom(EveMonClient.EVEMonDataDir,
                 Datafile.DatafilesExtension).Concat(Datafile.GetFilesFrom(EveMonClient.
                 EVEMonDataDir, Datafile.OldDatafileExtension)))
             {
                 try
                 {
-                    FileInfo dataFile = new FileInfo(file);
+                    var dataFile = new FileInfo(file);
                     if (dataFile.Exists)
                         FileHelper.DeleteFile(dataFile.FullName);
                 }
@@ -117,10 +117,10 @@ namespace EVEMon.Common
                 ScheduleCheck(TimeSpan.FromMinutes(1));
             else
             {
-                string updateAddress = NetworkConstants.GitHubBase + NetworkConstants.
+                var updateAddress = NetworkConstants.GitHubBase + NetworkConstants.
                     EVEMonUpdates;
-                string emergAddress = updateAddress.Replace(".xml", string.Empty) +
-                    "-emergency.xml";
+                var emergAddress = updateAddress.Replace(".xml", string.Empty) +
+                                   "-emergency.xml";
                 // Otherwise, query for the patch file
                 // First look up for an emergency patch
                 await Util.DownloadXmlAsync<SerializablePatch>(new Uri(emergAddress)).
@@ -186,13 +186,13 @@ namespace EVEMon.Common
         /// <param name="result">The result.</param>
         private static void ScanUpdateFeed(SerializablePatch result)
         {
-            Version currentVersion = Version.Parse(EveMonClient.FileVersionInfo.FileVersion);
-            SerializableRelease newestRelease = result.Releases?.FirstOrDefault(
+            var currentVersion = Version.Parse(EveMonClient.FileVersionInfo.FileVersion);
+            var newestRelease = result.Releases?.FirstOrDefault(
                 release => Version.Parse(release.Version).Major == currentVersion.Major);
 
-            Version newestVersion = (newestRelease != null) ? Version.Parse(newestRelease.
+            var newestVersion = (newestRelease != null) ? Version.Parse(newestRelease.
                 Version) : currentVersion;
-            Version mostRecentDeniedVersion = !string.IsNullOrEmpty(Settings.Updates.
+            var mostRecentDeniedVersion = !string.IsNullOrEmpty(Settings.Updates.
                 MostRecentDeniedUpgrade) ? new Version(Settings.Updates.
                 MostRecentDeniedUpgrade) : new Version();
 
@@ -206,19 +206,19 @@ namespace EVEMon.Common
                 // Reset the most recent denied version
                 Settings.Updates.MostRecentDeniedUpgrade = string.Empty;
 
-                Uri forumUrl = new Uri(newestRelease.TopicAddress);
-                Uri installerUrl = new Uri(newestRelease.PatchAddress);
-                string updateMessage = newestRelease.Message;
-                string installArgs = newestRelease.InstallerArgs;
-                string md5Sum = newestRelease.MD5Sum;
-                string additionalArgs = newestRelease.AdditionalArgs;
-                bool canAutoInstall = !string.IsNullOrEmpty(installerUrl.AbsoluteUri) &&
-                    !string.IsNullOrEmpty(installArgs);
+                var forumUrl = new Uri(newestRelease.TopicAddress);
+                var installerUrl = new Uri(newestRelease.PatchAddress);
+                var updateMessage = newestRelease.Message;
+                var installArgs = newestRelease.InstallerArgs;
+                var md5Sum = newestRelease.MD5Sum;
+                var additionalArgs = newestRelease.AdditionalArgs;
+                var canAutoInstall = !string.IsNullOrEmpty(installerUrl.AbsoluteUri) &&
+                                     !string.IsNullOrEmpty(installArgs);
 
                 if (!string.IsNullOrEmpty(additionalArgs) && additionalArgs.Contains(
                     "%EVEMON_EXECUTABLE_PATH%"))
                 {
-                    string appPath = Path.GetDirectoryName(Application.ExecutablePath);
+                    var appPath = Path.GetDirectoryName(Application.ExecutablePath);
                     installArgs = $"{installArgs} {additionalArgs}";
                     installArgs = installArgs.Replace("%EVEMON_EXECUTABLE_PATH%", appPath);
                 }
@@ -238,14 +238,14 @@ namespace EVEMon.Common
             }
 
             // Notify about a new major version
-            Version newestMajorVersion = result.Releases?.Max(release => Version.Parse(
+            var newestMajorVersion = result.Releases?.Max(release => Version.Parse(
                 release.Version)) ?? new Version();
-            SerializableRelease newestMajorRelease = result.Releases?.FirstOrDefault(release =>
+            var newestMajorRelease = result.Releases?.FirstOrDefault(release =>
                 Version.Parse(release.Version) == newestMajorVersion);
             if (newestMajorRelease == null)
                 return;
             newestVersion = Version.Parse(newestMajorRelease.Version);
-            Version mostRecentDeniedMajorUpgrade = !string.IsNullOrEmpty(Settings.Updates.
+            var mostRecentDeniedMajorUpgrade = !string.IsNullOrEmpty(Settings.Updates.
                 MostRecentDeniedMajorUpgrade)
                 ? new Version(Settings.Updates.MostRecentDeniedMajorUpgrade)
                 : new Version();

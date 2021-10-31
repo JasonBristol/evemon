@@ -95,7 +95,7 @@ namespace EVEMon.Common.Models.Comparers
             // Exchange items when descending sort
             if (Order == SortOrder.Descending)
             {
-                Character temp = x;
+                var temp = x;
                 x = y;
                 y = temp;
             }
@@ -130,8 +130,8 @@ namespace EVEMon.Common.Models.Comparers
             y.ThrowIfNull(nameof(y));
 
             // Get their training skills
-            QueuedSkill skillX = x.CurrentlyTrainingSkill;
-            QueuedSkill skillY = y.CurrentlyTrainingSkill;
+            var skillX = x.CurrentlyTrainingSkill;
+            var skillY = y.CurrentlyTrainingSkill;
             if (skillX == null && skillY == null)
                 return string.Compare(x.Name, y.Name, StringComparison.CurrentCulture);
             if (skillX == null || skillY == null)

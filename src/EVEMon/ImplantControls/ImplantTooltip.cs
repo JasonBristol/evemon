@@ -52,11 +52,11 @@ namespace EVEMon.ImplantControls
         /// </summary>
         private void OnImplantChanged()
         {
-            Size proposedSize = new Size(MaxWidth, 1000);
-            Size titleSize = TextRenderer.MeasureText(m_implant.Name, m_titleFont, proposedSize);
+            var proposedSize = new Size(MaxWidth, 1000);
+            var titleSize = TextRenderer.MeasureText(m_implant.Name, m_titleFont, proposedSize);
 
             proposedSize = new Size(Math.Max(titleSize.Width, MaxWidth) + ToolTipMargin * 2, 1000);
-            Size size = TextRenderer.MeasureText(m_implant.Description, m_toolTipFont, proposedSize, TooltipFlags);
+            var size = TextRenderer.MeasureText(m_implant.Description, m_toolTipFont, proposedSize, TooltipFlags);
             size.Height += titleSize.Height + InnerMargin + ToolTipMargin * 2;
             size.Width = Math.Max(size.Width, proposedSize.Width);
 
@@ -72,27 +72,27 @@ namespace EVEMon.ImplantControls
             base.OnPaint(e);
 
             // Background
-            using (SolidBrush brush = new SolidBrush(BackColor))
+            using (var brush = new SolidBrush(BackColor))
             {
                 e.Graphics.FillRectangle(brush, DisplayRectangle);
             }
 
             // Border
-            using (Pen pen = new Pen(SystemBrushes.WindowFrame))
+            using (var pen = new Pen(SystemBrushes.WindowFrame))
             {
-                Rectangle borderRect = new Rectangle(0, 0, DisplayRectangle.Width - 1, DisplayRectangle.Height - 1);
+                var borderRect = new Rectangle(0, 0, DisplayRectangle.Width - 1, DisplayRectangle.Height - 1);
                 e.Graphics.DrawRectangle(pen, borderRect);
             }
 
             // Title
-            Size titleSize = new Size(Width - ToolTipMargin * 2, 1000);
+            var titleSize = new Size(Width - ToolTipMargin * 2, 1000);
             titleSize = TextRenderer.MeasureText(m_implant.Name, m_titleFont, titleSize);
             TextRenderer.DrawText(e.Graphics, m_implant.Name, m_titleFont,
                                   new Point(ToolTipMargin, ToolTipMargin), SystemColors.ControlText, TooltipFlags);
 
             // Content
-            int top = ToolTipMargin + titleSize.Height + InnerMargin;
-            Rectangle rect = new Rectangle(ToolTipMargin, top, Width - 2 * ToolTipMargin, Height - (top + ToolTipMargin));
+            var top = ToolTipMargin + titleSize.Height + InnerMargin;
+            var rect = new Rectangle(ToolTipMargin, top, Width - 2 * ToolTipMargin, Height - (top + ToolTipMargin));
             TextRenderer.DrawText(e.Graphics, m_implant.Description, m_toolTipFont, rect, SystemColors.ControlText, TooltipFlags);
         }
     }

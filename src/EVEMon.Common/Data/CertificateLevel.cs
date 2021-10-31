@@ -93,11 +93,11 @@ namespace EVEMon.Common.Data
             if (m_initialized)
                 return false;
 
-            bool noPrereq = true;
-            bool trained = true;
+            var noPrereq = true;
+            var trained = true;
 
             // Scan prerequisite skills
-            foreach (SkillLevel prereqSkill in PrerequisiteSkills)
+            foreach (var prereqSkill in PrerequisiteSkills)
             {
                 // Trained only if the skill's level is greater or equal than the minimum level
                 trained &= prereqSkill.Skill.Level >= prereqSkill.Level;

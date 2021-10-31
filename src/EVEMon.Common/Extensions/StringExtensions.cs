@@ -71,8 +71,8 @@ namespace EVEMon.Common.Extensions
             text = text.Replace(@"\r\n", Environment.NewLine).Replace(@"\r",
                 Environment.NewLine).Replace(@"\n", Environment.NewLine);
 
-            using (StringReader sr = new StringReader(text))
-            using (StringWriter sw = new StringWriter(CultureConstants.InvariantCulture))
+            using (var sr = new StringReader(text))
+            using (var sw = new StringWriter(CultureConstants.InvariantCulture))
             {
                 while (sr.Peek() > -1)
                 {
@@ -187,10 +187,10 @@ namespace EVEMon.Common.Extensions
         {
             text.ThrowIfNull(nameof(text));
 
-            string[] words = text.Split(" ".ToCharArray());
-            StringBuilder sb = new StringBuilder();
+            var words = text.Split(" ".ToCharArray());
+            var sb = new StringBuilder();
 
-            foreach (string word in words)
+            foreach (var word in words)
             {
                 if (string.IsNullOrEmpty(word))
                 {
@@ -246,7 +246,7 @@ namespace EVEMon.Common.Extensions
         /// <returns></returns>
         public static string ToNumericString(this long number, int decimals, CultureInfo culture = null)
         {
-            string decimalsString = string.Format(culture ?? CultureConstants.DefaultCulture, "N{0}", decimals);
+            var decimalsString = string.Format(culture ?? CultureConstants.DefaultCulture, "N{0}", decimals);
             return number.ToString(decimalsString, culture ?? CultureConstants.DefaultCulture);
         }
 
@@ -259,7 +259,7 @@ namespace EVEMon.Common.Extensions
         /// <returns></returns>
         public static string ToNumericString(this double number, int decimals, CultureInfo culture = null)
         {
-            string decimalsString = string.Format(culture ?? CultureConstants.DefaultCulture, "N{0}", decimals);
+            var decimalsString = string.Format(culture ?? CultureConstants.DefaultCulture, "N{0}", decimals);
             return number.ToString(decimalsString, culture ?? CultureConstants.DefaultCulture);
         }
 
@@ -284,13 +284,13 @@ namespace EVEMon.Common.Extensions
             text = text.Replace(",", ", ");
             text = text.Replace(";", "; ");
 
-            string[] words = text.Split(' ');
+            var words = text.Split(' ');
             var lines = new LinkedList<string>();
-            int currentLineLength = 0;
-            string currentLine = string.Empty;
-            bool inTag = false;
+            var currentLineLength = 0;
+            var currentLine = string.Empty;
+            var inTag = false;
 
-            foreach (string currentWord in words.Where(currentWord => currentWord.Length > 0))
+            foreach (var currentWord in words.Where(currentWord => currentWord.Length > 0))
             {
                 if (currentWord.Substring(0, 1) == "<")
                     inTag = true;

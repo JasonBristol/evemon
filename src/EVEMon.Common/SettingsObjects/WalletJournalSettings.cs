@@ -48,7 +48,7 @@ namespace EVEMon.Common.SettingsObjects
         {
             get
             {
-                WalletJournalColumn[] defaultColumns = new[]
+                var defaultColumns = new[]
                                                            {
                                                                WalletJournalColumn.Date,
                                                                WalletJournalColumn.Type,

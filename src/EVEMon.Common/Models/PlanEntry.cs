@@ -99,7 +99,7 @@ namespace EVEMon.Common.Models
         {
             get
             {
-                Character character = m_owner.Character as Character;
+                var character = m_owner.Character as Character;
                 return character == null ? null : m_skill.ToCharacter(character);
             }
         }
@@ -181,10 +181,10 @@ namespace EVEMon.Common.Models
         {
             get
             {
-                BaseCharacter character = Character;
+                var character = Character;
 
                 // Checks all the prerequisites are trained
-                bool prereqMet = m_skill.Prerequisites.All(x => character.GetSkillLevel(x.Skill) >= x.Level);
+                var prereqMet = m_skill.Prerequisites.All(x => character.GetSkillLevel(x.Skill) >= x.Level);
 
                 // Checks the skill has the previous level
                 return prereqMet && m_level != 0 && character.GetSkillLevel(m_skill) >= m_level - 1;
@@ -199,7 +199,7 @@ namespace EVEMon.Common.Models
         private static StaticSkill GetSkill(SerializablePlanEntry serial)
         {
             // Try get skill by its ID
-            StaticSkill skill = StaticSkills.GetSkillByID(serial.ID) ?? StaticSkills.GetSkillByName(serial.SkillName);
+            var skill = StaticSkills.GetSkillByID(serial.ID) ?? StaticSkills.GetSkillByName(serial.SkillName);
 
             // We failed? Try get skill by its name
 
@@ -328,7 +328,7 @@ namespace EVEMon.Common.Models
         internal PlanEntry Clone(BasePlan plan)
         {
             // We need a skill for the plan's character
-            PlanEntry clone = new PlanEntry(plan, m_skill, m_level)
+            var clone = new PlanEntry(plan, m_skill, m_level)
             {
                 m_entryType = m_entryType,
                 m_priority = m_priority,

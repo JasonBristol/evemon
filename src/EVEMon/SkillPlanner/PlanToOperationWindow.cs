@@ -104,14 +104,14 @@ namespace EVEMon.SkillPlanner
         private void FillListBox<T>(IEnumerable<T> items, ListBox listBox)
             where T : ISkillLevel
         {
-            PlanScratchpad plan = new PlanScratchpad(m_operation.Plan.Character);
+            var plan = new PlanScratchpad(m_operation.Plan.Character);
             plan.RebuildPlanFrom(items.Select(x => new PlanEntry(x.Skill, x.Level)));
             plan.FixPrerequisites();
 
             listBox.Items.Clear();
-            foreach (PlanEntry entry in plan)
+            foreach (var entry in plan)
             {
-                string name = entry.ToString();
+                var name = entry.ToString();
 
                 if (m_operation.Type == PlanOperations.Addition)
                 {

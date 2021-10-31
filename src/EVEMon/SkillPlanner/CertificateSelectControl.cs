@@ -89,7 +89,7 @@ namespace EVEMon.SkillPlanner
                     return;
 
                 // Should we be transforming a Data Browser to a Skill Planner?
-                bool transformToPlanner = (value != null) && (m_plan == null) && (m_character != null);
+                var transformToPlanner = (value != null) && (m_plan == null) && (m_character != null);
 
                 if (value == null)
                     return;
@@ -643,10 +643,10 @@ namespace EVEMon.SkillPlanner
         private void UpdateTree(IList<CertificateClass> classes)
         {
             // Store the selected node (if any) to restore it after the update
-            int selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
+            var selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
             
             // Fill the tree
-            int numberOfItems = 0;
+            var numberOfItems = 0;
             tvItems.BeginUpdate();
             try
             {
@@ -656,11 +656,11 @@ namespace EVEMon.SkillPlanner
                 tvItems.Nodes.Clear();
 
                 // Creates the nodes representing the categories
-                foreach (IGrouping<CertificateGroup, CertificateClass> category in classes.GroupBy(x => x.Category).OrderBy(x => x.Key.Name))
+                foreach (var category in classes.GroupBy(x => x.Category).OrderBy(x => x.Key.Name))
                 {
-                    int imageIndex = tvItems.ImageList.Images.IndexOfKey("Certificate");
+                    var imageIndex = tvItems.ImageList.Images.IndexOfKey("Certificate");
 
-                    TreeNode categoryNode = new TreeNode
+                    var categoryNode = new TreeNode
                     {
                         Text = category.Key.Name,
                         ImageIndex = imageIndex,
@@ -668,7 +668,7 @@ namespace EVEMon.SkillPlanner
                         Tag = category
                     };
 
-                    foreach (TreeNode node in category
+                    foreach (var node in category
                         .Select(certClass =>
                             new
                             {
@@ -696,7 +696,7 @@ namespace EVEMon.SkillPlanner
                 // Restore the selected node (if any)
                 if (selectedItemHash > 0)
                 {
-                    foreach (TreeNode node in tvItems.GetAllNodes()
+                    foreach (var node in tvItems.GetAllNodes()
                         .Where(node => node.Tag.GetHashCode() == selectedItemHash))
                     {
                         tvItems.SelectNodeWithTag(node.Tag);
@@ -732,14 +732,14 @@ namespace EVEMon.SkillPlanner
         private void UpdateListBox(IList<CertificateClass> classes)
         {
             // Store the selected node (if any) to restore it after the update
-            int selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
+            var selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
 
             lbSearchList.BeginUpdate();
             try
             {
                 lbSearchList.Items.Clear();
 
-                foreach (CertificateClass certClass in classes)
+                foreach (var certClass in classes)
                 {
                     lbSearchList.Items.Add(certClass);
 
@@ -761,11 +761,11 @@ namespace EVEMon.SkillPlanner
         private void UpdateListView(IList<CertificateClass> classes)
         {
             // Store the selected node (if any) to restore it after the update
-            int selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
+            var selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
 
             // Retrieve the data to fetch into the list
             IEnumerable<string> labels = null;
-            string column = GetSortedListData(ref classes, ref labels);
+            var column = GetSortedListData(ref classes, ref labels);
             if (labels == null)
                 return;
 
@@ -774,16 +774,16 @@ namespace EVEMon.SkillPlanner
             {
                 lvSortedList.Items.Clear();
 
-                using (IEnumerator<string> labelsEnumerator = labels.GetEnumerator())
+                using (var labelsEnumerator = labels.GetEnumerator())
                 {
-                    foreach (CertificateClass certClass in classes)
+                    foreach (var certClass in classes)
                     {
                         // Retrieves the label for the second column (sort key)
                         labelsEnumerator.MoveNext();
-                        string label = labelsEnumerator.Current;
+                        var label = labelsEnumerator.Current;
 
                         // Add the item
-                        ListViewItem lvi = new ListViewItem(certClass.Name);
+                        var lvi = new ListViewItem(certClass.Name);
                         lvi.SubItems.Add(new ListViewItem.ListViewSubItem(lvi, label));
                         lvi.Tag = certClass;
 
@@ -817,7 +817,7 @@ namespace EVEMon.SkillPlanner
                                                     CertificateClassCollection.CertificateClasses;
 
             // Apply the selected filter 
-            Func<CertificateClass, bool> predicate = GetFilter();
+            var predicate = GetFilter();
             classes = classes.Where(predicate);
 
             // Text search
@@ -841,7 +841,7 @@ namespace EVEMon.SkillPlanner
         /// </summary>
         private Func<CertificateClass, bool> GetFilter()
         {
-            CertificateFilter certificateFilter =
+            var certificateFilter =
                 (CertificateFilter)
                     (EnumExtensions.GetValueFromDescription<CertificateFilter>((string)cbFilter.SelectedItem) ??
                      CertificateFilter.All);
@@ -870,7 +870,7 @@ namespace EVEMon.SkillPlanner
         /// <returns>The column header text</returns>
         private string GetSortedListData(ref IList<CertificateClass> classes, ref IEnumerable<string> labels)
         {
-            CertificateSort certificateSort =
+            var certificateSort =
                 (CertificateSort)
                     (EnumExtensions.GetValueFromDescription<CertificateSort>((string)cbSorting.SelectedItem) ??
                      CertificateSort.None);
@@ -899,8 +899,8 @@ namespace EVEMon.SkillPlanner
                     }
             }
 
-            CertificateClass[] classesArray = classes.ToArray();
-            TimeSpan[] timesArray = times.ToArray();
+            var classesArray = classes.ToArray();
+            var timesArray = times.ToArray();
             Array.Sort(timesArray, classesArray);
             classes = classesArray;
             labels = timesArray.Select(x => x.ToDescriptiveText(DescriptiveTextOptions.IncludeCommas));
@@ -914,7 +914,7 @@ namespace EVEMon.SkillPlanner
         /// <returns>The time required to finish the next grade</returns>
         private static TimeSpan GetTimeToNextLevel(CertificateClass certificateClass)
         {
-            CertificateLevel lowestTrinedLevel = certificateClass.Certificate.LowestUntrainedLevel;
+            var lowestTrinedLevel = certificateClass.Certificate.LowestUntrainedLevel;
             return lowestTrinedLevel?.GetTrainingTime ?? TimeSpan.Zero;
         }
 
@@ -925,7 +925,7 @@ namespace EVEMon.SkillPlanner
         /// <returns>The time required to finish the final grade</returns>
         private static TimeSpan GetTimeToMaxLevel(CertificateClass certificateClass)
         {
-            CertificateLevel levelFive = certificateClass.Certificate.GetCertificateLevel(5);
+            var levelFive = certificateClass.Certificate.GetCertificateLevel(5);
             return levelFive.IsTrained
                 ? TimeSpan.Zero
                 : levelFive.GetTrainingTime;
@@ -947,10 +947,10 @@ namespace EVEMon.SkillPlanner
             }
 
             // Prepares data
-            char[] chars = new char[5];
-            bool[] trained = new bool[5];
+            var chars = new char[5];
+            var trained = new bool[5];
 
-            foreach (int level in certificate.AllLevel
+            foreach (var level in certificate.AllLevel
                 .Select(certLevel =>
                     new
                     {
@@ -965,8 +965,8 @@ namespace EVEMon.SkillPlanner
             }
 
             // Create key and retrieves its index, then returns if it already exists
-            string key = string.Concat(chars);
-            int index = tvItems.ImageList.Images.IndexOfKey(key);
+            var key = string.Concat(chars);
+            var index = tvItems.ImageList.Images.IndexOfKey(key);
             if (index != -1)
                 return index;
 
@@ -975,24 +975,24 @@ namespace EVEMon.SkillPlanner
             const int MaxLetterWidth = 6;
 
             Bitmap bmp;
-            using(Bitmap tempBitmap = new Bitmap(ImageSize, ImageSize, PixelFormat.Format32bppArgb))
+            using(var tempBitmap = new Bitmap(ImageSize, ImageSize, PixelFormat.Format32bppArgb))
             {
                 bmp = (Bitmap)tempBitmap.Clone();
             }
 
-            using (Graphics g = Graphics.FromImage(bmp))
+            using (var g = Graphics.FromImage(bmp))
             {
-                string[] letters = new string[5];
-                float[] xPositions = new float[5];
+                var letters = new string[5];
+                var xPositions = new float[5];
                 float x = 0.0f,
                     height = 0.0f;
 
-                int i = 0;
+                var i = 0;
                 // Scroll through letters and measure them
                 foreach (var certLevel in certificate.AllLevel)
                 {
                     letters[i] = ((int)certLevel.Level).ToString();
-                    SizeF size = g.MeasureString(letters[i], m_iconsFont, MaxLetterWidth, StringFormat.GenericTypographic);
+                    var size = g.MeasureString(letters[i], m_iconsFont, MaxLetterWidth, StringFormat.GenericTypographic);
                     height = Math.Max(height, size.Height);
                     xPositions[i] = x;
                     x += size.Width + 1.0f;
@@ -1000,18 +1000,18 @@ namespace EVEMon.SkillPlanner
                 }
 
                 // Y offset
-                float y = Math.Max(0.0f, (ImageSize - height) * 0.5f);
+                var y = Math.Max(0.0f, (ImageSize - height) * 0.5f);
 
                 // Draw the letters
                 g.Clear(Color.White);
-                using (SolidBrush grantedBrush = new SolidBrush(Color.Blue))
-                using (SolidBrush nonGrantedBrush = new SolidBrush(Color.Gray))
+                using (var grantedBrush = new SolidBrush(Color.Blue))
+                using (var nonGrantedBrush = new SolidBrush(Color.Gray))
                 {
-                    for (int j = 0; j < certificate.AllLevel.Count(); j++)
+                    for (var j = 0; j < certificate.AllLevel.Count(); j++)
                     {
                         // Special color for trained, gray for the other ones
-                        bool isTrained = trained[j];
-                        SolidBrush brush = isTrained ? grantedBrush : nonGrantedBrush;
+                        var isTrained = trained[j];
+                        var brush = isTrained ? grantedBrush : nonGrantedBrush;
                         g.DrawString(letters[j], m_iconsFont, brush, xPositions[j], y);
                     }
                 }
@@ -1057,11 +1057,11 @@ namespace EVEMon.SkillPlanner
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void planToLevelMenuItem_Click(object sender, EventArgs e)
         {
-            IPlanOperation operation = ((ToolStripMenuItem)sender).Tag as IPlanOperation;
+            var operation = ((ToolStripMenuItem)sender).Tag as IPlanOperation;
             if (operation == null)
                 return;
 
-            PlanWindow planWindow = ParentForm as PlanWindow;
+            var planWindow = ParentForm as PlanWindow;
             if (planWindow == null)
                 return;
 
@@ -1076,7 +1076,7 @@ namespace EVEMon.SkillPlanner
         /// <param name="e"></param>
         private void cmListCerts_Opening(object sender, CancelEventArgs e)
         {
-            ContextMenuStrip contextMenu = sender as ContextMenuStrip;
+            var contextMenu = sender as ContextMenuStrip;
 
             e.Cancel = contextMenu?.SourceControl == null ||
                        (!contextMenu.SourceControl.Visible && m_selectedCertificateClass == null) ||
@@ -1088,7 +1088,7 @@ namespace EVEMon.SkillPlanner
             contextMenu.SourceControl.Cursor = Cursors.Default;
 
             CertificateClass certificateClass = null;
-            TreeNode node = tvItems.SelectedNode;
+            var node = tvItems.SelectedNode;
             if (node != null)
                 certificateClass = node.Tag as CertificateClass;
 
@@ -1125,7 +1125,7 @@ namespace EVEMon.SkillPlanner
                 $"Plan {(m_selectedCertificateClass == null ? string.Empty : $"\"{m_selectedCertificateClass?.Name}\" ")}to...";
             
             // "Plan to N" menus
-            for (int i = 1; i <= 5; i++)
+            for (var i = 1; i <= 5; i++)
             {
                 SetAdditionMenuStatus(cmiLvPlanToLevel.DropDownItems[i - 1],
                     m_selectedCertificateClass.Certificate.GetCertificateLevel(i));

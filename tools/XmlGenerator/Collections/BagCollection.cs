@@ -26,7 +26,7 @@ namespace EVEMon.XmlGenerator.Collections
 
             m_items = new Dictionary<long, T>();
 
-            foreach (T item in collection.Items)
+            foreach (var item in collection.Items)
             {
                 m_items[item.ID] = item;
             }
@@ -83,7 +83,7 @@ namespace EVEMon.XmlGenerator.Collections
 
 			m_items = new Dictionary<long, T>();
 
-			foreach (T item in collection.Items)
+			foreach (var item in collection.Items)
 			{
 				m_items[item.ID] = item;
 			}

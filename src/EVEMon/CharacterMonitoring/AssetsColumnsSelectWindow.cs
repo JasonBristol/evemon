@@ -40,7 +40,7 @@ namespace EVEMon.CharacterMonitoring
         {
             get
             {
-                AssetSettings settings = new AssetSettings();
+                var settings = new AssetSettings();
                 return settings.DefaultColumns;
             }
         }

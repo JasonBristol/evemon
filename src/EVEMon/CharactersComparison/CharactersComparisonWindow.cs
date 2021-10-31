@@ -70,14 +70,14 @@ namespace EVEMon.CharactersComparison
                     .Select(x => x.Tag).OfType<Character>().ToList();
 
                 // Add selected character
-                foreach (Character character in selectedItems.Where(character => !m_selectedCharacters.Contains(character)))
+                foreach (var character in selectedItems.Where(character => !m_selectedCharacters.Contains(character)))
                 {
                     m_selectedCharacters.Add(character);
                 }
 
                 // Remove non selected character
-                List<Character> selectedCharacters = new List<Character>(m_selectedCharacters);
-                foreach (Character character in selectedCharacters.Where(character => !selectedItems.Contains(character)))
+                var selectedCharacters = new List<Character>(m_selectedCharacters);
+                foreach (var character in selectedCharacters.Where(character => !selectedItems.Contains(character)))
                 {
                     m_selectedCharacters.Remove(character);
                 }
@@ -113,7 +113,7 @@ namespace EVEMon.CharactersComparison
         /// </summary>
         private void UpdateCharacterInfo()
         {
-            int scrollBarPosition = lvCharacterInfo.GetVerticalScrollBarPosition();
+            var scrollBarPosition = lvCharacterInfo.GetVerticalScrollBarPosition();
 
             lvCharacterInfo.BeginUpdate();
             try
@@ -122,13 +122,13 @@ namespace EVEMon.CharactersComparison
                 lvCharacterInfo.Columns.Clear();
                 lvCharacterInfo.Columns.Add("Skill");
 
-                foreach (Character character in m_selectedCharacters)
+                foreach (var character in m_selectedCharacters)
                 {
                     lvCharacterInfo.Columns.Add(character.Name, -2, HorizontalAlignment.Right);
                 }
 
                 // Prepare properties list
-                List<ListViewItem> items = AddGroups();
+                var items = AddGroups();
 
                 // Fetch the new items to the list view
                 lvCharacterInfo.Items.Clear();
@@ -152,19 +152,19 @@ namespace EVEMon.CharactersComparison
         {
             lvCharacterInfo.Groups.Clear();
             var items = new List<ListViewItem>();
-            foreach (StaticSkillGroup skillGroup in StaticSkills.AllGroups)
+            foreach (var skillGroup in StaticSkills.AllGroups)
             {
                 var group = new ListViewGroup(skillGroup.Name);
-                foreach (StaticSkill skill in skillGroup.Where(skill => skill.IsPublic))
+                foreach (var skill in skillGroup.Where(skill => skill.IsPublic))
                 {
                     // Create the list view item
                     var item = new ListViewItem(group) { ToolTipText = skill.Description, Text = skill.Name };
                     items.Add(item);
 
-                    string[] labels = m_selectedCharacters
+                    var labels = m_selectedCharacters
                         .Select(character => skill.ToCharacter(character).Level.ToString(CultureConstants.DefaultCulture))
                         .ToArray();
-                    long[] values = m_selectedCharacters.Select(character => skill.ToCharacter(character).Level).ToArray();
+                    var values = m_selectedCharacters.Select(character => skill.ToCharacter(character).Level).ToArray();
 
                     // Retrieve the data to put in the columns
                     AddValueForSelectedCharacters(item, labels, values);
@@ -197,13 +197,13 @@ namespace EVEMon.CharactersComparison
                 }
             };
 
-            foreach (string[] text in additionalInfo)
+            foreach (var text in additionalInfo)
             {
                 var item = new ListViewItem(group) { Text = text.First(), ToolTipText = text.Last() };
 
-                string[] labels = m_selectedCharacters.Select(
+                var labels = m_selectedCharacters.Select(
                     character => GetValue(character, text.First()).ToNumericString(0)).ToArray();
-                long[] values = m_selectedCharacters.Select(character => GetValue(character, text.First())).ToArray();
+                var values = m_selectedCharacters.Select(character => GetValue(character, text.First())).ToArray();
 
                 AddValueForSelectedCharacters(item, labels, values);
                 items.Add(item);
@@ -242,12 +242,12 @@ namespace EVEMon.CharactersComparison
         /// <param name="values">The values.</param>
         private void AddValueForSelectedCharacters<T>(ListViewItem item, IList<string> labels, IList<T> values)
         {
-            T min = values.Any() ? values.Min() : default(T);
-            T max = values.Any() ? values.Max() : default(T);
-            bool allEqual = !values.Any() || values.All(value => value.Equals(min));
+            var min = values.Any() ? values.Min() : default(T);
+            var max = values.Any() ? values.Max() : default(T);
+            var allEqual = !values.Any() || values.All(value => value.Equals(min));
 
             // Add the value for every selected item
-            for (int index = 0; index < m_selectedCharacters.Count(); index++)
+            for (var index = 0; index < m_selectedCharacters.Count(); index++)
             {
                 // Create the subitem and choose its forecolor
                 var subItem = new ListViewItem.ListViewSubItem(item, labels[index]);
@@ -288,10 +288,10 @@ namespace EVEMon.CharactersComparison
                 const int Pad = 4;
 
                 // Calculate column header text width with padding
-                int columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
+                var columnHeaderWidth = TextRenderer.MeasureText(column.Text, Font).Width + Pad * 2;
 
                 // Calculate the width of the header and the items of the column
-                int columnMaxWidth = lvCharacterInfo.Columns[column.Index].ListView.Items.Cast<ListViewItem>().Select(
+                var columnMaxWidth = lvCharacterInfo.Columns[column.Index].ListView.Items.Cast<ListViewItem>().Select(
                     item => TextRenderer.MeasureText(item.SubItems[column.Index].Text, Font).Width).Concat(
                         new[] { columnHeaderWidth }).Max() + Pad + 1;
 
@@ -446,7 +446,7 @@ namespace EVEMon.CharactersComparison
 
             lvCharacterList.Cursor = Cursors.Default;
 
-            ListViewItem item = lvCharacterList.GetItemAt(e.X, e.Y);
+            var item = lvCharacterList.GetItemAt(e.X, e.Y);
             if (item == null)
                 return;
 
@@ -476,7 +476,7 @@ namespace EVEMon.CharactersComparison
         /// <param name="e">The <see cref="System.ComponentModel.CancelEventArgs"/> instance containing the event data.</param>
         private void characterListContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Character character = characterListContextMenu.Items[0].Tag as Character;
+            var character = characterListContextMenu.Items[0].Tag as Character;
 
             if (character == null)
                 return;
@@ -491,7 +491,7 @@ namespace EVEMon.CharactersComparison
         /// <param name="e">The <see cref="System.Windows.Forms.ToolStripItemClickedEventArgs"/> instance containing the event data.</param>
         private async void characterListContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            Character character = e.ClickedItem.Tag as Character;
+            var character = e.ClickedItem.Tag as Character;
             characterListContextMenu.Close();
 
             if (character != null)
@@ -532,7 +532,7 @@ namespace EVEMon.CharactersComparison
         private void characterInfoContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             var items = lvCharacterInfo.SelectedItems.Cast<ListViewItem>().ToList();
-            bool showExportSelectedSkillsAsPlan = items.Any() && items.All(item => item.Group?.Header != "Miscellaneous");
+            var showExportSelectedSkillsAsPlan = items.Any() && items.All(item => item.Group?.Header != "Miscellaneous");
 
             exportSelectedSkillsAsPlanFromToolStripMenuItem.Visible = showExportSelectedSkillsAsPlan;
 
@@ -541,10 +541,10 @@ namespace EVEMon.CharactersComparison
 
             exportSelectedSkillsAsPlanFromToolStripMenuItem.DropDownItems.Clear();
 
-            foreach (Character character in lvCharacterList.SelectedItems.Cast<ListViewItem>()
+            foreach (var character in lvCharacterList.SelectedItems.Cast<ListViewItem>()
                 .Select(item => item.Tag).Cast<Character>())
             {
-                ToolStripMenuItem item = new ToolStripMenuItem(character.Name);
+                var item = new ToolStripMenuItem(character.Name);
                 exportSelectedSkillsAsPlanFromToolStripMenuItem.DropDownItems.Add(item);
                 item.Tag = character;
             }
@@ -560,7 +560,7 @@ namespace EVEMon.CharactersComparison
         {
             characterInfoContextMenu.Close();
 
-            Character character = e.ClickedItem.Tag as Character;
+            var character = e.ClickedItem.Tag as Character;
             if (character == null)
                 return;
 

@@ -166,7 +166,7 @@ namespace EVEMon.SkillPlanner
                 }
                 m_slotPredicate = x => settings.SlotFilter == ItemSlot.All || (x.FittingSlot & settings.SlotFilter) != ItemSlot.None;
 
-                for (int i = 0; i < m_metaGroups.Count; i++)
+                for (var i = 0; i < m_metaGroups.Count; i++)
                 {
                     ccbGroupFilter.SetItemChecked(i, isChecked: false);
                     ccbGroupFilter.SetItemChecked(i, (settings.MetagroupFilter & m_metaGroups[i]) != ItemMetaGroup.None);
@@ -181,7 +181,7 @@ namespace EVEMon.SkillPlanner
 
             cbUsabilityFilter.SelectedIndex = 0;
             cbSlotFilter.SelectedIndex = 0;
-            for (int i = 0; i < m_metaGroups.Count; i++)
+            for (var i = 0; i < m_metaGroups.Count; i++)
             {
                 ccbGroupFilter.SetItemChecked(i, true);
             }
@@ -329,7 +329,7 @@ namespace EVEMon.SkillPlanner
                 return;
 
             // Update the predicate
-            ItemMetaGroup filter = m_metaGroups
+            var filter = m_metaGroups
                 .Where((t, i) => ccbGroupFilter.GetItemChecked(i))
                 .Aggregate(ItemMetaGroup.None, (current, t) => current | t);
 
@@ -457,28 +457,28 @@ namespace EVEMon.SkillPlanner
         protected override void BuildTreeView()
         {
             // Store the selected node (if any) to restore it after the update
-            int selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
+            var selectedItemHash = tvItems.SelectedNode?.Tag?.GetHashCode() ?? 0;
 
-            int numberOfItems = 0;
+            var numberOfItems = 0;
             tvItems.BeginUpdate();
             try
             {
                 tvItems.Nodes.Clear();
 
                 // Create the nodes
-                foreach (MarketGroup group in StaticItems.MarketGroups)
+                foreach (var group in StaticItems.MarketGroups)
                 {
                     // Skip some groups
                     if (!showAllGroupsCheckbox.Checked && !m_presetGroups.Contains(group))
                         continue;
 
-                    TreeNode node = new TreeNode
+                    var node = new TreeNode
                     {
                         Text = group.Name,
                         Tag = group
                     };
 
-                    int result = BuildSubtree(group, node.Nodes);
+                    var result = BuildSubtree(group, node.Nodes);
 
                     if (result == 0)
                         continue;
@@ -492,7 +492,7 @@ namespace EVEMon.SkillPlanner
                 // Restore the selected node (if any)
                 if (selectedItemHash > 0)
                 {
-                    foreach (TreeNode node in tvItems.GetAllNodes()
+                    foreach (var node in tvItems.GetAllNodes()
                         .Where(node => node.Tag.GetHashCode() == selectedItemHash))
                     {
                         tvItems.SelectNodeWithTag(node.Tag);
@@ -530,12 +530,12 @@ namespace EVEMon.SkillPlanner
         private int BuildSubtree(MarketGroup group, TreeNodeCollection nodeCollection)
         {
             // Total items count in this category and its subcategories
-            int result = 0;
+            var result = 0;
 
             // Add all subcategories
-            foreach (MarketGroup childGroup in group.SubGroups)
+            foreach (var childGroup in group.SubGroups)
             {
-                TreeNode node = new TreeNode
+                var node = new TreeNode
                 {
                     Text = childGroup.Name,
                     Tag = childGroup
@@ -550,7 +550,7 @@ namespace EVEMon.SkillPlanner
             }
 
             // Add all items
-            foreach (TreeNode node in group.Items
+            foreach (var node in group.Items
                 .Where(x => UsabilityPredicate(x)
                             && m_slotPredicate(x)
                             && m_metaGroupPredicate(x)

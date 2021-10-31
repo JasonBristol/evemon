@@ -13,7 +13,7 @@ namespace EVEMon.Common.SettingsObjects
 
         public CloudStorageServiceProviderSettings()
         {
-            foreach (CloudStorageServiceProvider provider in CloudStorageServiceProvider.Providers)
+            foreach (var provider in CloudStorageServiceProvider.Providers)
             {
                 s_cloudStorageServiceProviders[provider.Name] = provider;
             }

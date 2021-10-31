@@ -20,7 +20,7 @@ namespace EVEMon.Common.Notifications
             orders.ThrowIfNull(nameof(orders));
 
             Orders = new Collection<MarketOrder>();
-            foreach (MarketOrder order in orders)
+            foreach (var order in orders)
             {
                 Orders.Add(order);
             }
@@ -43,7 +43,7 @@ namespace EVEMon.Common.Notifications
         /// <param name="other"></param>
         public override void Append(NotificationEventArgs other)
         {
-            foreach (MarketOrder order in ((MarketOrdersNotificationEventArgs)other).Orders)
+            foreach (var order in ((MarketOrdersNotificationEventArgs)other).Orders)
             {
                 Orders.Add(order);
             }

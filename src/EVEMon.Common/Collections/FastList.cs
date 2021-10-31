@@ -136,9 +136,9 @@ namespace EVEMon.Common.Collections
         /// <returns>The index where the item was found, -1 otherwise</returns>
         public int IndexOf(T item)
         {
-            EqualityComparer<T> comparer = EqualityComparer<T>.Default;
+            var comparer = EqualityComparer<T>.Default;
 
-            for (int i = 0; i < Count; i++)
+            for (var i = 0; i < Count; i++)
             {
                 if (comparer.Equals(m_items[i], item))
                     return i;
@@ -155,7 +155,7 @@ namespace EVEMon.Common.Collections
             // We ensure the capacity is high enough
             if (Count == m_items.Length)
             {
-                int newSize = Math.Max(1, Count + 1);
+                var newSize = Math.Max(1, Count + 1);
                 Capacity = newSize;
             }
 
@@ -176,12 +176,12 @@ namespace EVEMon.Common.Collections
             enumerable.ThrowIfNull(nameof(enumerable));
 
             // Scroll through the items to add
-            foreach (T item in enumerable)
+            foreach (var item in enumerable)
             {
                 // Ensure size is enough
                 if (Count == m_items.Length)
                 {
-                    int newSize = Math.Max(1, Count + 1);
+                    var newSize = Math.Max(1, Count + 1);
                     Array.Resize(ref m_items, newSize);
                 }
 
@@ -212,7 +212,7 @@ namespace EVEMon.Common.Collections
             // We ensure the capacity is high enough
             if (Count + newCount > m_items.Length)
             {
-                int newSize = Math.Max(Count + newCount, Count + 1);
+                var newSize = Math.Max(Count + newCount, Count + 1);
                 Array.Resize(ref m_items, newSize);
             }
 
@@ -233,7 +233,7 @@ namespace EVEMon.Common.Collections
             // We ensure the capacity is high enough
             if (Count == m_items.Length)
             {
-                int newSize = Math.Max(1, Count + 1);
+                var newSize = Math.Max(1, Count + 1);
                 Array.Resize(ref m_items, newSize);
             }
 
@@ -270,9 +270,9 @@ namespace EVEMon.Common.Collections
         /// <returns>True if the item was found, false otherwise</returns>
         public bool Remove(T item)
         {
-            EqualityComparer<T> comparer = EqualityComparer<T>.Default;
+            var comparer = EqualityComparer<T>.Default;
 
-            for (int i = 0; i < Count; i++)
+            for (var i = 0; i < Count; i++)
             {
                 if (!comparer.Equals(m_items[i], item))
                     continue;
@@ -299,9 +299,9 @@ namespace EVEMon.Common.Collections
         /// <returns>True if the item was found in this list, false otherwise</returns>
         public bool Contains(T item)
         {
-            EqualityComparer<T> comparer = EqualityComparer<T>.Default;
+            var comparer = EqualityComparer<T>.Default;
 
-            for (int i = 0; i < Count; i++)
+            for (var i = 0; i < Count; i++)
             {
                 if (comparer.Equals(m_items[i], item))
                     return true;

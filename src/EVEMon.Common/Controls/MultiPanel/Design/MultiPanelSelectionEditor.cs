@@ -29,10 +29,10 @@ namespace EVEMon.Common.Controls.MultiPanel.Design
             base.FillTreeWithData(selector, context, provider);
 
             // Scroll through the pages
-            MultiPanel panel = (MultiPanel)context.Instance;
+            var panel = (MultiPanel)context.Instance;
             foreach (MultiPanelPage page in panel.Controls)
             {
-                SelectorNode node = new SelectorNode(page.Name, page);
+                var node = new SelectorNode(page.Name, page);
                 selector.Nodes.Add(node);
 
                 if (page != panel.SelectedPage)

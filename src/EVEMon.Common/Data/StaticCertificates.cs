@@ -24,25 +24,25 @@ namespace EVEMon.Common.Data
         /// </summary>
         internal static void Load()
         {
-            CertificatesDatafile datafile = Util.DeserializeDatafile<CertificatesDatafile>(DatafileConstants.CertificatesDatafile,
+            var datafile = Util.DeserializeDatafile<CertificatesDatafile>(DatafileConstants.CertificatesDatafile,
                     Util.LoadXslt(Properties.Resources.DatafilesXSLT));
 
             AllGroups = new Collection<StaticCertificateGroup>();
 
-            foreach (SerializableCertificateGroup srcGroup in datafile.Groups)
+            foreach (var srcGroup in datafile.Groups)
             {
                 AllGroups.Add(new StaticCertificateGroup(srcGroup));
             }
 
             // Build inner collections
-            foreach (StaticCertificateClass certClass in AllGroups.SelectMany(certClass => certClass))
+            foreach (var certClass in AllGroups.SelectMany(certClass => certClass))
             {
                 s_classesByName[certClass.Name] = certClass;
                 s_certificatesByID[certClass.Certificate.ID] = certClass.Certificate;
             }
 
             // Completes intialization
-            foreach (SerializableCertificateClass srcClass in datafile.Groups.SelectMany(srcGroup => srcGroup.Classes))
+            foreach (var srcClass in datafile.Groups.SelectMany(srcGroup => srcGroup.Classes))
             {
                 s_classesByName[srcClass.Name].Certificate.CompleteInitialization(srcClass.Certificate.Prerequisites);
             }

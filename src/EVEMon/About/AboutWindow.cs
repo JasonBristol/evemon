@@ -210,7 +210,7 @@ namespace EVEMon.About
         /// <returns></returns>
         private string GetVersionText()
         {
-            FileVersionInfo version = EveMonClient.FileVersionInfo;
+            var version = EveMonClient.FileVersionInfo;
 
             // Adds environment process info
             VersionLabel.Text += $" ({(Environment.Is64BitProcess ? "64" : "32")} bit)";
@@ -245,8 +245,8 @@ namespace EVEMon.About
         /// <param name="url">URL for the link to point to</param>
         private static void AddLinkToLabel(LinkLabel label, string linkText, string url)
         {
-            int start = label.Text.IndexOf(linkText, StringComparison.Ordinal);
-            int length = linkText.Length;
+            var start = label.Text.IndexOf(linkText, StringComparison.Ordinal);
+            var length = linkText.Length;
 
             label.Links.Add(start, length, url);
         }
@@ -260,17 +260,17 @@ namespace EVEMon.About
             devsList.Columns.Add(new ColumnHeader());
 
             // Set up the list of developers
-            for (int i = 0; i < m_headers.Count; i++)
+            for (var i = 0; i < m_headers.Count; i++)
             {
-                ListViewGroup group = new ListViewGroup(m_headers.GetByIndex(i).ToString());
+                var group = new ListViewGroup(m_headers.GetByIndex(i).ToString());
                 devsList.Groups.Add(group);
 
-                for (int j = 0; j < m_developersList.Count; j++)
+                for (var j = 0; j < m_developersList.Count; j++)
                 {
                     if (!m_headers.GetKey(i).Equals(m_developersList.GetByIndex(j)))
                         continue;
 
-                    ListViewItem item = new ListViewItem(m_developersList.GetKey(j).ToString(), group);
+                    var item = new ListViewItem(m_developersList.GetKey(j).ToString(), group);
                     devsList.Items.Add(item);
                 }
             }
@@ -301,7 +301,7 @@ namespace EVEMon.About
 
             try
             {
-                Uri linkUri = new Uri(e.Link.LinkData.ToString());
+                var linkUri = new Uri(e.Link.LinkData.ToString());
                 Util.OpenURL(linkUri);
             }
             catch (UriFormatException ex)

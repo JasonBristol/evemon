@@ -184,9 +184,9 @@ namespace EVEMon.Common.CloudStorageServices.GoogleDrive
                 if (s_credential == null)
                     await GetCredentialsAsync().ConfigureAwait(false);
 
-                using (DriveService client = GetClient())
+                using (var client = GetClient())
                 {
-                    AboutResource.GetRequest request = client.About.Get();
+                    var request = client.About.Get();
                     request.Fields = "user";
 
                     await request.ExecuteAsync().ConfigureAwait(false);
@@ -221,8 +221,8 @@ namespace EVEMon.Common.CloudStorageServices.GoogleDrive
 
             try
             {
-                Task<bool> revokeTokenAsync = s_credential?.RevokeTokenAsync(CancellationToken.None);
-                bool success = revokeTokenAsync != null && await revokeTokenAsync.ConfigureAwait(false);
+                var revokeTokenAsync = s_credential?.RevokeTokenAsync(CancellationToken.None);
+                var success = revokeTokenAsync != null && await revokeTokenAsync.ConfigureAwait(false);
 
                 if (!success)
                 {
@@ -251,19 +251,19 @@ namespace EVEMon.Common.CloudStorageServices.GoogleDrive
         /// <returns></returns>
         protected override async Task<SerializableAPIResult<CloudStorageServiceAPIFile>> UploadFileAsync()
         {
-            SerializableAPIResult<CloudStorageServiceAPIFile> result = new SerializableAPIResult<CloudStorageServiceAPIFile>();
+            var result = new SerializableAPIResult<CloudStorageServiceAPIFile>();
 
             try
             {
                 m_fileId = m_fileId ?? await GetFileIdAsync().ConfigureAwait(false);
 
-                byte[] content = Util.GZipCompress(SettingsFileContentByteArray).ToArray();
+                var content = Util.GZipCompress(SettingsFileContentByteArray).ToArray();
 
-                using (DriveService client = GetClient())
+                using (var client = GetClient())
                 using (Stream stream = Util.GetMemoryStream(content))
                 {
                     ResumableUpload<GoogleFile, GoogleFile> request;
-                    GoogleFile fileMetadata = new GoogleFile { Name = SettingsFileNameWithoutExtension };
+                    var fileMetadata = new GoogleFile { Name = SettingsFileNameWithoutExtension };
                     if (string.IsNullOrWhiteSpace(m_fileId))
                     {
                         //Upload
@@ -280,7 +280,7 @@ namespace EVEMon.Common.CloudStorageServices.GoogleDrive
                     }
 
                     // Do the actual upload
-                    IUploadProgress response = await request.UploadAsync().ConfigureAwait(false);
+                    var response = await request.UploadAsync().ConfigureAwait(false);
                     m_fileId = request.ResponseBody?.Id;
 
                     // Chceck response for exception
@@ -314,7 +314,7 @@ namespace EVEMon.Common.CloudStorageServices.GoogleDrive
         /// <exception cref="System.IO.FileNotFoundException"></exception>
         protected override async Task<SerializableAPIResult<CloudStorageServiceAPIFile>> DownloadFileAsync()
         {
-            SerializableAPIResult<CloudStorageServiceAPIFile> result = new SerializableAPIResult<CloudStorageServiceAPIFile>();
+            var result = new SerializableAPIResult<CloudStorageServiceAPIFile>();
 
             try
             {
@@ -323,13 +323,13 @@ namespace EVEMon.Common.CloudStorageServices.GoogleDrive
                 if (string.IsNullOrWhiteSpace(m_fileId))
                     throw new FileNotFoundException();
 
-                using (DriveService client = GetClient())
+                using (var client = GetClient())
                 using (Stream stream = new MemoryStream())
                 {
-                    FilesResource.GetRequest request = client.Files.Get(m_fileId);
+                    var request = client.Files.Get(m_fileId);
                     request.Fields = "id, name";
 
-                    IDownloadProgress response = await request.DownloadAsync(stream).ConfigureAwait(false);
+                    var response = await request.DownloadAsync(stream).ConfigureAwait(false);
 
                     if (response.Exception == null)
                         return await GetMappedAPIFileAsync(result, stream);
@@ -386,23 +386,23 @@ namespace EVEMon.Common.CloudStorageServices.GoogleDrive
         /// <exception cref="EVEMon.Common.Exceptions.APIException"></exception>
         private static string GetCredentialsPath(bool checkAuth = false)
         {
-            Configuration configuration =
+            var configuration =
                 ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
 
-            string certPath = Directory.GetParent(configuration.FilePath).Parent?.Parent?.FullName;
+            var certPath = Directory.GetParent(configuration.FilePath).Parent?.Parent?.FullName;
 
-            bool fileExists = false;
+            var fileExists = false;
             if (!string.IsNullOrWhiteSpace(certPath))
             {
                 certPath = Path.Combine(certPath, CredentialsDirectory);
-                string filePath = Path.Combine(certPath, $"{typeof(TokenResponse).FullName}-{UserId}");
+                var filePath = Path.Combine(certPath, $"{typeof(TokenResponse).FullName}-{UserId}");
                 fileExists = File.Exists(filePath);
             }
 
             if (!checkAuth || fileExists)
                 return certPath;
 
-            SerializableAPIError error = new SerializableAPIError
+            var error = new SerializableAPIError
             {
                 ErrorCode = @"Authentication required",
                 ErrorMessage = "Authentication required.\n\n" +
@@ -435,9 +435,9 @@ namespace EVEMon.Common.CloudStorageServices.GoogleDrive
         private static async Task<string> GetFileIdAsync()
         {
             FileList result;
-            using (DriveService client = GetClient())
+            using (var client = GetClient())
             {
-                FilesResource.ListRequest listRequest = client.Files.List();
+                var listRequest = client.Files.List();
                 listRequest.Spaces = Spaces;
                 listRequest.Fields = "files(id, name)";
 

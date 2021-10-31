@@ -75,7 +75,7 @@ namespace EVEMon.Common.Controls
             MessageBoxButtons buttons = MessageBoxButtons.OK,
             MessageBoxIcon icon = MessageBoxIcon.None)
         {
-            using (MessageBoxCustom form = new MessageBoxCustom())
+            using (var form = new MessageBoxCustom())
             {
                 return form.ShowDialog(owner, text, caption, cbText, buttons, icon);
             }

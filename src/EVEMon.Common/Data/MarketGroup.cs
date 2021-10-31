@@ -97,12 +97,12 @@ namespace EVEMon.Common.Data
         {
             get
             {
-                foreach (Item item in Items)
+                foreach (var item in Items)
                 {
                     yield return item;
                 }
 
-                foreach (Item subItem in SubGroups.SelectMany(cat => cat.AllItems))
+                foreach (var subItem in SubGroups.SelectMany(cat => cat.AllItems))
                 {
                     yield return subItem;
                 }
@@ -116,8 +116,8 @@ namespace EVEMon.Common.Data
         {
             get
             {
-                StringBuilder fullCategoryPath = new StringBuilder();
-                MarketGroup group = this;
+                var fullCategoryPath = new StringBuilder();
+                var group = this;
 
                 while (group != null)
                 {

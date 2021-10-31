@@ -39,10 +39,10 @@ namespace EVEMon.SettingsUI
             {
                 Controls.Clear();
 
-                int height = 0;
+                var height = 0;
 
                 // Add the controls for every member of the enumeration
-                foreach (SerializablePortableEveInstallation installation in Settings.PortableEveInstallations.EVEClients)
+                foreach (var installation in Settings.PortableEveInstallations.EVEClients)
                 {
                     // Add the "Delete" icon
                     AddIcon(height);
@@ -85,7 +85,7 @@ namespace EVEMon.SettingsUI
             DeletePictureBox.Location = new Point(DeletePictureBox.Location.X,
                                                   height + (RowHeight - DeletePictureBox.Size.Height) / 2);
             EveInstallationPathTextBox.Text = string.Empty;
-            int offset = (int)Math.Ceiling((double)(RowHeight - EveInstallationPathTextBox.Size.Height) / 2);
+            var offset = (int)Math.Ceiling((double)(RowHeight - EveInstallationPathTextBox.Size.Height) / 2);
             EveInstallationPathTextBox.Location = new Point(EveInstallationPathTextBox.Location.X, height + offset);
             BrowseButton.Location = new Point(BrowseButton.Location.X, height + (RowHeight - BrowseButton.Size.Height) / 2);
         }
@@ -107,7 +107,7 @@ namespace EVEMon.SettingsUI
                 tempButton.Size = BrowseButton.Size;
                 tempButton.Click += BrowseButton_Click;
 
-                Button button = tempButton;
+                var button = tempButton;
                 tempButton = null;
 
                 Controls.Add(button);
@@ -129,14 +129,14 @@ namespace EVEMon.SettingsUI
             try
             {
                 tempTextBox = new TextBox();
-                int offset = (int)Math.Ceiling((double)(RowHeight - EveInstallationPathTextBox.Size.Height) / 2);
+                var offset = (int)Math.Ceiling((double)(RowHeight - EveInstallationPathTextBox.Size.Height) / 2);
                 tempTextBox.Location = new Point(EveInstallationPathTextBox.Location.X, height + offset);
                 tempTextBox.Text = installation.Path;
                 tempTextBox.Anchor = EveInstallationPathTextBox.Anchor;
                 tempTextBox.ReadOnly = EveInstallationPathTextBox.ReadOnly;
                 tempTextBox.Size = EveInstallationPathTextBox.Size;
 
-                TextBox textbox = tempTextBox;
+                var textbox = tempTextBox;
                 tempTextBox = null;
 
                 Controls.Add(textbox);
@@ -163,7 +163,7 @@ namespace EVEMon.SettingsUI
                 tempPicture.Size = DeletePictureBox.Size;
                 tempPicture.Click += DeletePictureBox_Click;
 
-                PictureBox picture = tempPicture;
+                var picture = tempPicture;
                 tempPicture = null;
 
                 Controls.Add(picture);
@@ -205,7 +205,7 @@ namespace EVEMon.SettingsUI
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void BrowseButton_Click(object sender, EventArgs e)
         {
-            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+            using (var folderBrowserDialog = new FolderBrowserDialog())
             {
                 if (folderBrowserDialog.ShowDialog() != DialogResult.OK)
                     return;
@@ -216,7 +216,7 @@ namespace EVEMon.SettingsUI
                         eveClient => eveClient.Path == folderBrowserDialog.SelectedPath))
                     return;
 
-                TextBox textbox = Controls.OfType<TextBox>().ElementAt(Controls.OfType<Button>().IndexOf((Button)sender));
+                var textbox = Controls.OfType<TextBox>().ElementAt(Controls.OfType<Button>().IndexOf((Button)sender));
                 textbox.Text = folderBrowserDialog.SelectedPath;
 
                 ExportToSettings();
@@ -231,12 +231,12 @@ namespace EVEMon.SettingsUI
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void DeletePictureBox_Click(object sender, EventArgs e)
         {
-            PictureBox icon = (PictureBox)sender;
-            int index = Controls.OfType<PictureBox>().IndexOf(icon);
+            var icon = (PictureBox)sender;
+            var index = Controls.OfType<PictureBox>().IndexOf(icon);
 
             // Remove and dispose the controls
-            TextBox textbox = Controls.OfType<TextBox>().ElementAt(index);
-            Button button = Controls.OfType<Button>().ElementAt(index);
+            var textbox = Controls.OfType<TextBox>().ElementAt(index);
+            var button = Controls.OfType<Button>().ElementAt(index);
             Controls.Remove(icon);
             Controls.Remove(textbox);
             Controls.Remove(button);

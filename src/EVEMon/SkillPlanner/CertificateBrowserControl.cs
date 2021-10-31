@@ -58,7 +58,7 @@ namespace EVEMon.SkillPlanner
             Disposed += OnDisposed;
 
             // Reposition the help text along side the treeview
-            Control[] result = certSelectControl.Controls.Find("pnlResults", true);
+            var result = certSelectControl.Controls.Find("pnlResults", true);
             if (result.Length > 0)
                 lblHelp.Location = new Point(lblHelp.Location.X, result[0].Location.Y);
 
@@ -175,17 +175,17 @@ namespace EVEMon.SkillPlanner
             textboxDescription.Text = m_selectedCertificate.Certificate.Description;
 
             // Training time per certificate level
-            for (int i = 1; i <= 5; i++)
+            for (var i = 1; i <= 5; i++)
             {
                 UpdateLevelLabel(panelHeader.Controls.OfType<Label>()
                     .First(label => label.Name == $"lblLevel{i}Time"), i);
             }
 
             // Only read the recommendations from one level, because they are all the same
-            PersistentSplitContainer rSplCont = rightSplitContainer;
-            List<Control> newItems = new List<Control>();
-            SortedList<string, Item> ships = new SortedList<string, Item>();
-            foreach (Item ship in m_selectedCertificate.Certificate.Recommendations)
+            var rSplCont = rightSplitContainer;
+            var newItems = new List<Control>();
+            var ships = new SortedList<string, Item>();
+            foreach (var ship in m_selectedCertificate.Certificate.Recommendations)
             {
                 ships.Add(ship.Name, ship);
             }
@@ -200,13 +200,13 @@ namespace EVEMon.SkillPlanner
                 tempLabel.Text = @"Recommended For";
                 tempLabel.Padding = new Padding(5);
 
-                Label tsl = tempLabel;
+                var tsl = tempLabel;
                 tempLabel = null;
 
                 newItems.Add(tsl);
 
-                Size tslTextSize = TextRenderer.MeasureText(tsl.Text, Font);
-                int panelMinSize = rSplCont.Panel2MinSize;
+                var tslTextSize = TextRenderer.MeasureText(tsl.Text, Font);
+                var panelMinSize = rSplCont.Panel2MinSize;
                 rSplCont.Panel2MinSize = panelMinSize > tslTextSize.Width + HPad
                     ? panelMinSize
                     : tslTextSize.Width + HPad;
@@ -217,7 +217,7 @@ namespace EVEMon.SkillPlanner
                 tempLabel?.Dispose();
             }
 
-            foreach (LinkLabel linkLabel in ships.Values
+            foreach (var linkLabel in ships.Values
                 .Select(ship =>
                 {
                     LinkLabel linkLabel;
@@ -268,12 +268,12 @@ namespace EVEMon.SkillPlanner
             if (m_selectedCertificate?.Character == null)
                 return;
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             // "Level III: "
             sb.Append($"Level {Skill.GetRomanFromInt(level)}: ");
 
-            CertificateLevel certificateLevel = m_selectedCertificate.Certificate.GetCertificateLevel(level);
+            var certificateLevel = m_selectedCertificate.Certificate.GetCertificateLevel(level);
 
             // Is it already trained ?
             if (certificateLevel.IsTrained)
@@ -313,12 +313,12 @@ namespace EVEMon.SkillPlanner
                     tempLabel.Dock = DockStyle.Fill;
                     tempLabel.TextAlign = ContentAlignment.MiddleCenter;
 
-                    Label tsl = tempLabel;
+                    var tsl = tempLabel;
                     tempLabel = null;
 
                     rSplCont.Panel2.Controls.Add(tsl);
 
-                    Size tslTextSize = TextRenderer.MeasureText(tsl.Text, Font);
+                    var tslTextSize = TextRenderer.MeasureText(tsl.Text, Font);
                     rSplCont.Panel2MinSize = tslTextSize.Width + HPad;
                     rSplCont.SplitterDistance = rSplCont.Width - rSplCont.Panel2MinSize;
                 }
@@ -365,7 +365,7 @@ namespace EVEMon.SkillPlanner
             planToLevel.Enabled = false;
 
             // "Plan to N" menus
-            for (int i = 1; i <= 5; i++)
+            for (var i = 1; i <= 5; i++)
             {
                 planToLevel.Enabled |= UpdatePlanningMenuStatus(planToLevel.DropDownItems[i - 1],
                     m_selectedCertificate.Certificate.GetCertificateLevel(i), lastEligibleCertLevel);
@@ -408,7 +408,7 @@ namespace EVEMon.SkillPlanner
         /// </summary>
         private void recommendations_MenuItem(object sender, EventArgs e)
         {
-            Item ship = ((Control)sender)?.Tag as Item;
+            var ship = ((Control)sender)?.Tag as Item;
 
             // Open the ship browser
             PlanWindow.ShowPlanWindow(certSelectControl.Character, m_plan).ShowShipInBrowser(ship);
@@ -452,11 +452,11 @@ namespace EVEMon.SkillPlanner
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void tsPlanToLevel_Click(object sender, EventArgs e)
         {
-            IPlanOperation operation = ((ToolStripMenuItem)sender).Tag as IPlanOperation;
+            var operation = ((ToolStripMenuItem)sender).Tag as IPlanOperation;
             if (operation == null)
                 return;
 
-            PlanWindow planWindow = ParentForm as PlanWindow;
+            var planWindow = ParentForm as PlanWindow;
             if (planWindow == null)
                 return;
 

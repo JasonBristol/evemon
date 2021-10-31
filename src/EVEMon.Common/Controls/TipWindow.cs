@@ -81,7 +81,7 @@ namespace EVEMon.Common.Controls
                 return;
 
             // Gets disposed when clicking the OK button
-            TipWindow tipWindow = new TipWindow(form, title, tiptext, key, checkBoxVisible);
+            var tipWindow = new TipWindow(form, title, tiptext, key, checkBoxVisible);
             tipWindow.Show();
         }
     }

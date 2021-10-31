@@ -127,7 +127,7 @@ namespace EVEMon.Common.Models
                 return true;
 
             // Find the related medal in the corporation's medals
-            Medal corporationMedal = m_ccpCharacter.CorporationMedals.SingleOrDefault(corpMedal => corpMedal.ID == ID);
+            var corporationMedal = m_ccpCharacter.CorporationMedals.SingleOrDefault(corpMedal => corpMedal.ID == ID);
 
             if (corporationMedal == null)
                 return false;

@@ -35,7 +35,7 @@ namespace EVEMon.Common.Collections.Global
             if (Items.ContainsKey(id))
                 throw new ArgumentException("An identity with the same ID already exists.");
 
-            CharacterIdentity identity = new CharacterIdentity(id, name);
+            var identity = new CharacterIdentity(id, name);
             Items[id] = identity;
             return identity;
         }

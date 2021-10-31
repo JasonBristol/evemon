@@ -29,7 +29,7 @@ namespace EVEMon.Common.Service
         /// <param name="charId"></param>
         internal static async Task<Image> GetCharacterImageAsync(long charId)
         {
-            string path = string.Format(CultureConstants.InvariantCulture,
+            var path = string.Format(CultureConstants.InvariantCulture,
                 NetworkConstants.CCPPortraits, charId, (int)EveImageSize.x128);
 
             return await GetImageAsync(GetImageServerBaseUri(path), false).ConfigureAwait(false);
@@ -42,7 +42,7 @@ namespace EVEMon.Common.Service
         /// <param name="allianceID">The alliance ID.</param>
         public static Task GetAllianceImageAsync(PictureBox pictureBox, long allianceID)
         {
-            string path = string.Format(CultureConstants.InvariantCulture, NetworkConstants.
+            var path = string.Format(CultureConstants.InvariantCulture, NetworkConstants.
                 CCPAllianceLogo, allianceID, pictureBox.Width);
             return GetImageAsync(pictureBox, path);
         }
@@ -54,7 +54,7 @@ namespace EVEMon.Common.Service
         /// <param name="corporationID">The corporation ID.</param>
         public static Task GetCorporationImageAsync(PictureBox pictureBox, long corporationID)
         {
-            string path = string.Format(CultureConstants.InvariantCulture, NetworkConstants.
+            var path = string.Format(CultureConstants.InvariantCulture, NetworkConstants.
                 CCPCorporationLogo, corporationID, pictureBox.Width);
             return GetImageAsync(pictureBox, path);
         }
@@ -66,7 +66,7 @@ namespace EVEMon.Common.Service
         /// <param name="path">The path.</param>
         private static async Task GetImageAsync(PictureBox pictureBox, string path)
         {
-            Image image = await GetImageAsync(GetImageServerBaseUri(path)).ConfigureAwait(false);
+            var image = await GetImageAsync(GetImageServerBaseUri(path)).ConfigureAwait(false);
             pictureBox.Image = image ?? pictureBox.InitialImage;
             pictureBox.Update();
         }
@@ -87,7 +87,7 @@ namespace EVEMon.Common.Service
                 return GetImage(result);
             }
 
-            Image image = GetImageFromCache(GetCacheName(url));
+            var image = GetImageFromCache(GetCacheName(url));
             if (image != null)
                 return image;
 
@@ -111,7 +111,7 @@ namespace EVEMon.Common.Service
         {
             // First check whether the image exists in cache
             EveMonClient.EnsureCacheDirInit();
-            string cacheFileName = Path.Combine(directory ?? EveMonClient.EVEMonImageCacheDir,
+            var cacheFileName = Path.Combine(directory ?? EveMonClient.EVEMonImageCacheDir,
                 filename);
 
             if (!File.Exists(cacheFileName))
@@ -122,8 +122,8 @@ namespace EVEMon.Common.Service
                 // Load the data into a MemoryStream before returning the image to avoid file
                 // locking
                 Image image;
-                byte[] imageBytes = File.ReadAllBytes(cacheFileName);
-                using (MemoryStream stream = new MemoryStream(imageBytes))
+                var imageBytes = File.ReadAllBytes(cacheFileName);
+                using (var stream = new MemoryStream(imageBytes))
                 {
                     image = Image.FromStream(stream);
                 }
@@ -178,7 +178,7 @@ namespace EVEMon.Common.Service
             {
                 // Write this image to the cache file
                 EveMonClient.EnsureCacheDirInit();
-                string cacheFileName = Path.Combine(directory ?? EveMonClient.
+                var cacheFileName = Path.Combine(directory ?? EveMonClient.
                     EVEMonImageCacheDir, filename);
                 await FileHelper.OverwriteOrWarnTheUserAsync(cacheFileName,
                     async fs =>
@@ -207,7 +207,7 @@ namespace EVEMon.Common.Service
         private static string GetCacheName(Uri url)
         {
             Stream stream = Util.GetMemoryStream(Encoding.UTF8.GetBytes(url.AbsoluteUri));
-            string md5Sum = Util.CreateMD5(stream);
+            var md5Sum = Util.CreateMD5(stream);
             // Extensions are no longer part of the requested URLs
             return string.Concat(md5Sum, ".png");
         }
